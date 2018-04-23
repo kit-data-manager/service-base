@@ -15,6 +15,9 @@
  */
 package edu.kit.datamanager.util;
 
+import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,8 +36,35 @@ public class AuthenticationHelper{
     return getAuthentication().getAuthorities().stream().filter(a -> a.getAuthority().equals(authority)).count() > 0;
   }
 
-  public static boolean isUser(String userId){
-    Optional<String> oUserId = Optional.of(userId);
+  public static String getFirstname(){
+    if(getAuthentication() instanceof JwtAuthenticationToken){
+      return ((JwtAuthenticationToken) getAuthentication()).getFirstname();
+    }
+    return null;
+  }
+
+  public static String getLastname(){
+    if(getAuthentication() instanceof JwtAuthenticationToken){
+      return ((JwtAuthenticationToken) getAuthentication()).getLastname();
+    }
+    return null;
+  }
+
+  public static String getUsername(){
+    return (String) getAuthentication().getPrincipal();
+  }
+
+  public static List<String> getPrincipalIdentifiers(){
+    List<String> identifiers = new ArrayList<>();
+    identifiers.add(getUsername());
+    if(getAuthentication() instanceof JwtAuthenticationToken){
+      identifiers.add(((JwtAuthenticationToken) getAuthentication()).getGroupId());
+    }
+    return identifiers;
+  }
+
+  public static boolean isUser(String username){
+    Optional<String> oUserId = Optional.of(username);
     return oUserId.isPresent() && oUserId.get().equals((String) getAuthentication().getPrincipal());
   }
 

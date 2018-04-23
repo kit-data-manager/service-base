@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Karlsruhe Institute of Technology.
+ * Copyright 2018 Karlsruhe Institute of Technology.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package edu.kit.datamanager.entities.dc40;
+package edu.kit.datamanager.service.exceptions;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
  * @author jejkal
  */
-@ApiModel(description = "Intellectual property information of a resource.")
-public class Rights {
+@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+public class CustomInternalServerError extends RuntimeException{
 
-    @ApiModelProperty(required = true)
-    private Scheme rights;
+  public CustomInternalServerError(){
+    super();
+  }
 
-    public Rights() {
-    }
-
-    public Scheme getRights() {
-        return rights;
-    }
-
-    public void setRights(Scheme rights) {
-        this.rights = rights;
-    }
+  public CustomInternalServerError(String message){
+    super(message);
+  }
 
 }

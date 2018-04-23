@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Karlsruhe Institute of Technology.
+ * Copyright 2018 Karlsruhe Institute of Technology.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package edu.kit.datamanager.entities.dc40;
+package edu.kit.datamanager.annotations;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import java.util.Set;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.lang.annotation.Target;
 
 /**
  *
  * @author jejkal
  */
-@ApiModel(description = "Geo location information as polygon. A polygon must consist of 4 or more points.")
-public class Polygon {
-
-    @ApiModelProperty(required = true)
-    private Set<Point> points;
-
-    public Polygon() {
-    }
-
-    public Set<Point> getPoints() {
-        return points;
-    }
-
-    public void setPoints(Set<Point> points) {
-        this.points = points;
-    }
-
+@Documented
+@Target(ElementType.FIELD)
+@Retention(RUNTIME)
+public @interface Searchable{
 }
