@@ -15,11 +15,22 @@
  */
 package edu.kit.datamanager.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import edu.kit.datamanager.annotations.SecureUpdate;
+import edu.kit.datamanager.exceptions.PatchApplicationException;
+import edu.kit.datamanager.exceptions.UpdateForbiddenException;
 import edu.kit.datamanager.service.exceptions.CustomInternalServerError;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
@@ -28,7 +39,31 @@ import org.springframework.security.core.GrantedAuthority;
  */
 public class PatchUtil{
 
-  public static boolean canUpdate(Object originalObj, Object patched, Collection<? extends GrantedAuthority> authorities){
+  private static final Logger LOGGER = LoggerFactory.getLogger(PatchUtil.class);
+
+  public static <C> C applyPatch(C resource, JsonPatch patch, Class<C> resourceClass, Collection<? extends GrantedAuthority> authorities){
+    ObjectMapper tmpObjectMapper = new ObjectMapper();
+    tmpObjectMapper.registerModule(new JavaTimeModule());
+    JsonNode resourceAsNode = tmpObjectMapper.convertValue(resource, JsonNode.class);
+    C updated;
+    try{
+      // Apply the patch
+      JsonNode patchedDataResourceAsNode = patch.apply(resourceAsNode);
+      //convert resource back to POJO
+      updated = tmpObjectMapper.treeToValue(patchedDataResourceAsNode, resourceClass);
+    } catch(JsonPatchException | JsonProcessingException ex){
+      LOGGER.error("Failed to apply patch '" + patch.toString() + " to resource " + resource, ex);
+      throw new PatchApplicationException("Failed to apply patch to resource.");
+    }
+
+    if(!PatchUtil.canUpdate(resource, updated, authorities)){
+      throw new UpdateForbiddenException("Patch not applicable.");
+    }
+
+    return updated;
+  }
+
+  private static boolean canUpdate(Object originalObj, Object patched, Collection<? extends GrantedAuthority> authorities){
     for(Field field : patched.getClass().getDeclaredFields()){
       SecureUpdate secureUpdate = field.getAnnotation(SecureUpdate.class);
       if(secureUpdate != null){
@@ -54,15 +89,17 @@ public class PatchUtil{
             }
             if(!canUpdate){
               //at least one field cannot be updated
+              LOGGER.warn("Patching of field " + field + " is allowed by " + Arrays.asList(allowedRoles) + ", but caller only offered the following authorities: " + authorities + ".");
               return false;
             }
           }
         } catch(IllegalAccessException | IllegalArgumentException | SecurityException e){
-          throw new CustomInternalServerError(e.getMessage());
+          throw new CustomInternalServerError("Unable to check if patch is applicable. Message: " + e.getMessage());
         }
       }
     }
 
     return true;
   }
+
 }

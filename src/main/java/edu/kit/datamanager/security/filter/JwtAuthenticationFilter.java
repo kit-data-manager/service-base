@@ -16,6 +16,7 @@
 package edu.kit.datamanager.security.filter;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

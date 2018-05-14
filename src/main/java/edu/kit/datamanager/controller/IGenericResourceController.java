@@ -19,6 +19,7 @@ import com.github.fge.jsonpatch.JsonPatch;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Pageable;
@@ -37,18 +38,16 @@ import org.springframework.web.util.UriComponentsBuilder;
  * @author jejkal
  * @param <C> Resource class
  */
-public abstract class GenericResourceController<C>{
-
-  public GenericResourceController(){
-    super();
-  }
+public interface IGenericResourceController<C>{
 
   @ApiOperation(value = "Create a new resource.",
           notes = "Create a new resource and return it to the caller in case of success. "
           + "Creating new resources may or may not be restricted to users possessing specific roles.")
   @RequestMapping(value = "/", method = RequestMethod.POST)
   @ResponseBody
-  public abstract ResponseEntity<C> create(@RequestBody C resource, WebRequest request, final HttpServletResponse response);
+  public ResponseEntity<C> create(@ApiParam(value = "Json representation of the resource to create.", required = true) @RequestBody C resource,
+          final WebRequest request,
+          final HttpServletResponse response);
 
   @ApiOperation(value = "List all resources.",
           notes = "List all resources in a paginated and/or sorted form. Possible queries are: listing with default values (X elements on first page sorted by database), "
@@ -69,13 +68,18 @@ public abstract class GenericResourceController<C>{
   })
   @RequestMapping(value = "/", method = RequestMethod.GET)
   @ResponseBody
-  public abstract ResponseEntity<List<C>> findAll(Pageable pgbl, WebRequest request, final HttpServletResponse response, final UriComponentsBuilder uriBuilder);
+  public ResponseEntity<List<C>> findAll(final Pageable pgbl,
+          final WebRequest request,
+          final HttpServletResponse response,
+          final UriComponentsBuilder uriBuilder);
 
   @ApiOperation(value = "Get a resource by id.",
           notes = "Obtain is single resource by its identifier. Depending on a user's role, accessing a specific resource may be allowed or forbidden.")
   @RequestMapping(value = "/{id}", method = RequestMethod.GET)
   @ResponseBody
-  public abstract ResponseEntity<C> getById(@PathVariable("id") final Long id, WebRequest request, final HttpServletResponse response);
+  public abstract ResponseEntity<C> getById(@ApiParam(value = "The numeric resource identifier.", required = true) @PathVariable("id") final Long id,
+          final WebRequest request,
+          final HttpServletResponse response);
 
   @ApiOperation(value = "List resources by example.",
           notes = "List all resources in a paginated and/or sorted form by example using an example document provided in the request body. "
@@ -97,7 +101,11 @@ public abstract class GenericResourceController<C>{
   })
   @RequestMapping(value = "/search", method = RequestMethod.POST)
   @ResponseBody
-  public abstract ResponseEntity<List<C>> findByExample(@RequestBody C example, Pageable pgbl, WebRequest request, final HttpServletResponse response, final UriComponentsBuilder uriBuilder);
+  public abstract ResponseEntity<List<C>> findByExample(@ApiParam(value = "Json representation of the resource serving as example for the search operation. Typically, only first level primitive attributes are evaluated while building queries from examples.", required = true) @RequestBody C example,
+          final Pageable pgbl,
+          final WebRequest request,
+          final HttpServletResponse response,
+          final UriComponentsBuilder uriBuilder);
 
   @ApiOperation(value = "Patch a resource by id.",
           notes = "Patch a single or multiple fields of a resource. Patching information are provided in JSON Patch format using Content-Type 'application/json-patch+json'. "
@@ -106,7 +114,10 @@ public abstract class GenericResourceController<C>{
           + "If the patch tries to modify a protected field, HTTP BAD_REQUEST will be returned before persisting the result.")
   @RequestMapping(value = "/{id}", method = RequestMethod.PATCH, consumes = "application/json-patch+json")
   @ResponseBody
-  public abstract ResponseEntity patch(@PathVariable("id") final Long id, @RequestBody JsonPatch patch, WebRequest request, final HttpServletResponse response);
+  public ResponseEntity patch(@ApiParam(value = "The numeric resource identifier.", required = true) @PathVariable("id") final Long id,
+          @ApiParam(value = "Json representation of a json patch document. The document must comply with RFC 6902 specified by the IETF.", required = true) @RequestBody JsonPatch patch,
+          final WebRequest request,
+          final HttpServletResponse response);
 
   @ApiOperation(value = "Delete a resource by id.",
           notes = "Delete a single resource. Deleting a resource typically requires the caller to have ADMIN permissions. "
@@ -116,5 +127,7 @@ public abstract class GenericResourceController<C>{
           + "a later point in time, either automatically or manually.")
   @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
   @ResponseBody
-  public abstract ResponseEntity delete(@PathVariable("id") final Long id, WebRequest request, final HttpServletResponse response);
+  public ResponseEntity delete(@ApiParam(value = "The numeric resource identifier.", required = true) @PathVariable("id") final Long id,
+          final WebRequest request,
+          final HttpServletResponse response);
 }

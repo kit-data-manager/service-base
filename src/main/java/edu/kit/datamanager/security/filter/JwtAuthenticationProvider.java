@@ -62,9 +62,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider, JsonMa
 
   @SuppressWarnings("unchecked")
   public Authentication getJwtAuthentication(String token){
-    System.out.println("TOKEBN " + token);
     Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-    System.out.println("CLAUM " + claimsJws);
     List<String> rolesList = new ArrayList<>();
     String roleClaim = claimsJws.getBody().get("roles", String.class);
     if(roleClaim == null){
@@ -86,14 +84,12 @@ public class JwtAuthenticationProvider implements AuthenticationProvider, JsonMa
       LOGGER.error("Failed to read user roles from " + this, ex);
       throw new CustomInternalServerError("Failed to read user roles.");
     }
-    System.out.println("AUTHS");
     List<SimpleGrantedAuthority> grantedAuthorities = grantedAuthorities((Set<String>) new HashSet<>(rolesList));
     String username = claimsJws.getBody().get("username", String.class);
     String firstname = claimsJws.getBody().get("firstname", String.class);
     String lastname = claimsJws.getBody().get("lastname", String.class);
     String groupId = claimsJws.getBody().get("activeGroup", String.class);
 
-    System.out.println("CREATE TOKEN");
     JwtAuthenticationToken jwtToken = new JwtAuthenticationToken(
             grantedAuthorities,
             username,

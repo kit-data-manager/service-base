@@ -17,8 +17,10 @@ package edu.kit.datamanager.entities;
 
 import edu.kit.datamanager.annotations.Searchable;
 import edu.kit.datamanager.annotations.SecureUpdate;
+import edu.kit.datamanager.util.EnumUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -42,7 +44,7 @@ import lombok.Data;
 @Data
 public class Identifier{
 
-  public enum IDENTIFIER_TYPE{
+  public enum IDENTIFIER_TYPE implements BaseEnum{
     ARK("ARK"),
     AR_XIV("arXiv"),
     BIBCODE("bibcode"),
@@ -70,6 +72,7 @@ public class Identifier{
       this.value = value;
     }
 
+    @Override
     public String getValue(){
       return value;
     }
@@ -86,6 +89,13 @@ public class Identifier{
   @Enumerated(EnumType.STRING)
   private IDENTIFIER_TYPE identifierType;
 
+  public static Identifier factoryIdentifier(String value, IDENTIFIER_TYPE type){
+    Identifier result = new Identifier();
+    result.value = value;
+    result.identifierType = type;
+    return result;
+  }
+
   public static Identifier factoryInternalIdentifier(String identifier){
     Identifier result = new Identifier();
     result.setIdentifierType(IDENTIFIER_TYPE.INTERNAL);
@@ -96,4 +106,35 @@ public class Identifier{
   public static Identifier factoryInternalIdentifier(){
     return factoryInternalIdentifier(UUID.randomUUID().toString());
   }
+
+  @Override
+  public boolean equals(Object obj){
+    if(this == obj){
+      return true;
+    }
+    if(obj == null){
+      return false;
+    }
+    if(getClass() != obj.getClass()){
+      return false;
+    }
+    final Identifier other = (Identifier) obj;
+    if(!Objects.equals(this.value, other.value)){
+      return false;
+    }
+    if(!Objects.equals(this.id, other.id)){
+      return false;
+    }
+    return EnumUtils.equals(this.identifierType, other.identifierType);
+  }
+
+  @Override
+  public int hashCode(){
+    int hash = 7;
+    hash = 79 * hash + Objects.hashCode(this.id);
+    hash = 79 * hash + Objects.hashCode(this.value);
+    hash = 79 * hash + EnumUtils.hashCode(this.identifierType);
+    return hash;
+  }
+
 }
