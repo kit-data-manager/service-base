@@ -15,6 +15,9 @@
  */
 package edu.kit.datamanager;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  *
  * @author jejkal
@@ -34,7 +37,18 @@ public final class Test{
             e.printStackTrace();
         }*/
   public static void main(String[] args) throws Exception{
-    System.out.println(Integer.toString(1 | 2));
+    String path = "data/test/"; //d 2
+    path = "data/"; //d 1
+    path = "data/myfile.txt";
+    path = "";
+    
+    String[] split = path.split("/");
+    
+    System.out.println(split.length);
+    
+    for(String s : split){
+      System.out.println(s);
+    }
 
     // ArangoDB arangoDB = new ArangoDB.Builder().user("root").build();
 //        String dbName = "datamanager";
