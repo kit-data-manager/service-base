@@ -1,21 +1,7 @@
 language: java
-
 jdk:
-  - oraclejdk8
-
-#before_install:
-#  - sudo apt-get update -qq -y
-#  - sudo apt-get install ev libjson-glib-dev libzmq3-dev autoconf-archive gtk-doc-tools
-
-#before_script:
-# Configure with Autotools
-#  - ./autogen.sh
-#  - ./configure
-
-# Configure with CMake
-#- mkdir build
-#- cd build
-#- cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DWITH_GIR=OFF -DWITH_GTK_DOC=ON -DWITH_PYTHON=OFF
-
-script:
-  gradle build
+- oraclejdk8
+script: gradle build
+env:
+  global:
+    secure: iUx9VIXoTdVuaYdVU2vbBUZxwNT5M7ts6eLxFxb7SQgF5D3ERYQxjJIPQ7798J+y9qsJ9+Hoh8lIVxn9K1Of9+ERoZLEUExeEmvBSpOoAd+enFEvglxTH232oJxFru9dOurMQmnNIisuk0Z5S90nlXzpncl1QyekX7GG0GWgclXp40KfWnAwRFBnyqc+EzQCM8B8ZIwLgOEurJmnrWwSdm6gq51T1hy6JcG7IVEBGtL2rZe43H1XUx88rlnsnHiFLLMRgGAD2bbDCxSLZk9n45sYJ1DqS/eDkQ5qSMr//3xWNBQ4YUWWudr0sd5F0vhBHNcuNhLPLoAEdiJQX/ma1zWnZLp7RoSXfoQE3owxvjIo33pMxXSeUuoKt4CdsK5IKbqxPRV7X9rvaDC8mufdM5Y5E6L3+mwU8V0/KRCo+OAb1JIfvDEQmC2RqciLeFKccHGjIIqeyjdgAtwLRdaT7od2ypDmA0Zf98/aC9gFLRfG7dSV0xhwJU4RUzsI4iPuch30koNoYANJyixLv8LKQxKj3rpmbdjBSaoyuCCmu0mVOqHmQfBhgOv1VYMs7vVfhnuXL1fi2EsT0qWkpw33wh4Kw5hG7RfXztZU4Ckdo3xgl20cf5eBZoAcWBDrQrRrz7SRFWOZdkKwXQcWgNW6W5SotGOrrSHEvbcxz/2SUMs=
