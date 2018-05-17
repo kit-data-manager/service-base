@@ -4,6 +4,7 @@ jdk:
 script: 
    - ./gradlew clean check
    - ./gradlew jacocoTestReport
+   - ./gradlew jacocoTestReport
 after_success: 
    - ./gradlew coveralls
 env:
