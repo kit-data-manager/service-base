@@ -1,8 +1,11 @@
 language: java
 jdk:
-- oraclejdk8
-script: "./gradlew clean check jacocoTestReport"
-after_success: "./gradlew coveralls"
+   - oraclejdk8
+script: 
+   "./gradlew clean check"
+   "./gradlew jacocoTestReports"
+after_success: 
+   "./gradlew coveralls"
 env:
   global:
     secure: ITrS5QGPd164v67ufq/vfirHAFeO7+OEmLe9Is6tE4ckxq8eyp3QXXm96LHGExtDItlTnYFR4/IAe8w8/bRQZwmzdPFfFP14szpHwq5fPJ5DXPvABPdKUCLq/mFmkhHBqRuGhOT65XZTSCISK6rn6cHj+DwUUkWCdr3Cj4vxppzmN4kAAm+CeNx3+pUAjr5wHK7kxHcKYceRVQrH1nXsC85Q6utJXvDFb77eula+9VUJESqJgDynS1i+q8MhaDsNhx4YCLkTzyejPIPuQNXs2HeBvr07Fouir9S2kU0LOdTOV56g7aPhPGTeh2KrTNtdQtI6Ea+XSGHdEYZwKKvu0XeNoxcys3vUWvExVSqmwt9zJ/RbLboMlx+gtSEdoBxkNbHEBSWGkLmBmVYyoHF8PhODaZWn45VLnN8JCUyU3MG1suEmOgjTBQl2BqbQTXDvCKze/RecG2366prmA8C8mULkW07MTqMdak5PC4rrvAr2QoCmIJBSjt9VXgYq7DfZCD32Bw5twB28EXcxzQIFChdNr0/rcDrZem1l044TM1e7WFbIL6C7zsl0xHtTI896jEOH7u+7LkaJg2I7My62t15zMwD8b78viIHUMzgHCdok+1+i81IK0KjhGrj1Epz4L2rBcxBKFWo6oSvcSr+duHvmxvecO9H9McgZejTsz78=
