@@ -3,7 +3,7 @@ jdk:
    - oraclejdk8
 script: 
    - ./gradlew clean check
-   - ./gradlew jacocoTestReports
+   - ./gradlew jacocoTestReport
 after_success: 
    - ./gradlew coveralls
 env:
