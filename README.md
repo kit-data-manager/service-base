@@ -1,4 +1,4 @@
-#  KIT DM 2.0 Service Base Module
+#  KIT Data Manager - Service Base Module
 
 Helper module for KIT DM 2.0 services providing support for dependency management and general purpose implementations.
 
