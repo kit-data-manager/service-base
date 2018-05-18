@@ -33,8 +33,6 @@ public class AuthenticationHelper{
   }
 
   public static boolean hasAuthority(final String authority){
-    System.out.println("AUTH " + authority);
-    System.out.println("GET " + getAuthentication().getAuthorities());
     return getAuthentication().getAuthorities().stream().filter(a -> a.getAuthority().equals(authority)).count() > 0;
   }
 

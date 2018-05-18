@@ -15,24 +15,19 @@
  */
 package edu.kit.datamanager.test;
 
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import edu.kit.datamanager.util.AuthenticationHelper;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
 import org.powermock.api.mockito.PowerMockito;
-import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  *
@@ -83,8 +78,8 @@ public class AuthenticationHelperTest{
         return "tester";
       }
     });
-
     when(AuthenticationHelper.hasAuthority("admin")).thenCallRealMethod();
+
     Assert.assertTrue(AuthenticationHelper.hasAuthority("admin"));
   }
 
