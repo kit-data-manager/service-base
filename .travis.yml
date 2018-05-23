@@ -1,14 +1,17 @@
 language: java
 jdk:
-   - oraclejdk8
+- oraclejdk8
 install: true
-script: 
-   - ./gradlew clean check jacocoTestReport
-after_success: 
-   - ./gradlew coveralls
+script:
+- "./gradlew clean check jacocoTestReport"
+after_success:
+- "./gradlew coveralls"
 before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-    - $HOME/.gradle/caches/
+  - "$HOME/.gradle/caches/"
+env:
+  global:
+    secure: VodQQrrpikFmKt6bc/hNdIfIjQsjuq6yEH/yaaEPXY5cbAxxi71J0dJEUZG5xeoeRjKmcIGRWZupVR6dBgyygTf7J+v8slrLquuOD1WcxHRh5ajXod3A7FZVJDrdhP/66g8z8yQZ+tkVoectfDS3FWcc/WnviCZpf3atQOd2WkB/TgscJvAHafp8oN7O8wN1IJPCmbhrO478WAWja2gjkPhOD80q/S0XGY37p/HpgCntcPIy59XfN4r5FgBCRYwhespiHe5egSm5NVtBWtK5FwVkcFqvE0oclp0RlBPj26vIWMEMwWYsNc6iHF0CikJodUlR6W5OwOnQ8Dv70C9xL6skkEy2BMR6sBuPHUAtv4LHQXQQ5l3RoZLxQl/Kq1VmYBX4whs7LJgW4IJJfEOs0nwq7ryAEbe+abx/1HVrCbtINSHnLjw81XcsunQ5eAUkMfEv26Tnu9f1Jwzu6OdjlRFLV1Ob+h7uPgh177RopbnHgJsu/3mOqP8aRJSb+SZ9Y3T9iS3+mWWaI14xCvUp82Zb6K/W74wx1kTG07duI77qSGYCkkjJ7DuNu7h1PAM5X/xCMqaLtn/Em5BZSq/DtQzWEcsRnaEGuaUqq6gzQCRSnlZeL2qIAItpepspQKP1SVFc1JbRnm7EiSG523RKGQHHol75xdri/E0Fq2YHvu0=
