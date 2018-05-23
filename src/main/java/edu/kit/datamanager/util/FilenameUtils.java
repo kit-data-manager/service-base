@@ -22,32 +22,32 @@ import java.util.regex.Pattern;
  *
  * @author jejkal
  */
-public class FilenameUtils {
+public class FilenameUtils{
 
-    //FAT32 reserved characters
-    private static final Pattern PATTERN = Pattern.compile("[%\"\\*/:<>\\?\\\\\\|\\+,;=\\[\\]]");
-    private static final int MAX_LENGTH = 255;
+  //FAT32 reserved characters
+  private static final Pattern PATTERN = Pattern.compile("[%\"\\*/:<>\\?\\\\\\|\\+,;=\\[\\]]");
+  private static final int MAX_LENGTH = 255;
 
-    public static String escapeStringAsFilename(String in) {
+  public static String escapeStringAsFilename(String in){
 
-        StringBuffer sb = new StringBuffer();
+    StringBuffer sb = new StringBuffer();
 
-        // Apply the regex.
-        Matcher m = PATTERN.matcher(in);
+    // Apply the regex.
+    Matcher m = PATTERN.matcher(in);
 
-        while (m.find()) {
-            // Convert matched character to percent-encoded.
-            String replacement = "%" + Integer.toHexString(m.group().charAt(0)).toUpperCase();
-            m.appendReplacement(sb, replacement);
-        }
-        m.appendTail(sb);
-
-        String encoded = sb.toString();
-
-        // Truncate the string.
-        int end = Math.min(encoded.length(), MAX_LENGTH);
-        String substring = encoded.substring(0, end);
-        String regex = "\\.(?=.*\\.)";
-        return substring.replaceAll(regex, "%2E");
+    while(m.find()){
+      // Convert matched character to percent-encoded.
+      String replacement = "%" + Integer.toHexString(m.group().charAt(0)).toUpperCase();
+      m.appendReplacement(sb, replacement);
     }
+    m.appendTail(sb);
+
+    String encoded = sb.toString();
+
+    // Truncate the string.
+    int end = Math.min(encoded.length(), MAX_LENGTH);
+    String substring = encoded.substring(0, end);
+    String regex = "\\.(?=.*\\.)";
+    return substring.replaceAll(regex, "%2E");
+  }
 }
