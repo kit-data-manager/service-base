@@ -24,7 +24,7 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import edu.kit.datamanager.annotations.SecureUpdate;
 import edu.kit.datamanager.exceptions.PatchApplicationException;
 import edu.kit.datamanager.exceptions.UpdateForbiddenException;
-import edu.kit.datamanager.service.exceptions.CustomInternalServerError;
+import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;

@@ -93,3 +93,11 @@ jacocoTestReport {
 dependencyManagement {
    imports { mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}") }
 }
+
+if (JavaVersion.current().isJava8Compatible()) {
+   allprojects {
+      tasks.withType(Javadoc) {
+         options.addStringOption('Xdoclint:none', '-quiet')
+      }
+   }
+}

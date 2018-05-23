@@ -17,7 +17,7 @@ package edu.kit.datamanager.security.filter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.kit.datamanager.service.exceptions.CustomInternalServerError;
+import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import edu.kit.datamanager.util.JsonMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
