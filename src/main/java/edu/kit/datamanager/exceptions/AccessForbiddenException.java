@@ -25,10 +25,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.FORBIDDEN)
 public class AccessForbiddenException extends RuntimeException{
 
-  public AccessForbiddenException(){
-    super();
-  }
-
   public AccessForbiddenException(String message){
     super(message);
   }

@@ -24,6 +24,9 @@ import java.util.Objects;
  */
 public class EnumUtils{
 
+  private EnumUtils(){
+  }
+
   public static boolean equals(Enum<? extends BaseEnum> first, Enum<? extends BaseEnum> second){
     String first_value = (first == null) ? null : ((BaseEnum) first).getValue();
     String second_value = (second == null) ? null : ((BaseEnum) second).getValue();

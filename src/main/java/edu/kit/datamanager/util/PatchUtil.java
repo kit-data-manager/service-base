@@ -41,6 +41,9 @@ public class PatchUtil{
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PatchUtil.class);
 
+  private PatchUtil(){
+  }
+
   public static <C> C applyPatch(C resource, JsonPatch patch, Class<C> resourceClass, Collection<? extends GrantedAuthority> authorities){
     ObjectMapper tmpObjectMapper = new ObjectMapper();
     tmpObjectMapper.registerModule(new JavaTimeModule());

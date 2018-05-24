@@ -25,10 +25,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.PRECONDITION_REQUIRED)
 public class EtagMissingException extends RuntimeException{
 
-  public EtagMissingException(){
-    super();
-  }
-
   public EtagMissingException(String message){
     super(message);
   }

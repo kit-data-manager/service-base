@@ -25,26 +25,23 @@ import edu.kit.datamanager.exceptions.PatchApplicationException;
 import edu.kit.datamanager.exceptions.UpdateForbiddenException;
 import edu.kit.datamanager.util.PatchUtil;
 import java.util.Arrays;
-import static edu.kit.datamanager.util.JsonMapper.mapper;
 import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import static edu.kit.datamanager.util.JsonMapper.MAPPER;
 
 /**
  *
  * @author jejkal
  */
-@RunWith(PowerMockRunner.class)
 public class PatchUtilTest{
 
   @Test
   public void patchUnsecuredField() throws IOException{
     TestEntity e = new TestEntity(0, 1, "test");
 
-    JsonPatchOperation op = new ReplaceOperation(JsonPointer.of("text"), mapper.convertValue("updated", JsonNode.class));
+    JsonPatchOperation op = new ReplaceOperation(JsonPointer.of("text"), MAPPER.convertValue("updated", JsonNode.class));
     JsonPatch replace = new JsonPatch(Arrays.asList(op));
 
     TestEntity patched = PatchUtil.applyPatch(e, replace, TestEntity.class, Arrays.asList(new SimpleGrantedAuthority("ADMINISTRATOR")));
@@ -55,7 +52,7 @@ public class PatchUtilTest{
   public void patchForbiddenField() throws IOException{
     TestEntity e = new TestEntity(0, 1, "test");
 
-    JsonPatchOperation op = new ReplaceOperation(JsonPointer.of("id"), mapper.convertValue(2, JsonNode.class));
+    JsonPatchOperation op = new ReplaceOperation(JsonPointer.of("id"), MAPPER.convertValue(2, JsonNode.class));
     JsonPatch replace = new JsonPatch(Arrays.asList(op));
 
     PatchUtil.applyPatch(e, replace, TestEntity.class, Arrays.asList(new SimpleGrantedAuthority("ADMINISTRATOR")));
@@ -65,7 +62,7 @@ public class PatchUtilTest{
   public void patchSecuredFieldWithSufficientRole() throws IOException{
     TestEntity e = new TestEntity(0, 1, "test");
 
-    JsonPatchOperation op = new ReplaceOperation(JsonPointer.of("number"), mapper.convertValue(2, JsonNode.class));
+    JsonPatchOperation op = new ReplaceOperation(JsonPointer.of("number"), MAPPER.convertValue(2, JsonNode.class));
     JsonPatch replace = new JsonPatch(Arrays.asList(op));
 
     TestEntity patched = PatchUtil.applyPatch(e, replace, TestEntity.class, Arrays.asList(new SimpleGrantedAuthority("ADMINISTRATOR")));
@@ -76,7 +73,7 @@ public class PatchUtilTest{
   public void patchSecuredFieldWithInsufficientRole() throws IOException{
     TestEntity e = new TestEntity(0, 1, "test");
 
-    JsonPatchOperation op = new ReplaceOperation(JsonPointer.of("number"), mapper.convertValue(2, JsonNode.class));
+    JsonPatchOperation op = new ReplaceOperation(JsonPointer.of("number"), MAPPER.convertValue(2, JsonNode.class));
     JsonPatch replace = new JsonPatch(Arrays.asList(op));
 
     PatchUtil.applyPatch(e, replace, TestEntity.class, Arrays.asList(new SimpleGrantedAuthority("MEMBER")));
@@ -86,7 +83,7 @@ public class PatchUtilTest{
   public void applyInvalidPatch() throws IOException{
     TestEntity e = new TestEntity(0, 1, "test");
 
-    JsonPatchOperation op = new ReplaceOperation(JsonPointer.of("invalidField"), mapper.convertValue("updated", JsonNode.class));
+    JsonPatchOperation op = new ReplaceOperation(JsonPointer.of("invalidField"), MAPPER.convertValue("updated", JsonNode.class));
     JsonPatch replace = new JsonPatch(Arrays.asList(op));
 
     PatchUtil.applyPatch(e, replace, TestEntity.class, Arrays.asList(new SimpleGrantedAuthority("ADMINISTRATOR")));

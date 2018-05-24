@@ -25,10 +25,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
 public class PatchApplicationException extends RuntimeException{
 
-  public PatchApplicationException(){
-    super();
-  }
-
   public PatchApplicationException(String message){
     super(message);
   }

@@ -36,7 +36,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(AuthenticationHelper.class)
-@Ignore
 public class AuthenticationHelperTest{
 
   @Test

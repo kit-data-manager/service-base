@@ -25,10 +25,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.PRECONDITION_FAILED)
 public class EtagMismatchException extends RuntimeException{
 
-  public EtagMismatchException(){
-    super();
-  }
-
   public EtagMismatchException(String message){
     super(message);
   }

@@ -25,9 +25,12 @@ import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
  */
 public interface JsonMapper{
 
-  ObjectMapper mapper = ObjectMapperWrapper.init();
+  ObjectMapper MAPPER = ObjectMapperWrapper.init();
 
   class ObjectMapperWrapper{
+
+    private ObjectMapperWrapper(){
+    }
 
     private static ObjectMapper init(){
       ObjectMapper objectMapper = new ObjectMapper();

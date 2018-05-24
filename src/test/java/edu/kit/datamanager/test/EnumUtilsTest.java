@@ -20,20 +20,17 @@ import edu.kit.datamanager.util.EnumUtils;
 import java.util.Objects;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  *
  * @author jejkal
  */
-@RunWith(PowerMockRunner.class)
 public class EnumUtilsTest{
 
   private enum TEST_ENUM implements BaseEnum{
     FIRST("first"),
     SECOND("second");
-    private String value;
+    private final String value;
 
     TEST_ENUM(String value){
       this.value = value;

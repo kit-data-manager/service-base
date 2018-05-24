@@ -28,6 +28,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
  */
 public class AuthenticationHelper{
 
+  private AuthenticationHelper(){
+  }
+
   public static Authentication getAuthentication(){
     return SecurityContextHolder.getContext().getAuthentication();
   }

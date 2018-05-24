@@ -25,10 +25,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.NOT_IMPLEMENTED)
 public class FeatureNotImplementedException extends RuntimeException{
 
-  public FeatureNotImplementedException(){
-    super();
-  }
-
   public FeatureNotImplementedException(String message){
     super(message);
   }
