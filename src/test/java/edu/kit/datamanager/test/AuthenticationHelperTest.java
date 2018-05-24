@@ -19,6 +19,7 @@ import edu.kit.datamanager.util.AuthenticationHelper;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -35,6 +36,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(AuthenticationHelper.class)
+@Ignore
 public class AuthenticationHelperTest{
 
   @Test
