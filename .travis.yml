@@ -5,7 +5,7 @@ install: true
 script:
 - "./gradlew clean test jacocoTestReport"
 after_success:
-- "./gradlew coveralls --debug"
+- "./gradlew coveralls"
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
