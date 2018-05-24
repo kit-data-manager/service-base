@@ -18,11 +18,14 @@ package edu.kit.datamanager.test;
 import edu.kit.datamanager.entities.RepoUserRole;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  *
  * @author jejkal
  */
+@RunWith(PowerMockRunner.class)
 public class RepoUserRoleTest{
 
   @Test
