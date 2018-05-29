@@ -15,16 +15,14 @@
  */
 package edu.kit.datamanager.security.filter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.kit.datamanager.exceptions.CustomInternalServerError;
+import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
+import edu.kit.datamanager.exceptions.UnauthorizedAccessException;
 import edu.kit.datamanager.util.JsonMapper;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -61,43 +59,34 @@ public class JwtAuthenticationProvider implements AuthenticationProvider, JsonMa
   }
 
   @SuppressWarnings("unchecked")
-  public Authentication getJwtAuthentication(String token){
-    Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-    List<String> rolesList = new ArrayList<>();
-    String roleClaim = claimsJws.getBody().get("roles", String.class);
-    if(roleClaim == null){
-      LOGGER.error("No 'roles' claim found in JWT " + claimsJws);
-      throw new CustomInternalServerError("Unprocessable authentication token.");
-    }
-
+  public Authentication getJwtAuthentication(String token) throws AuthenticationException{
     try{
-      final JsonNode jsonNode = new ObjectMapper().readTree(roleClaim);
-      if(jsonNode.isArray()){
-        for(JsonNode node : jsonNode){
-          String role = node.asText();
-          rolesList.add(role);
-        }
-      } else{
-        throw new IllegalArgumentException("Roles claim '" + roleClaim + "' seems to be no JSON array.");
+      Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+      List<String> rolesList = claimsJws.getBody().get("roles", ArrayList.class);
+      // ArrayList<String> roleClaim = claimsJws.getBody().get("roles", ArrayList.class);
+      if(rolesList == null){
+        LOGGER.error("No 'roles' claim found in JWT " + claimsJws);
+        throw new InvalidAuthenticationException("Invalid authentication token.");
       }
-    } catch(IOException | IllegalArgumentException ex){
-      LOGGER.error("Failed to read user roles from " + this, ex);
-      throw new CustomInternalServerError("Failed to read user roles.");
-    }
-    List<SimpleGrantedAuthority> grantedAuthorities = grantedAuthorities((Set<String>) new HashSet<>(rolesList));
-    String username = claimsJws.getBody().get("username", String.class);
-    String firstname = claimsJws.getBody().get("firstname", String.class);
-    String lastname = claimsJws.getBody().get("lastname", String.class);
-    String groupId = claimsJws.getBody().get("activeGroup", String.class);
 
-    JwtAuthenticationToken jwtToken = new JwtAuthenticationToken(
-            grantedAuthorities,
-            username,
-            firstname,
-            lastname,
-            groupId,
-            token);
-    return jwtToken;
+      List<SimpleGrantedAuthority> grantedAuthorities = grantedAuthorities((Set<String>) new HashSet<>(rolesList));
+      String username = claimsJws.getBody().get("username", String.class);
+      String firstname = claimsJws.getBody().get("firstname", String.class);
+      String lastname = claimsJws.getBody().get("lastname", String.class);
+      String groupId = claimsJws.getBody().get("activeGroup", String.class);
+
+      JwtAuthenticationToken jwtToken = new JwtAuthenticationToken(
+              grantedAuthorities,
+              username,
+              firstname,
+              lastname,
+              groupId,
+              token);
+      return jwtToken;
+    } catch(ExpiredJwtException ex){
+      LOGGER.debug("Provided token has expired. Refresh of login required.", ex);
+      throw new InvalidAuthenticationException("Your token has expired. Please refresh your login.");
+    }
   }
 
   public List<SimpleGrantedAuthority> grantedAuthorities(Set<String> roles){

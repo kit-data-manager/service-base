@@ -15,6 +15,8 @@
  */
 package edu.kit.datamanager.handlers;
 
+import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
+import javax.naming.AuthenticationException;
 import javax.persistence.EntityNotFoundException;
 import org.hibernate.HibernateException;
 import org.hibernate.exception.ConstraintViolationException;
@@ -54,5 +56,4 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
   protected ResponseEntity<Object> handleHibernateException(HibernateException ex, WebRequest request){
     return handleExceptionInternal(ex, ex.getLocalizedMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
   }
-
 }

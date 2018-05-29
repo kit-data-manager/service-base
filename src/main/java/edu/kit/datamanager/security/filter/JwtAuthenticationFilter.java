@@ -15,14 +15,18 @@
  */
 package edu.kit.datamanager.security.filter;
 
+import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
+import edu.kit.datamanager.exceptions.UnauthorizedAccessException;
 import java.io.IOException;
 import java.util.Enumeration;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -41,14 +45,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{//extends User
   }
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException{
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException, AuthenticationException{
     String authToken = request.getHeader(AUTHORIZATION_HEADER);
     if(authToken == null || !authToken.startsWith(BEARER_TOKEN_IDENTIFIER)){
       chain.doFilter(request, response);
     } else{
-      Authentication authentication = authenticationManager.authenticate(new JwtAuthenticationToken(authToken.substring(BEARER_TOKEN_IDENTIFIER.length())));
-      SecurityContextHolder.getContext().setAuthentication(authentication);
-      chain.doFilter(request, response);
+      try{
+        Authentication authentication = authenticationManager.authenticate(new JwtAuthenticationToken(authToken.substring(BEARER_TOKEN_IDENTIFIER.length())));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        chain.doFilter(request, response);
+      } catch(InvalidAuthenticationException | UnauthorizedAccessException e){
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.getWriter().write(e.getLocalizedMessage());
+      }
     }
   }
 }
