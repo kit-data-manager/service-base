@@ -16,7 +16,6 @@
 package edu.kit.datamanager.security.filter;
 
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
-import edu.kit.datamanager.exceptions.UnauthorizedAccessException;
 import edu.kit.datamanager.util.JsonMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

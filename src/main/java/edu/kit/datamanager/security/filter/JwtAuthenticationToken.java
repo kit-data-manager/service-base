@@ -30,7 +30,7 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken{
   private String firstname;
   private String lastname;
   private String groupId;
-  private String token;
+  private final String token;
 
   public JwtAuthenticationToken(String token){
     super(AuthorityUtils.NO_AUTHORITIES);
@@ -75,6 +75,11 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken{
 
   public String getLastname(){
     return lastname;
+  }
+
+  @Override
+  public final void setAuthenticated(boolean authenticated){
+    super.setAuthenticated(authenticated);
   }
 
 }

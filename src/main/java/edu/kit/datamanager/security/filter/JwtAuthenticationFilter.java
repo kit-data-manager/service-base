@@ -18,7 +18,6 @@ package edu.kit.datamanager.security.filter;
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
 import edu.kit.datamanager.exceptions.UnauthorizedAccessException;
 import java.io.IOException;
-import java.util.Enumeration;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
