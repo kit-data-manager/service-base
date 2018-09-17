@@ -28,6 +28,9 @@ public class FilenameUtils{
   private static final Pattern PATTERN = Pattern.compile("[%\"\\*/:<>\\?\\\\\\|\\+,;=\\[\\]]");
   private static final int MAX_LENGTH = 255;
 
+  private FilenameUtils(){
+  }
+
   public static String escapeStringAsFilename(String in){
 
     StringBuffer sb = new StringBuffer();

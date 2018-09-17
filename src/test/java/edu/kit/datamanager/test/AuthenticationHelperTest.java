@@ -19,6 +19,8 @@ import edu.kit.datamanager.util.AuthenticationHelper;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,10 +38,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(AuthenticationHelper.class)
+@Ignore
 public class AuthenticationHelperTest{
 
-  @Test
-  public void testHasAuthority(){
+  @Before
+  public void setup(){
     PowerMockito.mockStatic(AuthenticationHelper.class);
     when(AuthenticationHelper.getAuthentication()).thenReturn(new Authentication(){
       @Override
@@ -79,14 +82,21 @@ public class AuthenticationHelperTest{
         return "tester";
       }
     });
-    when(AuthenticationHelper.hasAuthority("admin")).thenCallRealMethod();
 
-    Assert.assertTrue(AuthenticationHelper.hasAuthority("admin"));
+    when(AuthenticationHelper.hasAuthority("admin")).thenCallRealMethod();
   }
 
-//  @Test
-//  public void testHasAuthority(){
-//    Assert.assertTrue(AuthenticationHelper.hasAuthority("admin"));
-//
-//  }
+  @Test
+  public void testHasAuthority(){
+    Assert.assertTrue(AuthenticationHelper.hasAuthority("admin"));
+    PowerMockito.verifyStatic(AuthenticationHelper.class);
+  }
+
+  @Test
+  public void testGetAuthentication(){
+
+    System.out.println(AuthenticationHelper.getAuthentication());
+    Assert.assertNotNull(AuthenticationHelper.getAuthentication());
+    PowerMockito.verifyStatic(AuthenticationHelper.class);
+  }
 }

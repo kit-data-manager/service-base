@@ -97,6 +97,7 @@ public class PatchUtil{
             }
           }
         } catch(IllegalAccessException | IllegalArgumentException | SecurityException e){
+          LOGGER.error("Failed to check patch applicability.", e);
           throw new CustomInternalServerError("Unable to check if patch is applicable. Message: " + e.getMessage());
         }
       }

@@ -17,8 +17,6 @@ package edu.kit.datamanager.test;
 
 import edu.kit.datamanager.util.FilenameUtils;
 import net.bytebuddy.utility.RandomString;
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,7 +29,7 @@ public class FilenameUtilsTest{
   @Test
   public void testFullSetOfSpecialCharacters(){
     String filename = "%\\*/:<>?\\\\|+,;=[]";
-    Assert.assertEquals(FilenameUtils.escapeStringAsFilename(filename), "%25%5C%2A%2F%3A%3C%3E%3F%5C%5C%7C%2B%2C%3B%3D%5B%5D");
+    Assert.assertEquals("%25%5C%2A%2F%3A%3C%3E%3F%5C%5C%7C%2B%2C%3B%3D%5B%5D", FilenameUtils.escapeStringAsFilename(filename));
   }
 
   @Test
@@ -43,13 +41,12 @@ public class FilenameUtilsTest{
   @Test
   public void testFinalReplacement(){
     String t = ".(?=.*.)";
-    Assert.assertEquals(FilenameUtils.escapeStringAsFilename(t), "%2E(%3F%3D%2E%2A.)");
+    Assert.assertEquals("%2E(%3F%3D%2E%2A.)", FilenameUtils.escapeStringAsFilename(t));
   }
 
   @Test
   public void testNoReplacement(){
     String t = "myFile.txt";
-    Assert.assertEquals(FilenameUtils.escapeStringAsFilename(t), "myFile.txt");
+    Assert.assertEquals("myFile.txt", FilenameUtils.escapeStringAsFilename(t));
   }
-
 }

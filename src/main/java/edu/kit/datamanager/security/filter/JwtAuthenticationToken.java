@@ -26,6 +26,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
  */
 public class JwtAuthenticationToken extends AbstractAuthenticationToken{
 
+  public static final String NOT_AVAILABLE = "N/A";
   private String username;
   private String firstname;
   private String lastname;
@@ -49,7 +50,7 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken{
 
   @Override
   public Object getCredentials(){
-    return "N/A";
+    return NOT_AVAILABLE;
   }
 
   @Override

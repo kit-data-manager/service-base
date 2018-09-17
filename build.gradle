@@ -88,6 +88,14 @@ jacocoTestReport {
       xml.enabled true
       html.enabled true
    }
+   afterEvaluate {
+      classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: ['org/datacite/**', \
+'edu/kit/datamanager/perf/**', \
+'edu/kit/datamanager/util/AuthenticationHelper*',
+           'edu/kit/datamanager/util/DCTransformationHelper*'    ])
+         })
+   }
 }
 
 dependencyManagement {
