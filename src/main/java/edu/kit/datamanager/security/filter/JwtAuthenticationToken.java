@@ -44,7 +44,7 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken{
     this.username = username;
     this.firstname = firstname;
     this.lastname = lastname;
-    this.groupId = groupId;
+    setGroupId(groupId);
     setAuthenticated(true);
   }
 
