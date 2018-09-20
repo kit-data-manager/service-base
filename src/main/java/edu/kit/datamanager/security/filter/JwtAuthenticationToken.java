@@ -104,6 +104,10 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken{
 
   @Override
   public Object getPrincipal(){
+    if(scope == null){
+      //assume user token by default
+      return username;
+    }
     switch(scope){
       case SERVICE:
         return servicename;
