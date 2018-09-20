@@ -39,14 +39,25 @@ public class JwtAuthenticationTokenTest{
 
   @Test
   public void testFullToken(){
-    JwtAuthenticationToken token = new JwtAuthenticationToken(Arrays.asList(new SimpleGrantedAuthority("admin")), "tester", "test", "user", "USERS", "test123");
+    JwtAuthenticationToken token = JwtAuthenticationToken.createUserToken(Arrays.asList(new SimpleGrantedAuthority("admin")), "tester", "test", "user", "test@mail.org", "USERS", "test123");
     Assert.assertEquals(1, token.getAuthorities().size());
     Assert.assertEquals("tester", token.getPrincipal());
     Assert.assertEquals("test", token.getFirstname());
     Assert.assertEquals("user", token.getLastname());
+    Assert.assertEquals("test@mail.org", token.getEmail());
     Assert.assertEquals("USERS", token.getGroupId());
     Assert.assertEquals("admin", ((SimpleGrantedAuthority) token.getAuthorities().toArray()[0]).getAuthority());
     Assert.assertEquals("test123", token.getToken());
+    Assert.assertTrue(token.isAuthenticated());
+  }
+
+  @Test
+  public void testServiceToken(){
+    JwtAuthenticationToken token = JwtAuthenticationToken.createServiceToken(Arrays.asList(new SimpleGrantedAuthority("admin")), "servicename", "USERS", "test123");
+    Assert.assertEquals("servicename", token.getPrincipal());
+    Assert.assertNull(token.getFirstname());
+    Assert.assertNull(token.getLastname());
+    Assert.assertNull(token.getEmail());
     Assert.assertTrue(token.isAuthenticated());
   }
 

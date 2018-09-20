@@ -26,10 +26,30 @@ import org.springframework.security.core.authority.AuthorityUtils;
  */
 public class JwtAuthenticationToken extends AbstractAuthenticationToken{
 
+  public enum TOKEN_SCOPE{
+    USER,
+    SERVICE;
+
+    public static TOKEN_SCOPE fromString(String value){
+      JwtAuthenticationToken.TOKEN_SCOPE result = JwtAuthenticationToken.TOKEN_SCOPE.USER;
+      try{
+        if(value != null){
+          result = JwtAuthenticationToken.TOKEN_SCOPE.valueOf(value);
+        }
+      } catch(IllegalArgumentException ex){
+        //ignore wrong scope
+      }
+      return result;
+    }
+  }
+
   public static final String NOT_AVAILABLE = "N/A";
+  private TOKEN_SCOPE scope;
+  private String servicename;
   private String username;
   private String firstname;
   private String lastname;
+  private String email;
   private String groupId;
   private final String token;
 
@@ -38,14 +58,43 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken{
     this.token = token;
   }
 
-  public JwtAuthenticationToken(Collection<? extends GrantedAuthority> authorities, String username, String firstname, String lastname, String groupId, String token){
+  public static JwtAuthenticationToken createUserToken(Collection<? extends GrantedAuthority> authorities, String username, String firstname, String lastname, String email, String groupId, String token){
+    JwtAuthenticationToken result = new JwtAuthenticationToken(authorities, username, firstname, lastname, email, groupId, token);
+    result.scope = TOKEN_SCOPE.USER;
+    return result;
+  }
+
+  public static JwtAuthenticationToken createServiceToken(Collection<? extends GrantedAuthority> authorities, String servicename, String groupId, String token){
+    JwtAuthenticationToken result = new JwtAuthenticationToken(authorities, servicename, groupId, token);
+    result.scope = TOKEN_SCOPE.SERVICE;
+    return result;
+  }
+
+  JwtAuthenticationToken(Collection<? extends GrantedAuthority> authorities, String servicename, String groupId, String token){
+    super(authorities);
+    this.token = token;
+    this.servicename = servicename;
+    setGroupId(groupId);
+    setAuthenticated(true);
+  }
+
+  JwtAuthenticationToken(Collection<? extends GrantedAuthority> authorities, String username, String firstname, String lastname, String email, String groupId, String token){
     super(authorities);
     this.token = token;
     this.username = username;
     this.firstname = firstname;
     this.lastname = lastname;
+    this.email = email;
     setGroupId(groupId);
     setAuthenticated(true);
+  }
+
+  public TOKEN_SCOPE getScope(){
+    return scope;
+  }
+
+  public String getServicename(){
+    return servicename;
   }
 
   @Override
@@ -55,11 +104,20 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken{
 
   @Override
   public Object getPrincipal(){
-    return username;
+    switch(scope){
+      case SERVICE:
+        return servicename;
+      default:
+        return username;
+    }
   }
 
   public String getToken(){
     return token;
+  }
+
+  public String getEmail(){
+    return email;
   }
 
   public String getGroupId(){

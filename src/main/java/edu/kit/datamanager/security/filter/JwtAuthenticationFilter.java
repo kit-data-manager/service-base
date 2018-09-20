@@ -16,6 +16,7 @@
 package edu.kit.datamanager.security.filter;
 
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
+import edu.kit.datamanager.exceptions.NoJwtTokenException;
 import edu.kit.datamanager.exceptions.UnauthorizedAccessException;
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -45,13 +46,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{//extends User
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException, AuthenticationException{
+    //obtain authentication token from header
     String authToken = request.getHeader(AUTHORIZATION_HEADER);
+    //check if token exists and is BEARER token
     if(authToken == null || !authToken.startsWith(BEARER_TOKEN_IDENTIFIER)){
+      //not token or not a bearer token, continue with authentication chain
       chain.doFilter(request, response);
     } else{
+      //found BEARER token in header, try JWTAuthentication
       try{
         Authentication authentication = authenticationManager.authenticate(new JwtAuthenticationToken(authToken.substring(BEARER_TOKEN_IDENTIFIER.length())));
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        //continue filtering
+        chain.doFilter(request, response);
+      } catch(NoJwtTokenException e){
+        //No valid JWToken, continue with filter chain
         chain.doFilter(request, response);
       } catch(InvalidAuthenticationException | UnauthorizedAccessException e){
         response.setStatus(HttpStatus.UNAUTHORIZED.value());

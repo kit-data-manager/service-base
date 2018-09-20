@@ -16,6 +16,7 @@
 package edu.kit.datamanager.security.filter;
 
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
+import edu.kit.datamanager.exceptions.NoJwtTokenException;
 import edu.kit.datamanager.util.JsonMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -35,6 +36,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
+ * Basic JWT authentication provider. The provider evaluates a JWToken provided
+ * in the Authorization header as Bearer token. First of all, the token is
+ * verified using the configured secret key. Afterwards, all contained claims
+ * are extracted, e.g. roles, username, first-/lastname, email, and active
+ * group. From this list, only the roles claim is mandatory. Finally, a
+ * JwtAuthenticationToken is created and returned as authentication object.
  *
  * @author jejkal
  */
@@ -67,10 +74,11 @@ public class JwtAuthenticationProvider implements AuthenticationProvider, JsonMa
   @SuppressWarnings("unchecked")
   public Authentication getJwtAuthentication(String token) throws AuthenticationException{
     if(null == token){
-      throw new InvalidAuthenticationException("No JWT token provided. Authentication aborted.");
+      throw new NoJwtTokenException("No JWToken provided. Authentication aborted.");
     }
     try{
       Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+
       List<String> rolesList = claimsJws.getBody().get("roles", ArrayList.class);
       if(rolesList == null){
         LOGGER.error("No 'roles' claim found in JWT " + claimsJws);
@@ -78,19 +86,36 @@ public class JwtAuthenticationProvider implements AuthenticationProvider, JsonMa
       }
 
       List<SimpleGrantedAuthority> grantedAuthorities = grantedAuthorities((Set<String>) new HashSet<>(rolesList));
-      String username = claimsJws.getBody().get("username", String.class);
-      String firstname = claimsJws.getBody().get("firstname", String.class);
-      String lastname = claimsJws.getBody().get("lastname", String.class);
+
       String groupId = claimsJws.getBody().get("activeGroup", String.class);
 
-      JwtAuthenticationToken jwtToken = new JwtAuthenticationToken(
-              grantedAuthorities,
-              username,
-              firstname,
-              lastname,
-              groupId,
-              token);
-      return jwtToken;
+      //obtain scope (USER or SERVICE)
+      String scope = claimsJws.getBody().get("scope", String.class);
+
+      switch(JwtAuthenticationToken.TOKEN_SCOPE.fromString(scope)){
+        case SERVICE:
+          String servicename = claimsJws.getBody().get("servicename", String.class);
+          return JwtAuthenticationToken.createServiceToken(
+                  grantedAuthorities,
+                  servicename,
+                  groupId,
+                  token
+          );
+        default:
+          String username = claimsJws.getBody().get("username", String.class);
+          String firstname = claimsJws.getBody().get("firstname", String.class);
+          String lastname = claimsJws.getBody().get("lastname", String.class);
+          String email = claimsJws.getBody().get("email", String.class);
+          return JwtAuthenticationToken.createUserToken(
+                  grantedAuthorities,
+                  username,
+                  firstname,
+                  lastname,
+                  email,
+                  groupId,
+                  token
+          );
+      }
     } catch(ExpiredJwtException ex){
       LOGGER.debug("Provided token has expired. Refresh of login required.", ex);
       throw new InvalidAuthenticationException("Your token has expired. Please refresh your login.");
@@ -99,7 +124,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider, JsonMa
       throw new InvalidAuthenticationException("Your token signature is invalid. Please check if the token issuer is trusted by the consumer.");
     } catch(MalformedJwtException ex){
       LOGGER.debug("Provided token is malformed.", ex);
-      throw new InvalidAuthenticationException("Your token is malformed. Please reload the token from its source.");
+      throw new NoJwtTokenException("The provided token '" + token + "' seems not to be a JWToken.");
     }
   }
 
