@@ -15,8 +15,6 @@
  */
 package edu.kit.datamanager.handlers;
 
-import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
-import javax.naming.AuthenticationException;
 import javax.persistence.EntityNotFoundException;
 import org.hibernate.HibernateException;
 import org.hibernate.exception.ConstraintViolationException;
@@ -36,7 +34,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler{
 
   @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})
-  protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request){
+  protected ResponseEntity<Object> handleBadRequest(RuntimeException ex, WebRequest request){
     String bodyOfResponse = "Request contained an illegal argument or caused an illegal state after modifying a resource.";
     return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
   }
