@@ -25,8 +25,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import static java.util.stream.Collectors.toList;
 import org.slf4j.Logger;
@@ -78,44 +80,12 @@ public class JwtAuthenticationProvider implements AuthenticationProvider, JsonMa
     }
     try{
       Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-
-      List<String> rolesList = claimsJws.getBody().get("roles", ArrayList.class);
-      if(rolesList == null){
-        LOGGER.error("No 'roles' claim found in JWT " + claimsJws);
-        throw new InvalidAuthenticationException("Invalid authentication token.");
-      }
-
-      List<SimpleGrantedAuthority> grantedAuthorities = grantedAuthorities((Set<String>) new HashSet<>(rolesList));
-
-      String groupId = claimsJws.getBody().get("activeGroup", String.class);
-
-      //obtain scope (USER or SERVICE)
-      String scope = claimsJws.getBody().get("scope", String.class);
-
-      switch(JwtAuthenticationToken.TOKEN_SCOPE.fromString(scope)){
-        case SERVICE:
-          String servicename = claimsJws.getBody().get("servicename", String.class);
-          return JwtAuthenticationToken.createServiceToken(
-                  grantedAuthorities,
-                  servicename,
-                  groupId,
-                  token
-          );
-        default:
-          String username = claimsJws.getBody().get("username", String.class);
-          String firstname = claimsJws.getBody().get("firstname", String.class);
-          String lastname = claimsJws.getBody().get("lastname", String.class);
-          String email = claimsJws.getBody().get("email", String.class);
-          return JwtAuthenticationToken.createUserToken(
-                  grantedAuthorities,
-                  username,
-                  firstname,
-                  lastname,
-                  email,
-                  groupId,
-                  token
-          );
-      }
+      Set<Entry<String, Object>> claims = claimsJws.getBody().entrySet();
+      Map<String, Object> claimMap = new HashMap<>();
+      claims.forEach((entry) -> {
+        claimMap.put(entry.getKey(), entry.getValue());
+      });
+      return JwtAuthenticationToken.factoryToken(token, claimMap);
     } catch(ExpiredJwtException ex){
       LOGGER.debug("Provided token has expired. Refresh of login required.", ex);
       throw new InvalidAuthenticationException("Your token has expired. Please refresh your login.");
@@ -128,7 +98,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider, JsonMa
     }
   }
 
-  public List<SimpleGrantedAuthority> grantedAuthorities(Set<String> roles){
+  public List<SimpleGrantedAuthority> convertRoleListToGrantedAuthorities(Set<String> roles){
     if(null == roles){
       return new ArrayList<>();
     }

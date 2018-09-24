@@ -15,7 +15,11 @@
  */
 package edu.kit.datamanager.util;
 
+import edu.kit.datamanager.entities.PERMISSION;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
+import edu.kit.datamanager.security.filter.JwtTemporaryToken;
+import edu.kit.datamanager.security.filter.JwtUserToken;
+import edu.kit.datamanager.security.filter.ScopedPermission;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,47 +35,122 @@ public class AuthenticationHelper{
   private AuthenticationHelper(){
   }
 
+  /**
+   * Get the authentication object from the current SecurityContextHolder.
+   *
+   * @return The authentication object.
+   */
   public static Authentication getAuthentication(){
     return SecurityContextHolder.getContext().getAuthentication();
   }
 
+  /**
+   * Check if the current authentication has the provided authority.
+   *
+   * @param authority The authority to check for.
+   *
+   * @return TRUE if the authentication object has the provided authority, FALSE
+   * otherwise.
+   */
   public static boolean hasAuthority(final String authority){
     return getAuthentication().getAuthorities().stream().filter(a -> a.getAuthority().equals(authority)).count() > 0;
   }
 
+  /**
+   * Get the firstname attribute from the current authentication object. This
+   * method required the authentication object to be of type
+   * JwtAuthenticationToken and the token to be a USER token. In all other
+   * cases, 'null' is returned.
+   *
+   * @return The firstname attribute or null.
+   */
   public static String getFirstname(){
-    if(getAuthentication() instanceof JwtAuthenticationToken){
-      return ((JwtAuthenticationToken) getAuthentication()).getFirstname();
+    if(getAuthentication() instanceof JwtUserToken){
+      return ((JwtUserToken) getAuthentication()).getFirstname();
     }
     return null;
   }
 
+  /**
+   * Get the lastname attribute from the current authentication object. This
+   * method required the authentication object to be of type
+   * JwtAuthenticationToken and the token to be a USER token. In all other
+   * cases, 'null' is returned.
+   *
+   * @return The lastname attribute or null.
+   */
   public static String getLastname(){
-    if(getAuthentication() instanceof JwtAuthenticationToken){
-      return ((JwtAuthenticationToken) getAuthentication()).getLastname();
+    if(getAuthentication() instanceof JwtUserToken){
+      return ((JwtUserToken) getAuthentication()).getLastname();
     }
     return null;
   }
 
-  public static String getUsername(){
+  /**
+   * Get the principal from the current authentication object. Depending on the
+   * authentication object, the principal is either a username or a servicename.
+   *
+   * @return The principal of the authentication object.
+   */
+  public static String getPrincipal(){
     return (String) getAuthentication().getPrincipal();
   }
 
-  public static List<String> getPrincipalIdentifiers(){
+  /**
+   * Return a list of identities contained in the current authorization. The
+   * list contains at least the principal itself, obtained via {@link #getPrincipal()
+   * }. If the authentication object is of type JwtAuthenticationToken, the list
+   * may also contain the current groupId.
+   *
+   * @return A list of identities.
+   */
+  public static List<String> getAuthorizationIdentities(){
     List<String> identifiers = new ArrayList<>();
-    identifiers.add(getUsername());
+    identifiers.add(getPrincipal());
     if(getAuthentication() instanceof JwtAuthenticationToken){
       identifiers.add(((JwtAuthenticationToken) getAuthentication()).getGroupId());
     }
     return identifiers;
   }
 
-  public static boolean isUser(String username){
-    Optional<String> oUserId = Optional.of(username);
+  /**
+   * Check if the current authorization context matches the provided principal.
+   *
+   * @param principal The principal to check for.
+   *
+   * @return TRUE if the authorization has the provided principal, FALSE
+   * otherwise.
+   */
+  public static boolean isPrincipal(String principal){
+    Optional<String> oUserId = Optional.of(principal);
     return oUserId.isPresent() && oUserId.get().equals((String) getAuthentication().getPrincipal());
   }
 
+  /**
+   * Check if the current authorization context contains the provided identity.
+   *
+   * @param identity The identity to check for.
+   *
+   * @return TRUE if the authorization has the provided identity, FALSE
+   * otherwise.
+   */
+  public static boolean hasIdentity(final String identity){
+    return getAuthorizationIdentities().contains(identity);
+  }
+
   public static boolean isAnonymous(){
-    return isUser("anonymousUser");
+    return isPrincipal("anonymousUser");
+  }
+
+  public static PERMISSION getScopedPermission(String resourceType, String resourceId){
+    if(getAuthentication() instanceof JwtTemporaryToken){
+      ScopedPermission[] scopedPermissions = ((JwtTemporaryToken) getAuthentication()).getScopedPermissions();
+      for(ScopedPermission permission : scopedPermissions){
+        if(permission.getResourceType().equals(resourceType) && permission.getResourceId().equals(resourceId)){
+          return permission.getPermission();
+        }
+      }
+    }
+    return PERMISSION.NONE;
   }
 }

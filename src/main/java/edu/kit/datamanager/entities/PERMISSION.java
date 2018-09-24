@@ -15,38 +15,34 @@
  */
 package edu.kit.datamanager.entities;
 
-import static edu.kit.datamanager.entities.RepoUserRole.values;
-
 /**
  *
  * @author jejkal
  */
-public enum RepoSystemRole{
-  SYSTEM_READ("ROLE_SYSTEM_READ"),
-  SYSTEM_WRITE("ROLE_SYSTEM_WRITE"),
-  SYSTEM_ADMINISTRATR("ROLE_SYSTEM_ADMINISTRATE");
+public enum PERMISSION implements BaseEnum{
+    NONE("PERMISSION_NONE"),
+    READ("PERMISSION_READ"),
+    WRITE("PERMISSION_WRITE"),
+    ADMINISTRATE("PERMISSION_ADMINISTRATE");
 
-  private final String value;
+    private final String value;
 
-  RepoSystemRole(String role){
-    this.value = role;
-  }
-
-  public String getValue(){
-    return value;
-  }
-
-  @Override
-  public String toString(){
-    return value;
-  }
-
-  public static RepoSystemRole fromValue(String value){
-    for(RepoSystemRole uRole : values()){
-      if(uRole.value.equals(value)){
-        return uRole;
-      }
+    private PERMISSION(String value){
+      this.value = value;
     }
-    throw new IllegalArgumentException("Value argument '" + value + " has no matching SystemRole.");
+
+    @Override
+    public String getValue(){
+      return value;
+    }
+
+    @Override
+    public String toString(){
+      return value;
+    }
+
+    public boolean atLeast(PERMISSION permission){
+      return this.ordinal() >= permission.ordinal();
+    }
+
   }
-}

@@ -15,12 +15,13 @@
  */
 package edu.kit.datamanager.test;
 
+import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
 import edu.kit.datamanager.security.filter.JwtAuthenticationProvider;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
+import edu.kit.datamanager.security.filter.JwtUserToken;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -33,7 +34,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
@@ -74,21 +74,23 @@ public class JwtAuthenticationProviderTest{
             claim("username", "test").
             claim("firstname", "test").
             claim("lastname", "user").
-            claim("activeGroup", "USERS").
+            claim("groupid", "USERS").
             claim("roles", Arrays.asList("admin", "user")).
             setExpiration(DateUtils.addHours(new Date(), 1)).
             signWith(SignatureAlgorithm.HS512, "test123").
             compact();
 
-    JwtAuthenticationToken jwtToken = new JwtAuthenticationToken(token);
+    JwtAuthenticationToken jwtToken = JwtAuthenticationToken.factoryToken(token);
 
     Authentication auth = provider.authenticate(jwtToken);
     Assert.assertNotNull(auth);
     Assert.assertTrue(auth instanceof JwtAuthenticationToken);
     jwtToken = (JwtAuthenticationToken) auth;
     Assert.assertEquals("test", jwtToken.getPrincipal());
-    Assert.assertEquals("test", jwtToken.getFirstname());
-    Assert.assertEquals("user", jwtToken.getLastname());
+    Assert.assertTrue(jwtToken instanceof JwtUserToken);
+
+    Assert.assertEquals("test", ((JwtUserToken) jwtToken).getFirstname());
+    Assert.assertEquals("user", ((JwtUserToken) jwtToken).getLastname());
     Assert.assertEquals("USERS", jwtToken.getGroupId());
     Assert.assertTrue(jwtToken.isAuthenticated());
 
@@ -96,7 +98,7 @@ public class JwtAuthenticationProviderTest{
     Assert.assertTrue(jwtToken.getAuthorities().contains(new SimpleGrantedAuthority("user")));
   }
 
-  @Test(expected = InvalidAuthenticationException.class)
+  @Test
   public void testAuthenticateWithNoRoles(){
     JwtAuthenticationProvider provider = new JwtAuthenticationProvider("test123", LoggerFactory.getLogger(JwtAuthenticationProviderTest.class));
     String token = Jwts.builder().
@@ -109,10 +111,13 @@ public class JwtAuthenticationProviderTest{
             signWith(SignatureAlgorithm.HS512, "test123").
             compact();
 
-    JwtAuthenticationToken jwtToken = new JwtAuthenticationToken(token);
+    JwtAuthenticationToken jwtToken = JwtAuthenticationToken.factoryToken(token);
 
     Authentication auth = provider.authenticate(jwtToken);
     Assert.assertNotNull(auth);
+    //authorities should contain only one value, which is ROLE_GUEST
+    Assert.assertEquals(1, auth.getAuthorities().size());
+    Assert.assertEquals(RepoUserRole.GUEST.getValue(), auth.getAuthorities().iterator().next().getAuthority());
   }
 
   @Test(expected = InvalidAuthenticationException.class)
@@ -129,7 +134,7 @@ public class JwtAuthenticationProviderTest{
             signWith(SignatureAlgorithm.HS512, "test123").
             compact();
 
-    JwtAuthenticationToken jwtToken = new JwtAuthenticationToken(token);
+    JwtAuthenticationToken jwtToken = JwtAuthenticationToken.factoryToken(token);
 
     Authentication auth = provider.authenticate(jwtToken);
     Assert.assertNotNull(auth);
@@ -149,7 +154,7 @@ public class JwtAuthenticationProviderTest{
             signWith(SignatureAlgorithm.HS512, "test123").
             compact();
 
-    JwtAuthenticationToken jwtToken = new JwtAuthenticationToken(token);
+    JwtAuthenticationToken jwtToken = JwtAuthenticationToken.factoryToken(token);
 
     Authentication auth = provider.authenticate(jwtToken);
     Assert.assertNotNull(auth);
@@ -169,7 +174,7 @@ public class JwtAuthenticationProviderTest{
             signWith(SignatureAlgorithm.HS512, "test123").
             compact();
 
-    JwtAuthenticationToken jwtToken = new JwtAuthenticationToken(token);
+    JwtAuthenticationToken jwtToken = JwtAuthenticationToken.factoryToken(token);
 
     Authentication auth = provider.authenticate(jwtToken);
     Assert.assertNotNull(auth);
@@ -179,7 +184,7 @@ public class JwtAuthenticationProviderTest{
   public void testAuthenticateWithInvalidToken(){
     JwtAuthenticationProvider provider = new JwtAuthenticationProvider("invalid", LoggerFactory.getLogger(JwtAuthenticationProviderTest.class));
 
-    JwtAuthenticationToken jwtToken = new JwtAuthenticationToken("invalid_token");
+    JwtAuthenticationToken jwtToken = JwtAuthenticationToken.factoryToken("invalid_token");
 
     Authentication auth = provider.authenticate(jwtToken);
     Assert.assertNotNull(auth);
@@ -189,7 +194,7 @@ public class JwtAuthenticationProviderTest{
   public void testAuthenticateWithNullToken(){
     JwtAuthenticationProvider provider = new JwtAuthenticationProvider("invalid", LoggerFactory.getLogger(JwtAuthenticationProviderTest.class));
 
-    JwtAuthenticationToken jwtToken = new JwtAuthenticationToken(null);
+    JwtAuthenticationToken jwtToken = JwtAuthenticationToken.factoryToken(null);
 
     Authentication auth = provider.authenticate(jwtToken);
     Assert.assertNotNull(auth);
@@ -203,7 +208,7 @@ public class JwtAuthenticationProviderTest{
     roleSet.add("admin");
     roleSet.add("user");
 
-    List<SimpleGrantedAuthority> authorities = provider.grantedAuthorities(roleSet);
+    List<SimpleGrantedAuthority> authorities = provider.convertRoleListToGrantedAuthorities(roleSet);
     Assert.assertNotNull(authorities);
     Assert.assertFalse(authorities.isEmpty());
     Assert.assertTrue(authorities.contains(new SimpleGrantedAuthority("admin")));
@@ -214,7 +219,7 @@ public class JwtAuthenticationProviderTest{
   public void testGrantedAuthoritiesWithNullArgument(){
     JwtAuthenticationProvider provider = new JwtAuthenticationProvider("invalid", LoggerFactory.getLogger(JwtAuthenticationProviderTest.class));
 
-    List<SimpleGrantedAuthority> authorities = provider.grantedAuthorities(null);
+    List<SimpleGrantedAuthority> authorities = provider.convertRoleListToGrantedAuthorities(null);
     Assert.assertNotNull(authorities);
     Assert.assertTrue(authorities.isEmpty());
   }

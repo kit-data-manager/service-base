@@ -55,7 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{//extends User
     } else{
       //found BEARER token in header, try JWTAuthentication
       try{
-        Authentication authentication = authenticationManager.authenticate(new JwtAuthenticationToken(authToken.substring(BEARER_TOKEN_IDENTIFIER.length())));
+        Authentication authentication = authenticationManager.authenticate(new JwtEmptyToken(authToken.substring(BEARER_TOKEN_IDENTIFIER.length())));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         //continue filtering
         chain.doFilter(request, response);

@@ -15,26 +15,41 @@
  */
 package edu.kit.datamanager.security.filter;
 
+import edu.kit.datamanager.entities.RepoUserRole;
+import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import static java.util.stream.Collectors.toList;
+import org.apache.commons.collections4.MapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
  *
  * @author jejkal
  */
-public class JwtAuthenticationToken extends AbstractAuthenticationToken{
+public abstract class JwtAuthenticationToken extends AbstractAuthenticationToken{
 
-  public enum TOKEN_SCOPE{
+  private final static Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationToken.class);
+
+  public enum TOKEN_TYPE{
     USER,
-    SERVICE;
+    SERVICE,
+    TEMPORARY;
 
-    public static TOKEN_SCOPE fromString(String value){
-      JwtAuthenticationToken.TOKEN_SCOPE result = JwtAuthenticationToken.TOKEN_SCOPE.USER;
+    public static TOKEN_TYPE fromString(String value){
+      JwtAuthenticationToken.TOKEN_TYPE result = JwtAuthenticationToken.TOKEN_TYPE.USER;
       try{
         if(value != null){
-          result = JwtAuthenticationToken.TOKEN_SCOPE.valueOf(value);
+          result = JwtAuthenticationToken.TOKEN_TYPE.valueOf(value);
         }
       } catch(IllegalArgumentException ex){
         //ignore wrong scope
@@ -44,57 +59,104 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken{
   }
 
   public static final String NOT_AVAILABLE = "N/A";
-  private TOKEN_SCOPE scope;
-  private String servicename;
-  private String username;
-  private String firstname;
-  private String lastname;
-  private String email;
+
+  private String principalName;
   private String groupId;
   private final String token;
 
-  public JwtAuthenticationToken(String token){
+  JwtAuthenticationToken(String token){
     super(AuthorityUtils.NO_AUTHORITIES);
     this.token = token;
   }
 
-  public static JwtAuthenticationToken createUserToken(Collection<? extends GrantedAuthority> authorities, String username, String firstname, String lastname, String email, String groupId, String token){
-    JwtAuthenticationToken result = new JwtAuthenticationToken(authorities, username, firstname, lastname, email, groupId, token);
-    result.scope = TOKEN_SCOPE.USER;
-    return result;
-  }
-
-  public static JwtAuthenticationToken createServiceToken(Collection<? extends GrantedAuthority> authorities, String servicename, String groupId, String token){
-    JwtAuthenticationToken result = new JwtAuthenticationToken(authorities, servicename, groupId, token);
-    result.scope = TOKEN_SCOPE.SERVICE;
-    return result;
-  }
-
-  JwtAuthenticationToken(Collection<? extends GrantedAuthority> authorities, String servicename, String groupId, String token){
+  public JwtAuthenticationToken(String token, Collection<? extends GrantedAuthority> authorities){
     super(authorities);
     this.token = token;
-    this.servicename = servicename;
-    setGroupId(groupId);
-    setAuthenticated(true);
   }
 
-  JwtAuthenticationToken(Collection<? extends GrantedAuthority> authorities, String username, String firstname, String lastname, String email, String groupId, String token){
+  JwtAuthenticationToken(String principalName, String groupId, String token, Collection<? extends GrantedAuthority> authorities){
     super(authorities);
-    this.token = token;
-    this.username = username;
-    this.firstname = firstname;
-    this.lastname = lastname;
-    this.email = email;
+    this.principalName = principalName;
     setGroupId(groupId);
-    setAuthenticated(true);
+    this.token = token;
   }
 
-  public TOKEN_SCOPE getScope(){
-    return scope;
+  public static JwtAuthenticationToken factoryToken(String token){
+    return new JwtEmptyToken(token);
   }
 
-  public String getServicename(){
-    return servicename;
+  public static JwtAuthenticationToken factoryToken(String token, Map<String, Object> claims){
+    String type = MapUtils.getString(claims, "tokenType");
+    List<String> rolesList = (List<String>) MapUtils.getObject(claims, "roles");
+    if(rolesList == null){
+      LOGGER.error("No 'roles' claim found in JWT " + claims + ". Using ROLE_GUEST as default.");
+      rolesList = new ArrayList<>();
+      rolesList.add(RepoUserRole.GUEST.getValue());
+    }
+
+    List<SimpleGrantedAuthority> grantedAuthorities = grantedAuthorities((Set<String>) new HashSet<>(rolesList));
+
+    JwtAuthenticationToken jwToken = null;
+
+    switch(JwtAuthenticationToken.TOKEN_TYPE.fromString(type)){
+      case USER:
+        jwToken = new JwtUserToken(token, grantedAuthorities);
+        break;
+      case SERVICE:
+        jwToken = new JwtServiceToken(token, grantedAuthorities);
+        break;
+      case TEMPORARY:
+        jwToken = new JwtTemporaryToken(token, grantedAuthorities);
+    }
+
+    if(jwToken == null){
+      //as long as no additional types are added, we'll never arrive here
+      throw new InvalidAuthenticationException("JWTokens of type " + type + " are currently not supported.");
+    }
+
+    for(String claim : jwToken.getSupportedClaims()){
+      Object value = MapUtils.getObject(claims, claim);
+      Class c = jwToken.getClassForClaim(claim);
+
+      if(value != null && !c.isInstance(value)){
+        throw new InvalidAuthenticationException("Claim " + claim + " is invalid. Expected type " + c);
+      }
+      jwToken.setValueFromClaim(claim, value);
+    }
+
+    jwToken.validateToken();
+
+    jwToken.setAuthenticated(true);
+    return jwToken;
+  }
+
+  public static List<SimpleGrantedAuthority> grantedAuthorities(Set<String> roles){
+    if(null == roles){
+      return new ArrayList<>();
+    }
+    return roles.stream().map(String::toString).map(SimpleGrantedAuthority::new).collect(toList());
+  }
+
+  public abstract String[] getSupportedClaims();
+
+  public abstract Class getClassForClaim(String claim);
+
+  public abstract void setValueFromClaim(String claim, Object value);
+
+  public void validateToken(){
+    if(getPrincipal() == null){
+      throw new InvalidAuthenticationException("Token validatation failed. No principal assigned.");
+    }
+
+    validate();
+  }
+
+  public abstract void validate() throws InvalidAuthenticationException;
+
+  public abstract TOKEN_TYPE getTokenType();
+
+  void setPrincipalName(String principalName){
+    this.principalName = principalName;
   }
 
   @Override
@@ -103,25 +165,12 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken{
   }
 
   @Override
-  public Object getPrincipal(){
-    if(scope == null){
-      //assume user token by default
-      return username;
-    }
-    switch(scope){
-      case SERVICE:
-        return servicename;
-      default:
-        return username;
-    }
+  public final Object getPrincipal(){
+    return principalName;
   }
 
-  public String getToken(){
+  public final String getToken(){
     return token;
-  }
-
-  public String getEmail(){
-    return email;
   }
 
   public String getGroupId(){
@@ -130,14 +179,6 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken{
 
   public void setGroupId(String groupId){
     this.groupId = groupId;
-  }
-
-  public String getFirstname(){
-    return firstname;
-  }
-
-  public String getLastname(){
-    return lastname;
   }
 
   @Override

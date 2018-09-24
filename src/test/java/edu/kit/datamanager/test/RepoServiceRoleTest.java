@@ -15,7 +15,7 @@
  */
 package edu.kit.datamanager.test;
 
-import edu.kit.datamanager.entities.RepoSystemRole;
+import edu.kit.datamanager.entities.RepoServiceRole;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -23,22 +23,22 @@ import org.junit.Test;
  *
  * @author jejkal
  */
-public class RepoSystemRoleTest{
+public class RepoServiceRoleTest{
 
   @Test
   public void testFromValue(){
-    Assert.assertEquals(RepoSystemRole.fromValue("ROLE_SYSTEM_READ"), RepoSystemRole.SYSTEM_READ);
-    Assert.assertEquals(RepoSystemRole.fromValue("ROLE_SYSTEM_WRITE"), RepoSystemRole.SYSTEM_WRITE);
-    Assert.assertEquals(RepoSystemRole.fromValue("ROLE_SYSTEM_ADMINISTRATE"), RepoSystemRole.SYSTEM_ADMINISTRATR);
+    Assert.assertEquals(RepoServiceRole.fromValue("ROLE_SERVICE_READ"), RepoServiceRole.SERVICE_READ);
+    Assert.assertEquals(RepoServiceRole.fromValue("ROLE_SERVICE_WRITE"), RepoServiceRole.SERVICE_WRITE);
+    Assert.assertEquals(RepoServiceRole.fromValue("ROLE_SERVICE_ADMINISTRATE"), RepoServiceRole.SERVICE_ADMINISTRATOR);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testFromIllegalValue(){
-    RepoSystemRole.fromValue("ROLE_INVALID_TEST");
+    RepoServiceRole.fromValue("ROLE_INVALID_TEST");
   }
 
   @Test
   public void testGetValueMatchesToString(){
-    Assert.assertEquals(RepoSystemRole.SYSTEM_READ.getValue(), RepoSystemRole.SYSTEM_READ.toString());
+    Assert.assertEquals(RepoServiceRole.SERVICE_READ.getValue(), RepoServiceRole.SERVICE_READ.toString());
   }
 }
