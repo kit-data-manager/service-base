@@ -138,10 +138,29 @@ public class AuthenticationHelper{
     return getAuthorizationIdentities().contains(identity);
   }
 
+  /**
+   * Returns TRUE if the current authentication belongs to principal
+   * 'anonymousUser'.
+   *
+   * @return TRUE in case of anonymous access.
+   */
   public static boolean isAnonymous(){
     return isPrincipal("anonymousUser");
   }
 
+  /**
+   * Get the permission of a scoped permission entry available in a
+   * JwtTemporaryToken. In order to obtain a scoped permission for a certain
+   * resource, its resourceType and resourceId must be provided. If the caller
+   * has not authenticated using a temporary token, PERMISSION.NONE will be
+   * returned. Otherwise, the resource permission will be returned if available.
+   *
+   * @param resourceType The resource type, typically the class name.
+   * @param resourceId The unique resource identifier.
+   *
+   * @return The permission of the caller for the resource identifier by type
+   * and id or NONE.
+   */
   public static PERMISSION getScopedPermission(String resourceType, String resourceId){
     if(getAuthentication() instanceof JwtTemporaryToken){
       ScopedPermission[] scopedPermissions = ((JwtTemporaryToken) getAuthentication()).getScopedPermissions();

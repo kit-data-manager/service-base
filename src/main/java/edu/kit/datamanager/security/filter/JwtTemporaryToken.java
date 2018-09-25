@@ -16,6 +16,7 @@
 package edu.kit.datamanager.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.kit.datamanager.entities.PERMISSION;
 import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
 import java.io.IOException;
@@ -80,6 +81,15 @@ public class JwtTemporaryToken extends JwtAuthenticationToken{
   public void validate() throws InvalidAuthenticationException{
     if(scopedPermissions == null || scopedPermissions.length == 0){
       throw new InvalidAuthenticationException("Invalid token. No permissions found.");
+    } else{
+      for(ScopedPermission permission : scopedPermissions){
+        if(permission.getPermission().atLeast(PERMISSION.WRITE)){
+          //TODO: Allow to configure automatic limitation of permission?
+          LOGGER.info("Scoped permission for resource type {} and resource id {} has value {}. "
+                  + "For security reasons it is highly recommended to grant only READ permissions for temporary access tokens.",
+                  permission.getResourceType(), permission.getResourceId(), permission.getPermission());
+        }
+      }
     }
   }
 

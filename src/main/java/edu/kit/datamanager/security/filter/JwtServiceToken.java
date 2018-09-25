@@ -15,7 +15,9 @@
  */
 package edu.kit.datamanager.security.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
+import java.io.IOException;
 import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,8 @@ import org.springframework.security.core.GrantedAuthority;
 public class JwtServiceToken extends JwtAuthenticationToken{
 
   private final static Logger LOGGER = LoggerFactory.getLogger(JwtServiceToken.class);
+
+  private String[] sources;
 
   public JwtServiceToken(String token, Collection<? extends GrantedAuthority> authorities){
     super(token, authorities);
@@ -51,7 +55,7 @@ public class JwtServiceToken extends JwtAuthenticationToken{
 
   @Override
   public String[] getSupportedClaims(){
-    return new String[]{"servicename", "groupid"};
+    return new String[]{"servicename", "sources", "groupid"};
   }
 
   @Override
@@ -59,6 +63,9 @@ public class JwtServiceToken extends JwtAuthenticationToken{
     switch(claim){
       case "servicename":
         setPrincipalName((String) value);
+        break;
+      case "sources":
+        parseSources((String) value);
         break;
       case "groupid":
         setGroupId((String) value);
@@ -68,9 +75,28 @@ public class JwtServiceToken extends JwtAuthenticationToken{
     }
   }
 
+  private void parseSources(String value){
+    if(value == null){
+      //no sources found
+      return;
+    }
+    ObjectMapper mapper = new ObjectMapper();
+    try{
+      sources = mapper.readValue(value, String[].class);
+    } catch(IOException ex){
+      throw new InvalidAuthenticationException("Failed to read sources from claim value " + value + ".");
+    }
+  }
+
   @Override
   public void validate() throws InvalidAuthenticationException{
-    //do nothing, there are no mandator attributes
+    if(sources == null){
+      LOGGER.warn("No sources provided in service token for service '" + getPrincipal() + ". Possible security risk!");
+    }
+  }
+
+  public String[] getSources(){
+    return sources;
   }
 
 }
