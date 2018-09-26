@@ -15,9 +15,12 @@
  */
 package edu.kit.datamanager.security.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -87,14 +90,25 @@ public abstract class JwtAuthenticationToken extends AbstractAuthenticationToken
 
   public static JwtAuthenticationToken factoryToken(String token, Map<String, Object> claims){
     String type = MapUtils.getString(claims, "tokenType");
-    List<String> rolesList = (List<String>) MapUtils.getObject(claims, "roles");
-    if(rolesList == null){
-      LOGGER.error("No 'roles' claim found in JWT " + claims + ". Using ROLE_GUEST as default.");
-      rolesList = new ArrayList<>();
-      rolesList.add(RepoUserRole.GUEST.getValue());
+    String roles = MapUtils.getString(claims, "roles");
+
+    Set<String> roleSet = new HashSet<>();
+    if(roles == null){
+      LOGGER.warn("No 'roles' claim found in JWT " + claims + ". Using ROLE_GUEST as default.");
+    } else{
+      try{
+        String[] rolesArray = new ObjectMapper().readValue(roles, String[].class);
+        roleSet.addAll(Arrays.asList(rolesArray));
+      } catch(IOException ex){
+        LOGGER.warn("Unable to deserialize 'roles' claim from JWT. Using ROLE_GUEST as default.");
+      }
     }
 
-    List<SimpleGrantedAuthority> grantedAuthorities = grantedAuthorities((Set<String>) new HashSet<>(rolesList));
+    if(roleSet.isEmpty()){
+      roleSet.add(RepoUserRole.GUEST.getValue());
+    }
+
+    List<SimpleGrantedAuthority> grantedAuthorities = grantedAuthorities((Set<String>) new HashSet<>(roleSet));
 
     JwtAuthenticationToken jwToken = null;
 
