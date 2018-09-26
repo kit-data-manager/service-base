@@ -49,7 +49,7 @@ public class JwtAuthenticationTokenTest{
   }
 
   @Test
-  public void testUserToken(){
+  public void testUserToken() throws JsonProcessingException{
     Map<String, Object> claimMap = new HashMap<>();
     claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.USER.toString());
     claimMap.put("username", "tester");
@@ -57,7 +57,7 @@ public class JwtAuthenticationTokenTest{
     claimMap.put("lastname", "user");
     claimMap.put("email", "test@mail.org");
     claimMap.put("groupid", "USERS");
-    claimMap.put("roles", Arrays.asList(RepoUserRole.ADMINISTRATOR.getValue()));
+    claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoUserRole.ADMINISTRATOR.getValue()}));
 
     JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
     Assert.assertTrue(token instanceof JwtUserToken);
@@ -73,12 +73,12 @@ public class JwtAuthenticationTokenTest{
   }
 
   @Test
-  public void testServiceToken(){
+  public void testServiceToken() throws JsonProcessingException{
     Map<String, Object> claimMap = new HashMap<>();
     claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.SERVICE.toString());
     claimMap.put("servicename", "testService");
     claimMap.put("groupid", "USERS");
-    claimMap.put("roles", Arrays.asList(RepoServiceRole.SERVICE_READ.getValue()));
+    claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoServiceRole.SERVICE_READ.getValue()}));
 
     JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
     Assert.assertEquals("testService", token.getPrincipal());

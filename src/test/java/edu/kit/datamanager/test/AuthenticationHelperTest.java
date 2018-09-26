@@ -44,7 +44,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public class AuthenticationHelperTest{
 
   @Test
-  public void testJwtUserToken(){
+  public void testJwtUserToken() throws JsonProcessingException{
     mockJwtUserAuthentication();
     when(AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.getValue())).thenCallRealMethod();
     when(AuthenticationHelper.getFirstname()).thenCallRealMethod();
@@ -87,7 +87,7 @@ public class AuthenticationHelperTest{
     PowerMockito.verifyStatic(AuthenticationHelper.class);
   }
 
-  private void mockJwtUserAuthentication(){
+  private void mockJwtUserAuthentication() throws JsonProcessingException{
     Map<String, Object> claimMap = new HashMap<>();
     claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.USER.toString());
     claimMap.put("username", "tester");
@@ -95,7 +95,7 @@ public class AuthenticationHelperTest{
     claimMap.put("lastname", "user");
     claimMap.put("email", "test@mail.org");
     claimMap.put("groupid", "USERS");
-    claimMap.put("roles", Arrays.asList(RepoUserRole.ADMINISTRATOR.getValue()));
+    claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoUserRole.ADMINISTRATOR.getValue()}));
     JwtAuthenticationToken userToken = JwtAuthenticationToken.factoryToken("test123", claimMap);
     PowerMockito.mockStatic(AuthenticationHelper.class);
     when(AuthenticationHelper.getAuthentication()).thenReturn(userToken);
@@ -105,7 +105,7 @@ public class AuthenticationHelperTest{
     Map<String, Object> claimMap = new HashMap<>();
     claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.SERVICE.toString());
     claimMap.put("servicename", "metadata_extractor");
-    claimMap.put("roles", Arrays.asList(RepoServiceRole.SERVICE_READ.getValue()));
+    claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoServiceRole.SERVICE_READ.getValue()}));
     claimMap.put("groupid", "USERS");
     JwtAuthenticationToken serviceToken = JwtAuthenticationToken.factoryToken("test123", claimMap);
     PowerMockito.mockStatic(AuthenticationHelper.class);

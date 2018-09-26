@@ -15,6 +15,8 @@
  */
 package edu.kit.datamanager.test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
 import edu.kit.datamanager.security.filter.JwtAuthenticationProvider;
@@ -67,7 +69,7 @@ public class JwtAuthenticationProviderTest{
   }
 
   @Test
-  public void testAuthenticateWithJwtAuthenticationToken(){
+  public void testAuthenticateWithJwtAuthenticationToken() throws JsonProcessingException{
     JwtAuthenticationProvider provider = new JwtAuthenticationProvider("test123", LoggerFactory.getLogger(JwtAuthenticationProviderTest.class));
     String token = Jwts.builder().
             claim("flag", Boolean.TRUE).
@@ -75,7 +77,7 @@ public class JwtAuthenticationProviderTest{
             claim("firstname", "test").
             claim("lastname", "user").
             claim("groupid", "USERS").
-            claim("roles", Arrays.asList("admin", "user")).
+            claim("roles", new ObjectMapper().writeValueAsString(new String[]{"admin", "user"})).
             setExpiration(DateUtils.addHours(new Date(), 1)).
             signWith(SignatureAlgorithm.HS512, "test123").
             compact();
