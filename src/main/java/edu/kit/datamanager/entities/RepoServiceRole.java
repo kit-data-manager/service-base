@@ -19,7 +19,7 @@ package edu.kit.datamanager.entities;
  *
  * @author jejkal
  */
-public enum RepoServiceRole{
+public enum RepoServiceRole implements RepoRole{
   SERVICE_READ("ROLE_SERVICE_READ"),
   SERVICE_WRITE("ROLE_SERVICE_WRITE"),
   SERVICE_ADMINISTRATOR("ROLE_SERVICE_ADMINISTRATE");
@@ -30,6 +30,7 @@ public enum RepoServiceRole{
     this.value = role;
   }
 
+  @Override
   public String getValue(){
     return value;
   }

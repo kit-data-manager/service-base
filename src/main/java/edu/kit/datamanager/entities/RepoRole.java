@@ -19,35 +19,7 @@ package edu.kit.datamanager.entities;
  *
  * @author jejkal
  */
-public enum RepoUserRole implements RepoRole{
-  CURATOR("ROLE_CURATOR"),
-  ADMINISTRATOR("ROLE_ADMINISTRATOR"),
-  USER("ROLE_USER"),
-  GUEST("ROLE_GUEST"),
-  INACTIVE("ROLE_INACTIVE");
+public interface RepoRole{
 
-  private final String value;
-
-  RepoUserRole(String role){
-    this.value = role;
-  }
-
-  @Override
-  public String getValue(){
-    return value;
-  }
-
-  @Override
-  public String toString(){
-    return value;
-  }
-
-  public static RepoUserRole fromValue(String value){
-    for(RepoUserRole uRole : values()){
-      if(uRole.value.equals(value)){
-        return uRole;
-      }
-    }
-    throw new IllegalArgumentException("Value argument '" + value + " has no matching UserRole.");
-  }
+  String getValue();
 }
