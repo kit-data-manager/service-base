@@ -21,7 +21,6 @@ import edu.kit.datamanager.entities.RepoRole;
 import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import edu.kit.datamanager.security.filter.ScopedPermission;
-import edu.kit.datamanager.service.impl.HttpContentProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -152,4 +151,9 @@ public class JwtBuilder{
   public String getCompactToken(String secret){
     return Jwts.builder().setClaims(getClaims()).signWith(SignatureAlgorithm.HS512, secret).compact();
   }
+
+  public JwtAuthenticationToken getJwtAuthenticationToken(String secret){
+    return JwtAuthenticationToken.factoryToken(getCompactToken(secret), getClaimMap());
+  }
+
 }

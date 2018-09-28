@@ -16,22 +16,19 @@
 package edu.kit.datamanager.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kit.datamanager.entities.PERMISSION;
 import edu.kit.datamanager.entities.RepoServiceRole;
 import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import edu.kit.datamanager.security.filter.ScopedPermission;
 import edu.kit.datamanager.util.AuthenticationHelper;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.mockito.ArgumentMatchers.any;
 import org.powermock.api.mockito.PowerMockito;
 import static org.powermock.api.mockito.PowerMockito.when;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -41,6 +38,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(AuthenticationHelper.class)
+@PowerMockIgnore({"javax.crypto.*" })
 public class AuthenticationHelperTest{
 
   @Test
@@ -88,36 +86,31 @@ public class AuthenticationHelperTest{
   }
 
   private void mockJwtUserAuthentication() throws JsonProcessingException{
-    Map<String, Object> claimMap = edu.kit.datamanager.util.JwtBuilder.
+    JwtAuthenticationToken userToken = edu.kit.datamanager.util.JwtBuilder.
             createUserToken("tester", RepoUserRole.ADMINISTRATOR).
             addSimpleClaim("firstname", "test").
             addSimpleClaim("lastname", "user").
             addSimpleClaim("email", "test@mail.org").
             addSimpleClaim("groupid", "USERS").
-            getClaimMap();
-
-    JwtAuthenticationToken userToken = JwtAuthenticationToken.factoryToken("test123", claimMap);
+            getJwtAuthenticationToken("test123");
     PowerMockito.mockStatic(AuthenticationHelper.class);
     when(AuthenticationHelper.getAuthentication()).thenReturn(userToken);
   }
 
   private void mockJwtServiceAuthentication() throws JsonProcessingException{
-    Map<String, Object> claimMap = edu.kit.datamanager.util.JwtBuilder.
+    JwtAuthenticationToken serviceToken = edu.kit.datamanager.util.JwtBuilder.
             createServiceToken("metadata_extractor", RepoServiceRole.SERVICE_READ).
             addSimpleClaim("groupid", "USERS").
-            getClaimMap();
-    
-    JwtAuthenticationToken serviceToken = JwtAuthenticationToken.factoryToken("test123", claimMap);
+            getJwtAuthenticationToken("test123");
     PowerMockito.mockStatic(AuthenticationHelper.class);
     when(AuthenticationHelper.getAuthentication()).thenReturn(serviceToken);
   }
 
   private void mockJwtTemporaryAuthentication() throws JsonProcessingException{
     ScopedPermission[] perms = new ScopedPermission[]{ScopedPermission.factoryScopedPermission("String", "1", PERMISSION.READ)};
-    Map<String, Object> claimMap = edu.kit.datamanager.util.JwtBuilder.createTemporaryToken("test@mail.org", perms).
-            getClaimMap();
-    
-    JwtAuthenticationToken temporaryToken = JwtAuthenticationToken.factoryToken("test123", claimMap);
+
+    JwtAuthenticationToken temporaryToken = edu.kit.datamanager.util.JwtBuilder.createTemporaryToken("test@mail.org", perms).
+            getJwtAuthenticationToken("test123");
     PowerMockito.mockStatic(AuthenticationHelper.class);
     when(AuthenticationHelper.getAuthentication()).thenReturn(temporaryToken);
   }
