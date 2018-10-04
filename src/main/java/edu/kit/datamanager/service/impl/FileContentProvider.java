@@ -17,12 +17,16 @@ package edu.kit.datamanager.service.impl;
 
 import edu.kit.datamanager.service.IContentProvider;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -37,12 +41,14 @@ public class FileContentProvider implements IContentProvider{
   @Override
   public ResponseEntity provide(URI contentUri, MediaType mediaType, String filename){
     if(!Files.exists(Paths.get(contentUri))){
-      throw new ResourceNotFoundException("The provided resource was not found on the server.");
+      throw new edu.kit.datamanager.exceptions.ResourceNotFoundException("The provided resource was not found on the server.");
     }
+
     return ResponseEntity.
             ok().
-            contentType((mediaType != null) ? mediaType : MediaType.APPLICATION_OCTET_STREAM).
+            contentType(mediaType).
             header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"").
+            header(HttpHeaders.CONTENT_LENGTH, String.valueOf(new File(contentUri).length())).
             body(new FileSystemResource(new File(contentUri)));
   }
 

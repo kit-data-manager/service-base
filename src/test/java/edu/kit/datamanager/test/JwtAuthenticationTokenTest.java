@@ -22,14 +22,15 @@ import edu.kit.datamanager.entities.RepoServiceRole;
 import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
+import edu.kit.datamanager.security.filter.JwtEmptyToken;
 import edu.kit.datamanager.security.filter.JwtTemporaryToken;
 import edu.kit.datamanager.security.filter.JwtUserToken;
 import edu.kit.datamanager.security.filter.ScopedPermission;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
@@ -151,5 +152,21 @@ public class JwtAuthenticationTokenTest{
 
     JwtAuthenticationToken.factoryToken("test123", claimMap);
     Assert.fail("Creation of temporary token without principal should fail.");
+  }
+
+  @Test
+  public void testInvalidRolesValue() throws JsonProcessingException{
+    Map<String, Object> claimMap = new HashMap<>();
+    claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.USER.toString());
+    claimMap.put("username", "tester");
+    claimMap.put("firstname", "test");
+    claimMap.put("lastname", "user");
+    claimMap.put("email", "test@mail.org");
+    claimMap.put("groupid", "USERS");
+    claimMap.put("roles", new ObjectMapper().writeValueAsString("INVALID_VALUE"));
+
+    JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
+    Assert.assertEquals(1, token.getAuthorities().size());
+    Assert.assertEquals(RepoUserRole.GUEST.getValue(), token.getAuthorities().toArray(new GrantedAuthority[]{})[0].getAuthority());
   }
 }

@@ -53,24 +53,4 @@ public class ScopedPermission{
     result.setPermission(permission);
     return result;
   }
-
-  public static ScopedPermission factoryScopedPermission(String serialized){
-    ObjectMapper mapper = new ObjectMapper();
-    try{
-      return mapper.readValue(serialized, ScopedPermission.class);
-    } catch(IOException ex){
-      LOGGER.error("Failed to factory scoped permission from serialized form " + serialized, ex);
-      return null;
-    }
-  }
-
-  public String toJson(){
-    try{
-      return new ObjectMapper().writeValueAsString(this);
-    } catch(JsonProcessingException ex){
-      LOGGER.error("Failed to serialize scoped permission " + this, ex);
-      return null;
-    }
-  }
-
 }

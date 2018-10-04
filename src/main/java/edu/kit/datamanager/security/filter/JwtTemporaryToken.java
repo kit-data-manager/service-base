@@ -17,16 +17,12 @@ package edu.kit.datamanager.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kit.datamanager.entities.PERMISSION;
-import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
  *
@@ -40,11 +36,6 @@ public class JwtTemporaryToken extends JwtAuthenticationToken{
 
   public JwtTemporaryToken(String token, Collection<? extends GrantedAuthority> authorities){
     super(token, authorities);
-  }
-
-  public JwtTemporaryToken(String principalName, String token, ScopedPermission[] scopedPermissions){
-    super(principalName, token, null, Arrays.asList(new SimpleGrantedAuthority(RepoUserRole.GUEST.getValue())));
-    this.scopedPermissions = scopedPermissions;
   }
 
   @Override

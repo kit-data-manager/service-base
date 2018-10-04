@@ -77,13 +77,6 @@ public abstract class JwtAuthenticationToken extends AbstractAuthenticationToken
     this.token = token;
   }
 
-  JwtAuthenticationToken(String principalName, String groupId, String token, Collection<? extends GrantedAuthority> authorities){
-    super(authorities);
-    this.principalName = principalName;
-    setGroupId(groupId);
-    this.token = token;
-  }
-
   public static JwtAuthenticationToken factoryToken(String token){
     return new JwtEmptyToken(token);
   }
