@@ -16,14 +16,18 @@
 package edu.kit.datamanager.util;
 
 import edu.kit.datamanager.entities.PERMISSION;
+import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import edu.kit.datamanager.security.filter.JwtTemporaryToken;
 import edu.kit.datamanager.security.filter.JwtUserToken;
 import edu.kit.datamanager.security.filter.ScopedPermission;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
@@ -31,6 +35,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * @author jejkal
  */
 public class AuthenticationHelper{
+
+  public static final String ANONYMOUS_USER_PRINCIPAL = "anonymousUser";
 
   private AuthenticationHelper(){
   }
@@ -41,7 +47,11 @@ public class AuthenticationHelper{
    * @return The authentication object.
    */
   public static Authentication getAuthentication(){
-    return SecurityContextHolder.getContext().getAuthentication();
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if(auth == null){
+      auth = new AnonymousAuthenticationToken("anonymous", ANONYMOUS_USER_PRINCIPAL, Arrays.asList(new SimpleGrantedAuthority(RepoUserRole.GUEST.getValue())));
+    }
+    return auth;
   }
 
   /**
@@ -145,7 +155,7 @@ public class AuthenticationHelper{
    * @return TRUE in case of anonymous access.
    */
   public static boolean isAnonymous(){
-    return isPrincipal("anonymousUser");
+    return isPrincipal(ANONYMOUS_USER_PRINCIPAL);
   }
 
   /**
