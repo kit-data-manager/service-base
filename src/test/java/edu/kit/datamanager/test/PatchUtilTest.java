@@ -21,6 +21,7 @@ import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchOperation;
 import com.github.fge.jsonpatch.ReplaceOperation;
 import edu.kit.datamanager.annotations.SecureUpdate;
+import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import edu.kit.datamanager.exceptions.PatchApplicationException;
 import edu.kit.datamanager.exceptions.UpdateForbiddenException;
 import edu.kit.datamanager.util.PatchUtil;
@@ -88,6 +89,7 @@ public class PatchUtilTest{
 
     PatchUtil.applyPatch(e, replace, TestEntity.class, Arrays.asList(new SimpleGrantedAuthority("ADMINISTRATOR")));
   }
+
 }
 
 class TestEntity{
@@ -130,5 +132,4 @@ class TestEntity{
   public void setText(String text){
     this.text = text;
   }
-
 }

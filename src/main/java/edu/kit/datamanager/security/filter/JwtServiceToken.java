@@ -31,6 +31,8 @@ public class JwtServiceToken extends JwtAuthenticationToken{
 
   private final static Logger LOGGER = LoggerFactory.getLogger(JwtServiceToken.class);
 
+  public final static String SELF_SERVICE_NAME = "SELF";
+
   private String[] sources;
 
   public JwtServiceToken(String token, Collection<? extends GrantedAuthority> authorities){
@@ -90,7 +92,7 @@ public class JwtServiceToken extends JwtAuthenticationToken{
 
   @Override
   public void validate() throws InvalidAuthenticationException{
-    if(sources == null){
+    if(sources == null && !SELF_SERVICE_NAME.equals(getPrincipal())){
       LOGGER.warn("No sources provided in service token for service '" + getPrincipal() + ". Possible security risk!");
     }
   }

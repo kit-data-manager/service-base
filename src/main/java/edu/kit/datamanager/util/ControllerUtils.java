@@ -38,7 +38,7 @@ public class ControllerUtils{
   /**
    * Hidden constructor.
    */
-  ControllerUtils(){
+  private ControllerUtils(){
   }
 
   /**

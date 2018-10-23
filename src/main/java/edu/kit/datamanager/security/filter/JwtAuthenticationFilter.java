@@ -34,7 +34,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  *
  * @author jejkal
  */
-public class JwtAuthenticationFilter extends OncePerRequestFilter{//extends UsernamePasswordAuthenticationFilter{
+public class JwtAuthenticationFilter extends OncePerRequestFilter{
 
   private final String AUTHORIZATION_HEADER = "Authorization";
   private final String BEARER_TOKEN_IDENTIFIER = "Bearer ";
