@@ -22,6 +22,8 @@ import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchOperation;
 import com.github.fge.jsonpatch.ReplaceOperation;
 import com.github.fge.jsonpatch.diff.JsonDiff;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,6 +37,11 @@ import lombok.Data;
 public class Test{
 
   public static void main(String[] args) throws Exception{
+   InetAddress inetAddress = InetAddress. getLocalHost();
+    System.out.println("IP Address:- " + inetAddress. getHostAddress());
+    System.out.println("Host Name:- " + inetAddress. getHostName());
+    
+    if(true)return;
     ObjectMapper mapper = new ObjectMapper();
 
     Entity toPatch = new Entity("SomeTitle", 0);

@@ -13,24 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package edu.kit.datamanager.configuration;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+package edu.kit.datamanager.exceptions;
 
 /**
  *
  * @author jejkal
  */
-@Component
-@Data
-@EqualsAndHashCode
-public class GenericApplicationProperties{
+public class MessageValidationException extends RuntimeException{
 
-  @Value("${repo.auth.jwtSecret}")
-  private String jwtSecret;
-  @Value("${repo.auth.enabled:FALSE}")
-  private boolean authEnabled;
+  public MessageValidationException(String message){
+    super(message);
+  }
+
 }

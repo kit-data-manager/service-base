@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package edu.kit.datamanager.configuration;
+package edu.kit.datamanager.entities.messaging;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  *
  * @author jejkal
  */
-@Component
-@Data
-@EqualsAndHashCode
-public class GenericApplicationProperties{
+public interface IAMQPSubmittable{
 
-  @Value("${repo.auth.jwtSecret}")
-  private String jwtSecret;
-  @Value("${repo.auth.enabled:FALSE}")
-  private boolean authEnabled;
+  void validate();
+
+  default String toJson() throws JsonProcessingException{
+    validate();
+    return new ObjectMapper().writeValueAsString(this);
+  }
+
+  String getRoutingKey();
+
 }

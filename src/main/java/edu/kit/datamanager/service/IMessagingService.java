@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package edu.kit.datamanager.configuration;
+package edu.kit.datamanager.service;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import edu.kit.datamanager.entities.messaging.IAMQPSubmittable;
+import org.springframework.boot.actuate.health.HealthIndicator;
 
 /**
  *
  * @author jejkal
  */
-@Component
-@Data
-@EqualsAndHashCode
-public class GenericApplicationProperties{
+public interface IMessagingService extends HealthIndicator{
 
-  @Value("${repo.auth.jwtSecret}")
-  private String jwtSecret;
-  @Value("${repo.auth.enabled:FALSE}")
-  private boolean authEnabled;
+  /**
+   * Send a message via the underlaying messaging system. The message itself
+   * provides routing information as well as the possibility to be serialized
+   * into JSON.
+   *
+   * @param msg The message to send.
+   */
+  void send(IAMQPSubmittable msg);
+
 }

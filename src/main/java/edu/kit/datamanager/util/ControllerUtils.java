@@ -20,6 +20,8 @@ import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.AccessForbiddenException;
 import edu.kit.datamanager.exceptions.EtagMismatchException;
 import edu.kit.datamanager.exceptions.UnauthorizedAccessException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -117,5 +119,22 @@ public class ControllerUtils{
     if(!request.checkNotModified(resource.getEtag())){
       throw new EtagMismatchException("ETag not matching, resource has changed.");
     }
+  }
+
+  /**
+   * Get the local hostname. If it's not possible to determine the fully
+   * qualified local hostname, the default 'localhost' is returned.
+   *
+   * @return The fully qualified local hostname or localhost as default.
+   */
+  public static String getLocalHostname(){
+    String hostname = "localhost";
+    try{
+      InetAddress inetAddress = InetAddress.getLocalHost();
+      hostname = inetAddress.getHostName();
+    } catch(UnknownHostException ex){
+      LOGGER.warn("Unable to determine local host address. Returning default hostname 'localhost'.", ex);
+    }
+    return hostname;
   }
 }
