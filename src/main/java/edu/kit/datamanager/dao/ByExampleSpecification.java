@@ -42,7 +42,7 @@ import org.springframework.util.ReflectionUtils;
 @Component
 public class ByExampleSpecification{
 
-  private EntityManager entityManager;
+  private final EntityManager entityManager;
 
   public ByExampleSpecification(EntityManager entityManager){
     this.entityManager = entityManager;
@@ -55,6 +55,12 @@ public class ByExampleSpecification{
   /**
    * Lookup entities having at least one String attribute matching the passed
    * pattern.
+   *
+   * @param <T> The generic type used by the returned specification.
+   * @param pattern The pattern used to query for a string attribute.
+   * @param entityType The entity type returned by the specification.
+   *
+   * @return The specification.
    */
   public <T> Specification<T> byPatternOnStringAttributes(String pattern, Class<T> entityType){
     return byPatternOnStringAttributes(entityManager, pattern, entityType);
@@ -73,6 +79,7 @@ public class ByExampleSpecification{
 
       for(Attribute<T, ?> attr : types){
         if(attr.getPersistentAttributeType() == PersistentAttributeType.MANY_TO_ONE || attr.getPersistentAttributeType() == PersistentAttributeType.ONE_TO_ONE){
+          //ignore relations
           continue;
         }
 

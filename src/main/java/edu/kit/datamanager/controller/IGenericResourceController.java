@@ -77,7 +77,7 @@ public interface IGenericResourceController<C>{
           notes = "Obtain is single resource by its identifier. Depending on a user's role, accessing a specific resource may be allowed or forbidden.")
   @RequestMapping(value = "/{id}", method = RequestMethod.GET)
   @ResponseBody
-  public abstract ResponseEntity<C> getById(@ApiParam(value = "The numeric resource identifier.", required = true) @PathVariable("id") final Long id,
+  public abstract ResponseEntity<C> getById(@ApiParam(value = "The resource identifier.", required = true) @PathVariable("id") final String id,
           final WebRequest request,
           final HttpServletResponse response);
 
@@ -114,7 +114,7 @@ public interface IGenericResourceController<C>{
           + "If the patch tries to modify a protected field, HTTP BAD_REQUEST will be returned before persisting the result.")
   @RequestMapping(value = "/{id}", method = RequestMethod.PATCH, consumes = "application/json-patch+json")
   @ResponseBody
-  public ResponseEntity patch(@ApiParam(value = "The numeric resource identifier.", required = true) @PathVariable("id") final Long id,
+  public ResponseEntity patch(@ApiParam(value = "The resource identifier.", required = true) @PathVariable("id") final String id,
           @ApiParam(value = "Json representation of a json patch document. The document must comply with RFC 6902 specified by the IETF.", required = true) @RequestBody JsonPatch patch,
           final WebRequest request,
           final HttpServletResponse response);
@@ -127,7 +127,7 @@ public interface IGenericResourceController<C>{
           + "a later point in time, either automatically or manually.")
   @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
   @ResponseBody
-  public ResponseEntity delete(@ApiParam(value = "The numeric resource identifier.", required = true) @PathVariable("id") final Long id,
+  public ResponseEntity delete(@ApiParam(value = "The resource identifier.", required = true) @PathVariable("id") final String id,
           final WebRequest request,
           final HttpServletResponse response);
 }

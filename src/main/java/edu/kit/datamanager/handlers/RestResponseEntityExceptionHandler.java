@@ -15,6 +15,7 @@
  */
 package edu.kit.datamanager.handlers;
 
+import edu.kit.datamanager.exceptions.ResourceElsewhereException;
 import javax.persistence.EntityNotFoundException;
 import org.hibernate.HibernateException;
 import org.hibernate.exception.ConstraintViolationException;
@@ -53,5 +54,12 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
   @ExceptionHandler(HibernateException.class)
   protected ResponseEntity<Object> handleHibernateException(HibernateException ex, WebRequest request){
     return handleExceptionInternal(ex, ex.getLocalizedMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+  }
+
+  @ExceptionHandler(ResourceElsewhereException.class)
+  protected ResponseEntity<Object> handleResourceElsewhereException(ResourceElsewhereException ex, WebRequest request){
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Location", ex.getMessage());
+    return handleExceptionInternal(ex, ex.getLocalizedMessage(), headers, HttpStatus.SEE_OTHER, request);
   }
 }
