@@ -18,6 +18,7 @@ package edu.kit.datamanager.util;
 import edu.kit.datamanager.entities.EtagSupport;
 import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.AccessForbiddenException;
+import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.EtagMismatchException;
 import edu.kit.datamanager.exceptions.UnauthorizedAccessException;
 import java.net.InetAddress;
@@ -136,5 +137,21 @@ public class ControllerUtils{
       LOGGER.warn("Unable to determine local host address. Returning default hostname 'localhost'.", ex);
     }
     return hostname;
+  }
+
+  /**
+   * Helper to parse a provided String identifier into Long. If parsing fails, a
+   * BadArgumentException is thrown.
+   *
+   * @param id The String representation of a Long id.
+   *
+   * @return The Long representation of 'id'.
+   */
+  public static Long parseIdToLong(String id){
+    try{
+      return Long.parseLong(id);
+    } catch(NumberFormatException ex){
+      throw new BadArgumentException("User id must be numeric.");
+    }
   }
 }
