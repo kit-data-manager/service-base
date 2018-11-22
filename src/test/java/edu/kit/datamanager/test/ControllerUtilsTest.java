@@ -17,6 +17,7 @@ package edu.kit.datamanager.test;
 
 import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.AccessForbiddenException;
+import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.EtagMismatchException;
 import edu.kit.datamanager.exceptions.UnauthorizedAccessException;
 import edu.kit.datamanager.util.AuthenticationHelper;
@@ -173,19 +174,34 @@ public class ControllerUtilsTest{
   }
 
   @Test
-  public void testCheckETagTrue(){
-    ControllerUtils.checkEtag(createDummyWebRequest(true), () -> "1234");
+  public void testCheckETagNotModified(){
+    ControllerUtils.checkEtag(createDummyWebRequest(), () -> "1234");
   }
 
   @Test(expected = EtagMismatchException.class)
-  public void testCheckETagFalse(){
-    ControllerUtils.checkEtag(createDummyWebRequest(false), () -> "1234");
+  public void testCheckETagModified(){
+    ControllerUtils.checkEtag(createDummyWebRequest(), () -> "12343");
   }
 
-  private WebRequest createDummyWebRequest(final boolean notModified){
+  @Test
+  public void testParseIdToLong(){
+    Long id = ControllerUtils.parseIdToLong("1");
+    Assert.assertEquals(Long.valueOf(1l), id);
+  }
+
+  @Test(expected = BadArgumentException.class)
+  public void testParseIdToLongFailing(){
+    Long id = ControllerUtils.parseIdToLong("ab");
+    Assert.fail("Parsing should have been failed before but returned " + id);
+  }
+
+  private WebRequest createDummyWebRequest(){
     return new WebRequest(){
       @Override
       public String getHeader(String headerName){
+        if("If-Match".equals(headerName)){
+          return "\"1234\"";
+        }
         return null;
       }
 
@@ -251,17 +267,17 @@ public class ControllerUtilsTest{
 
       @Override
       public boolean checkNotModified(long lastModifiedTimestamp){
-        return notModified;
+        return true;
       }
 
       @Override
       public boolean checkNotModified(String etag){
-        return notModified;
+        return "1234".equals(etag);
       }
 
       @Override
       public boolean checkNotModified(String etag, long lastModifiedTimestamp){
-        return notModified;
+        return "1234".equals(etag);
       }
 
       @Override

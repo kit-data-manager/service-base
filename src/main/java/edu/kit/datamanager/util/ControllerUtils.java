@@ -117,8 +117,9 @@ public class ControllerUtils{
    * current ETag.
    */
   public static void checkEtag(WebRequest request, EtagSupport resource) throws EtagMismatchException{
-    if(!request.checkNotModified(resource.getEtag())){
-      throw new EtagMismatchException("ETag not matching, resource has changed.");
+    String etagValue = request.getHeader("If-Match");
+    if(etagValue == null || !etagValue.equals("\"" + resource.getEtag() + "\"")){
+      throw new EtagMismatchException("ETag not matching or not provided.");
     }
   }
 
