@@ -34,6 +34,11 @@ public class CustomInstantSerializer extends JsonSerializer<Instant>{
 
   @Override
   public void serialize(Instant value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException{
-    gen.writeString(fmt.format(value));
+    if(value == null){
+      gen.writeString("");
+    } else{
+      gen.writeString(fmt.format(value));
+    }
+
   }
 }

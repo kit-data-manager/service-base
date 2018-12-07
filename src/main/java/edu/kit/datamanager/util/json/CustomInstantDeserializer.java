@@ -34,6 +34,9 @@ public class CustomInstantDeserializer extends JsonDeserializer<Instant>{
 
   @Override
   public Instant deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException{
+    if(p.getText() == null || p.getText().length() == 0){
+      return null;
+    }
     return Instant.from(fmt.parse(p.getText()));
   }
 }
