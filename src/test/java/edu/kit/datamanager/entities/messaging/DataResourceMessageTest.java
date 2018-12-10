@@ -33,7 +33,7 @@ public class DataResourceMessageTest{
 
   @Test
   public void testFactoryAclMessage(){
-    DataResourceMessage msg = DataResourceMessage.factoryUpdateAclMessage(1l, "tester", "localhost");
+    DataResourceMessage msg = DataResourceMessage.factoryUpdateAclMessage("1", "tester", "localhost");
     Assert.assertEquals("dataresource", msg.getEntityName());
     Assert.assertEquals("tester", msg.getPrincipal());
     Assert.assertEquals("localhost", msg.getSender());
@@ -62,19 +62,19 @@ public class DataResourceMessageTest{
 
     switch(action){
       case UPDATE:
-        msg = DataResourceMessage.factoryUpdateMessage(1l, "tester", "localhost");
+        msg = DataResourceMessage.factoryUpdateMessage("1", "tester", "localhost");
         break;
       case DELETE:
-        msg = DataResourceMessage.factoryDeleteMessage(1l, "tester", "localhost");
+        msg = DataResourceMessage.factoryDeleteMessage("1", "tester", "localhost");
         break;
       case FIX:
-        msg = DataResourceMessage.factoryFixMessage(1l, "tester", "localhost");
+        msg = DataResourceMessage.factoryFixMessage("1", "tester", "localhost");
         break;
       case REVOKE:
-        msg = DataResourceMessage.factoryRevokeMessage(1l, "tester", "localhost");
+        msg = DataResourceMessage.factoryRevokeMessage("1", "tester", "localhost");
         break;
       default:
-        msg = DataResourceMessage.factoryCreateMessage(1l, "tester", "localhost");
+        msg = DataResourceMessage.factoryCreateMessage("1", "tester", "localhost");
         break;
     }
     Assert.assertEquals("dataresource", msg.getEntityName());
@@ -99,13 +99,13 @@ public class DataResourceMessageTest{
 
     switch(action){
       case UPDATE:
-        msg = DataResourceMessage.factoryUpdateDataMessage(1l, contentPath, contentUri, contentType, "tester", "localhost");
+        msg = DataResourceMessage.factoryUpdateDataMessage("1", contentPath, contentUri, contentType, "tester", "localhost");
         break;
       case DELETE:
-        msg = DataResourceMessage.factoryDeleteDataMessage(1l, contentPath, contentUri, contentType, "tester", "localhost");
+        msg = DataResourceMessage.factoryDeleteDataMessage("1", contentPath, contentUri, contentType, "tester", "localhost");
         break;
       default:
-        msg = DataResourceMessage.factoryCreateDataMessage(1l, contentPath, contentUri, contentType, "tester", "localhost");
+        msg = DataResourceMessage.factoryCreateDataMessage("1", contentPath, contentUri, contentType, "tester", "localhost");
         break;
     }
     Assert.assertEquals("dataresource", msg.getEntityName());

@@ -41,7 +41,7 @@ public interface IGenericService<C>{
    *
    * @throws ResourceNotFoundException if no user with the provided id exists.
    */
-  C findById(final Long id) throws ResourceNotFoundException;
+  C findById(final String id) throws ResourceNotFoundException;
 
   /**
    * Basic find by example method. An implementation of this method is not

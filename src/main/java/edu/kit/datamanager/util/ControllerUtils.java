@@ -152,7 +152,7 @@ public class ControllerUtils{
     try{
       return Long.parseLong(id);
     } catch(NumberFormatException ex){
-      throw new BadArgumentException("User id must be numeric.");
+      throw new BadArgumentException("Provided id must be numeric.");
     }
   }
 }

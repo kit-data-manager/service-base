@@ -73,27 +73,27 @@ public class DataResourceMessage extends BasicMessage{
   public static final String CONTENT_URI_PROPERTY = "contentUri";
   public static final String CONTENT_TYPE_PROPERTY = "contentType";
 
-  public static DataResourceMessage factoryCreateMessage(Long dataResourceId, String caller, String sender){
+  public static DataResourceMessage factoryCreateMessage(String dataResourceId, String caller, String sender){
     return createMessage(dataResourceId, ACTION.CREATE, caller, sender);
   }
 
-  public static DataResourceMessage factoryUpdateMessage(Long dataResourceId, String caller, String sender){
+  public static DataResourceMessage factoryUpdateMessage(String dataResourceId, String caller, String sender){
     return createMessage(dataResourceId, ACTION.UPDATE, caller, sender);
   }
 
-  public static DataResourceMessage factoryFixMessage(Long dataResourceId, String caller, String sender){
+  public static DataResourceMessage factoryFixMessage(String dataResourceId, String caller, String sender){
     return createMessage(dataResourceId, ACTION.FIX, caller, sender);
   }
 
-  public static DataResourceMessage factoryRevokeMessage(Long dataResourceId, String caller, String sender){
+  public static DataResourceMessage factoryRevokeMessage(String dataResourceId, String caller, String sender){
     return createMessage(dataResourceId, ACTION.REVOKE, caller, sender);
   }
 
-  public static DataResourceMessage factoryDeleteMessage(Long dataResourceId, String caller, String sender){
+  public static DataResourceMessage factoryDeleteMessage(String dataResourceId, String caller, String sender){
     return createMessage(dataResourceId, ACTION.DELETE, caller, sender);
   }
 
-  public static DataResourceMessage factoryCreateDataMessage(Long dataResourceId, String contentPath, String contentUri, String contentType, String caller, String sender){
+  public static DataResourceMessage factoryCreateDataMessage(String dataResourceId, String contentPath, String contentUri, String contentType, String caller, String sender){
     Map<String, String> properties = new HashMap<>();
     properties.put(CONTENT_PATH_PROPERTY, contentPath);
     properties.put(CONTENT_URI_PROPERTY, contentUri);
@@ -101,7 +101,7 @@ public class DataResourceMessage extends BasicMessage{
     return createSubCategoryMessage(dataResourceId, ACTION.CREATE, SUB_CATEGORY.DATA, properties, caller, sender);
   }
 
-  public static DataResourceMessage factoryUpdateDataMessage(Long dataResourceId, String contentPath, String contentUri, String contentType, String caller, String sender){
+  public static DataResourceMessage factoryUpdateDataMessage(String dataResourceId, String contentPath, String contentUri, String contentType, String caller, String sender){
     Map<String, String> properties = new HashMap<>();
     properties.put(CONTENT_PATH_PROPERTY, contentPath);
     properties.put(CONTENT_URI_PROPERTY, contentUri);
@@ -109,7 +109,7 @@ public class DataResourceMessage extends BasicMessage{
     return createSubCategoryMessage(dataResourceId, ACTION.UPDATE, SUB_CATEGORY.DATA, properties, caller, sender);
   }
 
-  public static DataResourceMessage factoryDeleteDataMessage(Long dataResourceId, String contentPath, String contentUri, String contentType, String caller, String sender){
+  public static DataResourceMessage factoryDeleteDataMessage(String dataResourceId, String contentPath, String contentUri, String contentType, String caller, String sender){
     Map<String, String> properties = new HashMap<>();
     properties.put(CONTENT_PATH_PROPERTY, contentPath);
     properties.put(CONTENT_URI_PROPERTY, contentUri);
@@ -117,13 +117,13 @@ public class DataResourceMessage extends BasicMessage{
     return createSubCategoryMessage(dataResourceId, ACTION.DELETE, SUB_CATEGORY.DATA, properties, caller, sender);
   }
 
-  public static DataResourceMessage factoryUpdateAclMessage(Long dataResourceId, String caller, String sender){
+  public static DataResourceMessage factoryUpdateAclMessage(String dataResourceId, String caller, String sender){
     return createSubCategoryMessage(dataResourceId, ACTION.UPDATE, SUB_CATEGORY.ACL, null, caller, sender);
   }
 
-  public static DataResourceMessage createMessage(Long dataResourceId, ACTION action, String principal, String sender){
+  public static DataResourceMessage createMessage(String dataResourceId, ACTION action, String principal, String sender){
     DataResourceMessage msg = new DataResourceMessage();
-    msg.setEntityId(Long.toString(dataResourceId));
+    msg.setEntityId(dataResourceId);
     msg.setAction(action.getValue());
     msg.setPrincipal(principal);
     msg.setSender(sender);
@@ -131,9 +131,9 @@ public class DataResourceMessage extends BasicMessage{
     return msg;
   }
 
-  public static DataResourceMessage createSubCategoryMessage(Long dataResourceId, ACTION action, SUB_CATEGORY subCategory, Map<String, String> properties, String principal, String sender){
+  public static DataResourceMessage createSubCategoryMessage(String dataResourceId, ACTION action, SUB_CATEGORY subCategory, Map<String, String> properties, String principal, String sender){
     DataResourceMessage msg = new DataResourceMessage();
-    msg.setEntityId(Long.toString(dataResourceId));
+    msg.setEntityId(dataResourceId);
     msg.setAction(action.getValue());
     msg.setSubCategory(subCategory.getValue());
     msg.setPrincipal(principal);
