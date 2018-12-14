@@ -66,7 +66,7 @@ public class PatchUtil{
     return updated;
   }
 
-  private static boolean canUpdate(Object originalObj, Object patched, Collection<? extends GrantedAuthority> authorities){
+  public static boolean canUpdate(Object originalObj, Object patched, Collection<? extends GrantedAuthority> authorities){
     for(Field field : patched.getClass().getDeclaredFields()){
       SecureUpdate secureUpdate = field.getAnnotation(SecureUpdate.class);
       if(secureUpdate != null){
@@ -92,13 +92,13 @@ public class PatchUtil{
             }
             if(!canUpdate){
               //at least one field cannot be updated
-              LOGGER.warn("Patching of field " + field + " is allowed by " + Arrays.asList(allowedRoles) + ", but caller only offered the following authorities: " + authorities + ".");
+              LOGGER.warn("Updating of field " + field + " is allowed by " + Arrays.asList(allowedRoles) + ", but caller only offered the following authorities: " + authorities + ".");
               return false;
             }
           }
         } catch(IllegalAccessException | IllegalArgumentException | SecurityException e){
-          LOGGER.error("Failed to check patch applicability.", e);
-          throw new CustomInternalServerError("Unable to check if patch is applicable. Message: " + e.getMessage());
+          LOGGER.error("Failed to check update applicability.", e);
+          throw new CustomInternalServerError("Unable to check if update is applicable. Message: " + e.getMessage());
         }
       }
     }

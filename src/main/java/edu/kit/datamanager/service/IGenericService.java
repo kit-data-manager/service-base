@@ -16,6 +16,7 @@
 package edu.kit.datamanager.service;
 
 import com.github.fge.jsonpatch.JsonPatch;
+import edu.kit.datamanager.exceptions.FeatureNotImplementedException;
 import edu.kit.datamanager.exceptions.PatchApplicationException;
 import edu.kit.datamanager.exceptions.ResourceNotFoundException;
 import edu.kit.datamanager.exceptions.UpdateForbiddenException;
@@ -37,7 +38,7 @@ public interface IGenericService<C>{
    *
    * @param id The id of the user.
    *
-   * @return The user with the provided id.
+   * @return The resource with the provided id.
    *
    * @throws ResourceNotFoundException if no user with the provided id exists.
    */
@@ -63,6 +64,23 @@ public interface IGenericService<C>{
    * The list of results might be empty, but the result should NOT be 'null'.
    */
   Page<C> findAll(C example, Pageable pgbl);
+
+  /**
+   * Replace a resource with the provided representation. As all checks, e.g. if
+   * resource exists and is writable, must be performed outside, the patch can
+   * be applied directly if possible. Afterwards, applied changes must be
+   * validated before the resource is persisted.
+   *
+   * @param resource The resource to replace.
+   * @param newResource The user provided resource replacing 'resource'.
+   * @param userGrants The grants of the caller.
+   *
+   * @return The updated resource with the provided id.
+   *
+   * @throws UpdateForbiddenException if the resource cannot be replaced by the
+   * provided resource, e.g. if unmodifiable fields were changed.
+   */
+  C put(C resource, C newResource, Collection<? extends GrantedAuthority> userGrants) throws UpdateForbiddenException;
 
   /**
    * Apply the provided patch to the provided resource. As all checks, e.g. if

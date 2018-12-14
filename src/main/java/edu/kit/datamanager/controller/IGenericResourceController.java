@@ -16,6 +16,7 @@
 package edu.kit.datamanager.controller;
 
 import com.github.fge.jsonpatch.JsonPatch;
+import edu.kit.datamanager.exceptions.FeatureNotImplementedException;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -109,13 +110,26 @@ public interface IGenericResourceController<C>{
 
   @ApiOperation(value = "Patch a resource by id.",
           notes = "Patch a single or multiple fields of a resource. Patching information are provided in JSON Patch format using Content-Type 'application/json-patch+json'. "
-          + "Patching a resource requires privileged acccess for the resource to patch or ADMIN permissions of the caller. "
+          + "Patching a resource requires privileged access to the resource to patch or ADMIN permissions of the caller. "
           + "Depending on the resource, single fields might be protected and cannot be changed, e.g. the unique identifier. "
           + "If the patch tries to modify a protected field, HTTP BAD_REQUEST will be returned before persisting the result.")
   @RequestMapping(value = "/{id}", method = RequestMethod.PATCH, consumes = "application/json-patch+json")
   @ResponseBody
   public ResponseEntity patch(@ApiParam(value = "The resource identifier.", required = true) @PathVariable("id") final String id,
           @ApiParam(value = "Json representation of a json patch document. The document must comply with RFC 6902 specified by the IETF.", required = true) @RequestBody JsonPatch patch,
+          final WebRequest request,
+          final HttpServletResponse response);
+
+  @ApiOperation(value = "Replace a resource.",
+          notes = "Replace a resource by a new resource provided by the user."
+          + "Putting a resource requires privileged access to the resource to patch or ADMIN permissions of the caller. "
+          + "Some resource fields might be protected and cannot be changed, e.g. the unique identifier. "
+          + "If at least one protected field in the new resource does not match with the current value, HTTP BAD_REQUEST will be returned before persisting the result."
+          + "Attention: Due to the availability of PATCH, PUT support is optional! If a resource won't provide PUT support, HTTP NOT_IMPLEMENTED is returned.")
+  @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json")
+  @ResponseBody
+  public ResponseEntity put(@ApiParam(value = "The resource identifier.", required = true) @PathVariable("id") final String id,
+          @ApiParam(value = "Json representation of the new representation of the resource.", required = true) @RequestBody C resource,
           final WebRequest request,
           final HttpServletResponse response);
 
