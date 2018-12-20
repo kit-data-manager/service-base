@@ -18,6 +18,7 @@ package edu.kit.datamanager.util;
 import edu.kit.datamanager.entities.PERMISSION;
 import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
+import edu.kit.datamanager.security.filter.JwtServiceToken;
 import edu.kit.datamanager.security.filter.JwtTemporaryToken;
 import edu.kit.datamanager.security.filter.JwtUserToken;
 import edu.kit.datamanager.security.filter.ScopedPermission;
@@ -156,6 +157,15 @@ public class AuthenticationHelper{
    */
   public static boolean isAnonymous(){
     return isPrincipal(ANONYMOUS_USER_PRINCIPAL);
+  }
+
+  /**
+   * Returns TRUE if the current call is issued using a service JWToken.
+   *
+   * @return TRUE in case of using a service token, FALSE otherwise.
+   */
+  public static boolean isAuthenticatedAsService(){
+    return (getAuthentication() instanceof JwtServiceToken);
   }
 
   /**

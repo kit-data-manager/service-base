@@ -30,7 +30,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class CustomInstantDeserializer extends JsonDeserializer<Instant>{
 
-  private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").withZone(ZoneOffset.UTC);
+  private final DateTimeFormatter fmt = DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC);//DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").withZone(ZoneOffset.UTC);
 
   @Override
   public Instant deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException{

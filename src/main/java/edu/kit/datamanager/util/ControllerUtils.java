@@ -117,8 +117,11 @@ public class ControllerUtils{
    * current ETag.
    */
   public static void checkEtag(WebRequest request, EtagSupport resource) throws EtagMismatchException{
+    String etag = resource.getEtag();
+    LOGGER.trace("Checking ETag for resource with ETag {}.", etag);
     String etagValue = request.getHeader("If-Match");
-    if(etagValue == null || !etagValue.equals("\"" + resource.getEtag() + "\"")){
+    LOGGER.trace("Received ETag: {}", etagValue);
+    if(etagValue == null || !etagValue.equals("\"" + etag + "\"")){
       throw new EtagMismatchException("ETag not matching or not provided.");
     }
   }

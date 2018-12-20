@@ -22,6 +22,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import edu.kit.datamanager.annotations.SecureUpdate;
+import edu.kit.datamanager.entities.PERMISSION;
+import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.PatchApplicationException;
 import edu.kit.datamanager.exceptions.UpdateForbiddenException;
 import edu.kit.datamanager.exceptions.CustomInternalServerError;
@@ -80,9 +82,27 @@ public class PatchUtil{
             boolean canUpdate = false;
             for(String role : allowedRoles){//go though all roles allowed to update
               for(GrantedAuthority authority : authorities){//check owned authorities
-                if(authority.getAuthority().equalsIgnoreCase(role)){//the current authority allows to update, proceed to next field
-                  canUpdate = true;
-                  break;
+
+                String auth = authority.getAuthority();
+                if(auth.toLowerCase().startsWith("role") && role.toLowerCase().startsWith("role")){//compare two roles
+                  RepoUserRole userRole = RepoUserRole.fromValue(auth);
+                  RepoUserRole roleAccepted = RepoUserRole.fromValue(role);
+                  if(userRole.atLeast(roleAccepted)){
+                    canUpdate = true;
+                    break;
+                  }
+                } else if(auth.toLowerCase().startsWith("permission") && role.toLowerCase().startsWith("permission")){//compare two permissions
+                  PERMISSION userPermission = PERMISSION.fromValue(auth);
+                  PERMISSION permissionAccepted = PERMISSION.fromValue(role);
+                  if(userPermission.atLeast(permissionAccepted)){
+                    canUpdate = true;
+                    break;
+                  }
+                } else{
+                  if(authority.getAuthority().equalsIgnoreCase(role)){//comparison of plain strings...for testing
+                    canUpdate = true;
+                    break;
+                  }
                 }
               }
               if(canUpdate){

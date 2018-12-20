@@ -20,11 +20,11 @@ package edu.kit.datamanager.entities;
  * @author jejkal
  */
 public enum RepoUserRole implements RepoRole{
-  CURATOR("ROLE_CURATOR"),
-  ADMINISTRATOR("ROLE_ADMINISTRATOR"),
-  USER("ROLE_USER"),
+  INACTIVE("ROLE_INACTIVE"),
   GUEST("ROLE_GUEST"),
-  INACTIVE("ROLE_INACTIVE");
+  USER("ROLE_USER"),
+  ADMINISTRATOR("ROLE_ADMINISTRATOR"),
+  CURATOR("ROLE_CURATOR");
 
   private final String value;
 
@@ -49,5 +49,9 @@ public enum RepoUserRole implements RepoRole{
       }
     }
     throw new IllegalArgumentException("Value argument '" + value + " has no matching UserRole.");
+  }
+
+  public boolean atLeast(RepoUserRole otherRole){
+    return this.ordinal() >= otherRole.ordinal();
   }
 }

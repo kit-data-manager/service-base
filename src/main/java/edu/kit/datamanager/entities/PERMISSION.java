@@ -20,29 +20,38 @@ package edu.kit.datamanager.entities;
  * @author jejkal
  */
 public enum PERMISSION implements BaseEnum{
-    NONE("PERMISSION_NONE"),
-    READ("PERMISSION_READ"),
-    WRITE("PERMISSION_WRITE"),
-    ADMINISTRATE("PERMISSION_ADMINISTRATE");
+  NONE("PERMISSION_NONE"),
+  READ("PERMISSION_READ"),
+  WRITE("PERMISSION_WRITE"),
+  ADMINISTRATE("PERMISSION_ADMINISTRATE");
 
-    private final String value;
+  private final String value;
 
-    private PERMISSION(String value){
-      this.value = value;
-    }
-
-    @Override
-    public String getValue(){
-      return value;
-    }
-
-    @Override
-    public String toString(){
-      return value;
-    }
-
-    public boolean atLeast(PERMISSION permission){
-      return this.ordinal() >= permission.ordinal();
-    }
-
+  private PERMISSION(String value){
+    this.value = value;
   }
+
+  @Override
+  public String getValue(){
+    return value;
+  }
+
+  public static PERMISSION fromValue(String value){
+    for(PERMISSION uPermission : values()){
+      if(uPermission.value.equals(value)){
+        return uPermission;
+      }
+    }
+    throw new IllegalArgumentException("Value argument '" + value + " has no matching PERMISSION.");
+  }
+
+  @Override
+  public String toString(){
+    return value;
+  }
+
+  public boolean atLeast(PERMISSION permission){
+    return this.ordinal() >= permission.ordinal();
+  }
+
+}
