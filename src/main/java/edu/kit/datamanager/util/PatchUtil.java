@@ -85,9 +85,20 @@ public class PatchUtil{
 
                 String auth = authority.getAuthority();
                 if(auth.toLowerCase().startsWith("role") && role.toLowerCase().startsWith("role")){//compare two roles
-                  RepoUserRole userRole = RepoUserRole.fromValue(auth);
-                  RepoUserRole roleAccepted = RepoUserRole.fromValue(role);
-                  if(userRole.atLeast(roleAccepted)){
+//                  RepoUserRole userRole;
+//                  try{
+//                    userRole = RepoUserRole.fromValue(auth);
+//                    //continue with user role comparison
+//                    RepoUserRole roleAccepted = RepoUserRole.fromValue(role);
+//                    if(userRole.atLeast(roleAccepted)){
+//                      canUpdate = true;
+//                      break;
+//                    }
+//                  } catch(IllegalArgumentException ex){
+//                    //Probably group role!? Currently not used for general authorization decisions.
+//                    LOGGER.debug("Failed to parse user role from value " + auth + ". Update not allowed.");
+//                  }
+                  if(authority.getAuthority().equalsIgnoreCase(role)){//just use string comparison as the roles can be either user or group roles
                     canUpdate = true;
                     break;
                   }
