@@ -9,11 +9,8 @@ buildscript {
 plugins { 
    id "io.spring.dependency-management" version "1.0.4.RELEASE" 
    id "com.github.kt3k.coveralls" version "2.8.1" 
-   // id "de.aaschmid.cpd" version "1.0"
    id "org.owasp.dependencycheck" version "3.1.2"
-   id "com.dorongold.task-tree" version "1.3"
    id "org.ajoberstar.grgit" version "2.0.1"
-   // id "com.github.spotbugs" version "1.6.1"
    id "com.jfrog.bintray" version "1.7.3"
 }
 
@@ -75,12 +72,21 @@ dependencies {
 
    //compile("org.eclipse.persistence:javax.persistence:2.1.0")
    
-   compileOnly('org.projectlombok:lombok')
-
+   compileOnly('org.projectlombok:lombok:1.18.4')
+   
+   //Java 11 Support 
+   compile('javax.xml.bind:jaxb-api:2.2.11')
+   compile('com.sun.xml.bind:jaxb-core:2.2.11')
+   compile('com.sun.xml.bind:jaxb-impl:2.2.11')
+   compile('javax.activation:activation:1.1.1')
+   compile('org.javassist:javassist:3.23.1-GA')
    testCompile("junit:junit:4.12")
    testCompile("org.mockito:mockito-core:2.8.9")
    testCompile("org.powermock:powermock-module-junit4:1.7.4")
    testCompile("org.powermock:powermock-api-mockito2:1.7.4")
+}
+jacoco {
+   toolVersion = "0.8.2"
 }
 
 jacocoTestReport {

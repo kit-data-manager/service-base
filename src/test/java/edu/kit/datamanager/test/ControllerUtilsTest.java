@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -43,6 +44,7 @@ import org.springframework.web.context.request.WebRequest;
  *
  * @author jejkal
  */
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(AuthenticationHelper.class)
 @PowerMockIgnore({"javax.crypto.*"})

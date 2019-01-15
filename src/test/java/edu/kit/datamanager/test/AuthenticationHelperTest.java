@@ -23,6 +23,7 @@ import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import edu.kit.datamanager.security.filter.ScopedPermission;
 import edu.kit.datamanager.util.AuthenticationHelper;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,6 +37,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
  *
  * @author jejkal
  */
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(AuthenticationHelper.class)
 @PowerMockIgnore({"javax.crypto.*" })
