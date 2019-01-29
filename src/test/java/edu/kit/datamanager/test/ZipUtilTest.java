@@ -24,6 +24,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -302,6 +303,7 @@ public class ZipUtilTest{
   }
 
   @Test(expected = IOException.class)
+  @Ignore("Not working if run as privileged user")
   public void testZipWithIOException() throws IOException{
     File outDir = new File(FileUtils.getTempDirectory(), "myFolder");
     if(!outDir.exists()){

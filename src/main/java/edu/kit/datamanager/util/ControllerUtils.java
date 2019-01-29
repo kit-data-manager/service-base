@@ -20,6 +20,7 @@ import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.AccessForbiddenException;
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.EtagMismatchException;
+import edu.kit.datamanager.exceptions.EtagMissingException;
 import edu.kit.datamanager.exceptions.UnauthorizedAccessException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -121,7 +122,12 @@ public class ControllerUtils{
     LOGGER.trace("Checking ETag for resource with ETag {}.", etag);
     String etagValue = request.getHeader("If-Match");
     LOGGER.trace("Received ETag: {}", etagValue);
-    if(etagValue == null || !etagValue.equals("\"" + etag + "\"")){
+
+    if(etagValue == null){
+      throw new EtagMissingException("If-Match header with valid etag is missing.");
+    }
+
+    if(!etagValue.equals("\"" + etag + "\"")){
       throw new EtagMismatchException("ETag not matching or not provided.");
     }
   }
