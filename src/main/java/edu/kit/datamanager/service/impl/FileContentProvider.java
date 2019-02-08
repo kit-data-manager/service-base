@@ -42,7 +42,7 @@ public class FileContentProvider implements IContentProvider{
     return ResponseEntity.
             ok().
             contentType(mediaType).
-            header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"").
+           // header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"").
             header(HttpHeaders.CONTENT_LENGTH, String.valueOf(new File(contentUri).length())).
             body(new FileSystemResource(new File(contentUri)));
   }
