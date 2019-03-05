@@ -16,6 +16,8 @@
 package edu.kit.datamanager.configuration;
 
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -32,8 +34,12 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class RabbitMQConfiguration{
 
+  private final Logger logger = LoggerFactory.getLogger(RabbitMQConfiguration.class);
+
   @Value("${repo.messaging.hostname:localhost}")
   private String hostname;
+  @Value("${repo.messaging.port:4369}")
+  private int port;
   @Value("${repo.messaging.topic:repository_events}")
   private String topic;
 
@@ -42,7 +48,8 @@ public class RabbitMQConfiguration{
 
   @Bean
   public ConnectionFactory connectionFactory(){
-    return new CachingConnectionFactory(hostname);
+    logger.trace("Connecting to RabbitMQ service at host {} and port {}.", hostname, port);
+    return new CachingConnectionFactory(hostname, port);
   }
 
   @Bean

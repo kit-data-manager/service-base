@@ -37,13 +37,12 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class HttpContentProvider implements IContentProvider{
-
+  
   private final static Logger LOGGER = LoggerFactory.getLogger(HttpContentProvider.class);
 
   @Override
   public ResponseEntity provide(URI contentUri, MediaType mediaType, String filename){
     final String uriString = contentUri.toString();
-
     //try to redirect transfer if scheme is not file
     CloseableHttpClient client = HttpClients.createDefault();
     HttpGet httpGet = new HttpGet(contentUri.toString());
