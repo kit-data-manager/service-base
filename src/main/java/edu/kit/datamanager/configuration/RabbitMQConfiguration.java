@@ -38,7 +38,7 @@ public class RabbitMQConfiguration{
 
   @Value("${repo.messaging.hostname:localhost}")
   private String hostname;
-  @Value("${repo.messaging.port:4369}")
+  @Value("${repo.messaging.port:5672}")
   private int port;
   @Value("${repo.messaging.topic:repository_events}")
   private String topic;

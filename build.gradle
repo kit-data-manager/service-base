@@ -64,15 +64,14 @@ dependencies {
    compile("commons-io:commons-io:2.5")
    compile('org.apache.httpcomponents:httpclient:4.5.6')
    compile('commons-codec:commons-codec:1.4')
+   compile('org.javers:javers-spring-boot-starter-sql:5.3.2')
    //compile("dnsjava:dnsjava:2.1.8")
-   
+     
    compile("org.apache.commons:commons-collections4:4.1")
    
    compile("org.slf4j:slf4j-api:1.7.25")
    compile("ch.qos.logback:logback-classic:1.2.3")
 
-   //compile("org.eclipse.persistence:javax.persistence:2.1.0")
-   
    //Java 11 Support 
    compile('javax.xml.bind:jaxb-api:2.2.11')
    compile('com.sun.xml.bind:jaxb-core:2.2.11')

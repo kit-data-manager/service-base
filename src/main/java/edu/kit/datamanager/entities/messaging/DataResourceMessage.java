@@ -149,5 +149,5 @@ public class DataResourceMessage extends BasicMessage{
   public String getEntityName(){
     return "dataresource";
   }
-
-}
+  
+  }

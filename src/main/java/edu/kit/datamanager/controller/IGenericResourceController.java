@@ -16,7 +16,6 @@
 package edu.kit.datamanager.controller;
 
 import com.github.fge.jsonpatch.JsonPatch;
-import edu.kit.datamanager.exceptions.FeatureNotImplementedException;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -57,11 +57,9 @@ public interface IGenericResourceController<C>{
           + "Furthermore, anonymous listing of resources may or may not be supported.")
   @ApiImplicitParams({
     @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)")
-    ,
+            value = "Results page you want to retrieve (0..N)"),
     @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "Number of resources per page.")
-    ,
+            value = "Number of resources per page."),
     @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
             value = "Sorting criteria in the format: property(,asc|desc). "
             + "Default sort order is ascending. "
@@ -78,7 +76,8 @@ public interface IGenericResourceController<C>{
           notes = "Obtain is single resource by its identifier. Depending on a user's role, accessing a specific resource may be allowed or forbidden.")
   @RequestMapping(value = "/{id}", method = RequestMethod.GET)
   @ResponseBody
-  public abstract ResponseEntity<C> getById(@ApiParam(value = "The resource identifier.", required = true) @PathVariable("id") final String id,
+  public ResponseEntity<C> getById(@ApiParam(value = "The resource identifier.", required = true) @PathVariable("id") final String id,
+          @ApiParam(value = "The version of the resource, if supported.", required = false) @RequestParam("version") final Long version,
           final WebRequest request,
           final HttpServletResponse response);
 
@@ -90,11 +89,9 @@ public interface IGenericResourceController<C>{
           + "As well as listing of all resources, the number of total results might be affected by the caller's role.")
   @ApiImplicitParams({
     @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)")
-    ,
+            value = "Results page you want to retrieve (0..N)"),
     @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "Number of records per page.")
-    ,
+            value = "Number of records per page."),
     @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
             value = "Sorting criteria in the format: property(,asc|desc). "
             + "Default sort order is ascending. "

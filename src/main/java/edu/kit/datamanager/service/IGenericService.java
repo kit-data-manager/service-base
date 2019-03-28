@@ -16,7 +16,6 @@
 package edu.kit.datamanager.service;
 
 import com.github.fge.jsonpatch.JsonPatch;
-import edu.kit.datamanager.exceptions.FeatureNotImplementedException;
 import edu.kit.datamanager.exceptions.PatchApplicationException;
 import edu.kit.datamanager.exceptions.ResourceNotFoundException;
 import edu.kit.datamanager.exceptions.UpdateForbiddenException;
@@ -28,6 +27,7 @@ import org.springframework.security.core.GrantedAuthority;
 /**
  *
  * @author jejkal
+ * @param <C> The generic resource type.
  */
 public interface IGenericService<C>{
 
@@ -43,6 +43,21 @@ public interface IGenericService<C>{
    * @throws ResourceNotFoundException if no user with the provided id exists.
    */
   C findById(final String id) throws ResourceNotFoundException;
+
+  /**
+   * Extends findById(String id) by version support. Implementing this method is
+   * optional. If not implemented, it returns the result of findById(String id).
+   *
+   * @param id The id of the user.
+   * @param version The requested version of the resource.
+   *
+   * @return The resource with the provided id.
+   *
+   * @throws ResourceNotFoundException if no user with the provided id exists.
+   */
+  default C findById(final String id, final long version) throws ResourceNotFoundException{
+    return findById(id);
+  }
 
   /**
    * Basic find by example method. An implementation of this method is not

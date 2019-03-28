@@ -25,8 +25,29 @@ import org.springframework.http.ResponseEntity;
  */
 public interface IContentProvider{
 
+  /**
+   * Provide the content available at 'contentUri' with media type 'mediaType'
+   * and name 'filename'. The result is a ResponseEntity holding either the bit
+   * stream to the content or another appropriate response, e.g. a redirect.
+   *
+   * @param contentUri The URI at which the content is available.
+   * @param mediaType The media type of the content used for content
+   * negotiation.
+   * @param filename The filename the content is available locally. This
+   * filename may differ from the last path element of contentUri.
+   *
+   * @return A ResponseEntity containing the bit stream or another valid status.
+   */
   ResponseEntity provide(URI contentUri, MediaType mediaType, String filename);
 
+  /**
+   * Check if this provider implementation is capable of providing content
+   * accessible via protocal 'schema', e.g. http(s) or file.
+   *
+   * @param The schema of 'contentUri'.
+   *
+   * @return TRUE if the content can be provided, FALSE otherwise.
+   */
   boolean canProvide(String schema);
 
 }
