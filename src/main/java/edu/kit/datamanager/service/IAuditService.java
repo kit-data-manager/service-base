@@ -72,4 +72,15 @@ public interface IAuditService<C>{
    * @return The current version of the resource.
    */
   long getCurrentVersion(@NotNull String resourceId);
+
+  /**
+   * Delete all audit information for a specific resource. This should typically
+   * happen, if the resource is deleted.
+   *
+   * @param resourceId The identifier of the resource to delete all audit
+   * information for.
+   * @param resource The resource in their final state before deletion.
+   */
+  void deleteAuditInformation(@NotNull String resourceId, @NotNull C resource);
+
 }
