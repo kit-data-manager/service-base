@@ -23,7 +23,6 @@ import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import edu.kit.datamanager.annotations.SecureUpdate;
 import edu.kit.datamanager.entities.PERMISSION;
-import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.PatchApplicationException;
 import edu.kit.datamanager.exceptions.UpdateForbiddenException;
 import edu.kit.datamanager.exceptions.CustomInternalServerError;
@@ -85,19 +84,6 @@ public class PatchUtil{
 
                 String auth = authority.getAuthority();
                 if(auth.toLowerCase().startsWith("role") && role.toLowerCase().startsWith("role")){//compare two roles
-//                  RepoUserRole userRole;
-//                  try{
-//                    userRole = RepoUserRole.fromValue(auth);
-//                    //continue with user role comparison
-//                    RepoUserRole roleAccepted = RepoUserRole.fromValue(role);
-//                    if(userRole.atLeast(roleAccepted)){
-//                      canUpdate = true;
-//                      break;
-//                    }
-//                  } catch(IllegalArgumentException ex){
-//                    //Probably group role!? Currently not used for general authorization decisions.
-//                    LOGGER.debug("Failed to parse user role from value " + auth + ". Update not allowed.");
-//                  }
                   if(authority.getAuthority().equalsIgnoreCase(role)){//just use string comparison as the roles can be either user or group roles
                     canUpdate = true;
                     break;

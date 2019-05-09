@@ -116,12 +116,17 @@ public class AuthenticationHelper{
    * @return A list of identities.
    */
   public static List<String> getAuthorizationIdentities(){
-    List<String> identifiers = new ArrayList<>();
-    identifiers.add(getPrincipal());
+    List<String> identities = new ArrayList<>();
+    identities.add(getPrincipal());
     if(getAuthentication() instanceof JwtAuthenticationToken){
-      identifiers.add(((JwtAuthenticationToken) getAuthentication()).getGroupId());
+      //obtain groupId ... this is only available for user tokens
+      String groupId = ((JwtAuthenticationToken) getAuthentication()).getGroupId();
+      if(groupId != null){
+        //if group id not null, add to the list of identities
+        identities.add(groupId);
+      }
     }
-    return identifiers;
+    return identities;
   }
 
   /**

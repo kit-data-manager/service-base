@@ -35,13 +35,11 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 public interface IControllerAuditSupport{
 
-  @ApiOperation(value = "Access content information for single or multiple data elements.",
-          notes = "List metadata of one or more content elements associated with a data resource in a paginated and/or sorted form. This endpoint is addressed if the caller provides content type "
-          + "'application/vnd.datamanager.content-information+json' within the 'Accept' header. If this content type is not present, the content element is downloaded instead."
-          + "The content path, defining whether one or more content element(s) is/are returned, is provided within the request URL. Everything after 'data/' is expected to be either a virtual folder or single content element. "
-          + "If the provided content path ends with a slash, it is expected to represent a virtual collection which should be listed. If the content path does not end with a slash, it is expected to refer to a single element. "
-          + "If not element with the exact content path exists, HTTP NOT_FOUND is returned. The user may provide custom sort criteria for ordering the returned elements. If no sort criteria is provided, the default sorting is "
-          + "applied which returning all matching elements in ascending order by hierarchy depth and alphabetically by their relative path.")
+  @ApiOperation(value = "Access audit information for a single resource.",
+          notes = "List audit information for a resource in a paginated form. Sorting can be supported but is optional. If no sorting is supported it is recommended to return audit "
+          + "information sorted by version number in descending order. This endpoint is addressed if the caller provides content type "
+          + "'application/vnd.datamanager.audit+json' within the 'Accept' header. If no audit support is enabled or no audit information are available for a certain resource, "
+          + "an empty result should be returned. ")
   @ApiImplicitParams(value = {
     @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve (0..N)"),
     @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."),
