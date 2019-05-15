@@ -8,14 +8,14 @@ buildscript {
 
 plugins { 
    id 'io.franzbecker.gradle-lombok' version '1.14'
-   id "io.spring.dependency-management" version "1.0.4.RELEASE" 
+   id "io.spring.dependency-management" version "1.0.7.RELEASE" 
    id "com.github.kt3k.coveralls" version "2.8.1" 
    id "org.owasp.dependencycheck" version "3.1.2"
    id "org.ajoberstar.grgit" version "2.0.1"
    id "com.jfrog.bintray" version "1.7.3"
 }
 
-ext { springBootVersion = '2.0.5.RELEASE' }
+ext { springBootVersion = '2.1.4.RELEASE' }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
