@@ -29,12 +29,8 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import static org.powermock.api.mockito.PowerMockito.when;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -44,10 +40,8 @@ import org.springframework.web.context.request.WebRequest;
  *
  * @author jejkal
  */
-@Ignore
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(AuthenticationHelper.class)
-@PowerMockIgnore({"javax.crypto.*"})
+//@RunWith(PowerMockRunner.class)
+//@PowerMockIgnore({"javax.crypto.*"})
 public class ControllerUtilsTest{
 
   @Test
@@ -148,6 +142,7 @@ public class ControllerUtilsTest{
   }
 
   @Test(expected = UnauthorizedAccessException.class)
+  @Ignore
   public void testCheckAnonymousTrue(){
     PowerMockito.mockStatic(AuthenticationHelper.class);
     when(AuthenticationHelper.isAnonymous()).thenReturn(Boolean.TRUE);
@@ -155,6 +150,7 @@ public class ControllerUtilsTest{
   }
 
   @Test
+  @Ignore
   public void testCheckAnonymousFalse(){
     PowerMockito.mockStatic(AuthenticationHelper.class);
     when(AuthenticationHelper.isAnonymous()).thenReturn(Boolean.FALSE);
@@ -162,6 +158,7 @@ public class ControllerUtilsTest{
   }
 
   @Test
+  @Ignore
   public void testCheckAdministratorAccessTrue(){
     PowerMockito.mockStatic(AuthenticationHelper.class);
     when(AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.getValue())).thenReturn(Boolean.TRUE);
@@ -169,6 +166,7 @@ public class ControllerUtilsTest{
   }
 
   @Test(expected = AccessForbiddenException.class)
+  @Ignore
   public void testCheckAdministratorAccessFalse(){
     PowerMockito.mockStatic(AuthenticationHelper.class);
     when(AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.getValue())).thenReturn(Boolean.FALSE);
