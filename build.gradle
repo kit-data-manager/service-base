@@ -109,7 +109,10 @@ jacocoTestReport {
                   //remove AuthenticationHelper tests due to mocking -> code coverage cannot be determined
             'edu/kit/datamanager/util/AuthenticationHelper*',
                   //deprecated stuff
-            'edu/kit/datamanager/util/DCTransformationHelper*'    ])
+            'edu/kit/datamanager/util/DCTransformationHelper*',
+             //exceptions 
+            'edu/kit/datamanager/exceptions/**'
+               ])
          })
    }
 }
