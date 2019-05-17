@@ -19,9 +19,11 @@ import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.AccessForbiddenException;
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.EtagMismatchException;
+import edu.kit.datamanager.exceptions.EtagMissingException;
 import edu.kit.datamanager.exceptions.UnauthorizedAccessException;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import edu.kit.datamanager.util.ControllerUtils;
+import java.net.InetAddress;
 import java.security.Principal;
 import java.util.Iterator;
 import java.util.Locale;
@@ -29,6 +31,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -40,8 +43,6 @@ import org.springframework.web.context.request.WebRequest;
  *
  * @author jejkal
  */
-//@RunWith(PowerMockRunner.class)
-//@PowerMockIgnore({"javax.crypto.*"})
 public class ControllerUtilsTest{
 
   SecurityContext securityContext = Mockito.mock(SecurityContext.class);
@@ -204,6 +205,21 @@ public class ControllerUtilsTest{
     ControllerUtils.checkEtag(createDummyWebRequest(), () -> "12343");
   }
 
+  @Test(expected = EtagMissingException.class)
+  public void testCheckETagMissing(){
+    ControllerUtils.checkEtag(createDummyWebRequest(false), () -> "12343");
+  }
+
+  @Test
+  public void testGetLocalHostname() throws Exception{
+    //  PowerMockito.when(Inet4Address.class, "getHostName").thenReturn("localhost");
+    InetAddress a = InetAddress.getByName("localhost");
+
+    PowerMockito.whenNew(InetAddress.class).withAnyArguments().thenReturn(a);
+
+    System.out.println(ControllerUtils.getLocalHostname());
+  }
+
   @Test
   public void testParseIdToLong(){
     Long id = ControllerUtils.parseIdToLong("1");
@@ -217,10 +233,14 @@ public class ControllerUtilsTest{
   }
 
   private WebRequest createDummyWebRequest(){
+    return createDummyWebRequest(true);
+  }
+
+  private WebRequest createDummyWebRequest(final boolean hasEtag){
     return new WebRequest(){
       @Override
       public String getHeader(String headerName){
-        if("If-Match".equals(headerName)){
+        if(hasEtag && "If-Match".equals(headerName)){
           return "\"1234\"";
         }
         return null;
@@ -293,12 +313,12 @@ public class ControllerUtilsTest{
 
       @Override
       public boolean checkNotModified(String etag){
-        return "1234".equals(etag);
+        return hasEtag && "1234".equals(etag);
       }
 
       @Override
       public boolean checkNotModified(String etag, long lastModifiedTimestamp){
-        return "1234".equals(etag);
+        return hasEtag && "1234".equals(etag);
       }
 
       @Override
