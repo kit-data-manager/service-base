@@ -43,7 +43,7 @@ import org.springframework.http.ResponseEntity;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore("javax.net.ssl.*")
-@PrepareForTest({HttpClients.class, HttpContentProvider.class})
+@PrepareForTest({HttpClients.class})
 public class HttpContentProviderTest{
 
   private final CloseableHttpClient mock = PowerMockito.mock(CloseableHttpClient.class);
@@ -52,7 +52,7 @@ public class HttpContentProviderTest{
   private final Header header = mock(Header.class);
 
   @Test
-  public void test() throws Exception{
+  public void testHttpContentProvider() throws Exception{
     PowerMockito.mockStatic(HttpClients.class);
     PowerMockito.when(HttpClients.createDefault()).thenReturn(mock);
 
