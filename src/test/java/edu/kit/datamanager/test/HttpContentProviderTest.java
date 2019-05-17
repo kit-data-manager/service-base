@@ -16,31 +16,17 @@
 package edu.kit.datamanager.test;
 
 import edu.kit.datamanager.service.impl.HttpContentProvider;
-import edu.kit.datamanager.util.ControllerUtils;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.URI;
 import org.apache.http.Header;
-import org.apache.http.HeaderElement;
-import org.apache.http.HttpMessage;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
-import org.apache.http.ParseException;
-import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.DefaultHttpResponseFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicStatusLine;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.mockito.ArgumentMatchers.any;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import org.powermock.api.mockito.PowerMockito;
@@ -60,10 +46,10 @@ import org.springframework.http.ResponseEntity;
 @PrepareForTest({HttpClients.class, HttpContentProvider.class})
 public class HttpContentProviderTest{
 
-  private CloseableHttpClient mock = PowerMockito.mock(CloseableHttpClient.class);
-  private CloseableHttpResponse response = mock(CloseableHttpResponse.class);
-  private StatusLine line = mock(StatusLine.class);
-  private Header header = mock(Header.class);
+  private final CloseableHttpClient mock = PowerMockito.mock(CloseableHttpClient.class);
+  private final CloseableHttpResponse response = mock(CloseableHttpResponse.class);
+  private final StatusLine line = mock(StatusLine.class);
+  private final Header header = mock(Header.class);
 
   @Test
   public void test() throws Exception{
@@ -110,10 +96,10 @@ public class HttpContentProviderTest{
     e = prov.provide(URI.create("http://www.google.com"), MediaType.TEXT_HTML, "index.html");
     Assert.assertEquals(HttpStatus.SERVICE_UNAVAILABLE, e.getStatusCode());
     Assert.assertEquals("http://www.google.com", e.getHeaders().get("Content-Location").get(0));
-    
+
     //test IOException during GET
     mockFailingHttpClient();
-     e = prov.provide(URI.create("http://www.google.com"), MediaType.TEXT_HTML, "index.html");
+    e = prov.provide(URI.create("http://www.google.com"), MediaType.TEXT_HTML, "index.html");
     Assert.assertEquals(HttpStatus.SERVICE_UNAVAILABLE, e.getStatusCode());
     Assert.assertEquals("http://www.google.com", e.getHeaders().get("Content-Location").get(0));
   }
