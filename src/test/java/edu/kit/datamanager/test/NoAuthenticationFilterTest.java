@@ -75,7 +75,8 @@ public class NoAuthenticationFilterTest{
       }
     }).when(securityContext).setAuthentication(any(Authentication.class));
 
-    Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+    //Not needed? Re-used from elsewhere?
+   // Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
     SecurityContextHolder.setContext(securityContext);
 
     FilterChain filterChain = Mockito.mock(FilterChain.class);
