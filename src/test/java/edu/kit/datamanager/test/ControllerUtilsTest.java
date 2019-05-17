@@ -20,20 +20,20 @@ import edu.kit.datamanager.exceptions.AccessForbiddenException;
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.EtagMismatchException;
 import edu.kit.datamanager.exceptions.UnauthorizedAccessException;
-import edu.kit.datamanager.util.AuthenticationHelper;
+import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import edu.kit.datamanager.util.ControllerUtils;
 import java.security.Principal;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
-import static org.powermock.api.mockito.PowerMockito.when;
+import org.mockito.Mockito;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.WebRequest;
 
 /**
@@ -43,6 +43,8 @@ import org.springframework.web.context.request.WebRequest;
 //@RunWith(PowerMockRunner.class)
 //@PowerMockIgnore({"javax.crypto.*"})
 public class ControllerUtilsTest{
+
+  SecurityContext securityContext = Mockito.mock(SecurityContext.class);
 
   @Test
   public void testCheckPaginationInformation(){
@@ -142,34 +144,53 @@ public class ControllerUtilsTest{
   }
 
   @Test(expected = UnauthorizedAccessException.class)
-  @Ignore
   public void testCheckAnonymousTrue(){
-    PowerMockito.mockStatic(AuthenticationHelper.class);
-    when(AuthenticationHelper.isAnonymous()).thenReturn(Boolean.TRUE);
+    Mockito.when(securityContext.getAuthentication()).thenReturn(null);
+    SecurityContextHolder.setContext(securityContext);
+
     ControllerUtils.checkAnonymousAccess();
   }
 
   @Test
-  @Ignore
   public void testCheckAnonymousFalse(){
-    PowerMockito.mockStatic(AuthenticationHelper.class);
-    when(AuthenticationHelper.isAnonymous()).thenReturn(Boolean.FALSE);
+    JwtAuthenticationToken userToken = edu.kit.datamanager.util.JwtBuilder.
+            createUserToken("tester", RepoUserRole.USER).
+            addSimpleClaim("firstname", "test").
+            addSimpleClaim("lastname", "user").
+            addSimpleClaim("email", "test@mail.org").
+            addSimpleClaim("groupid", "USERS").
+            getJwtAuthenticationToken("test123");
+    Mockito.when(securityContext.getAuthentication()).thenReturn(userToken);
+    SecurityContextHolder.setContext(securityContext);
     ControllerUtils.checkAnonymousAccess();
   }
 
   @Test
-  @Ignore
   public void testCheckAdministratorAccessTrue(){
-    PowerMockito.mockStatic(AuthenticationHelper.class);
-    when(AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.getValue())).thenReturn(Boolean.TRUE);
+    JwtAuthenticationToken userToken = edu.kit.datamanager.util.JwtBuilder.
+            createUserToken("tester", RepoUserRole.ADMINISTRATOR).
+            addSimpleClaim("firstname", "test").
+            addSimpleClaim("lastname", "user").
+            addSimpleClaim("email", "test@mail.org").
+            addSimpleClaim("groupid", "USERS").
+            getJwtAuthenticationToken("test123");
+    Mockito.when(securityContext.getAuthentication()).thenReturn(userToken);
+    SecurityContextHolder.setContext(securityContext);
+
     ControllerUtils.checkAdministratorAccess();
   }
 
   @Test(expected = AccessForbiddenException.class)
-  @Ignore
   public void testCheckAdministratorAccessFalse(){
-    PowerMockito.mockStatic(AuthenticationHelper.class);
-    when(AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.getValue())).thenReturn(Boolean.FALSE);
+    JwtAuthenticationToken userToken = edu.kit.datamanager.util.JwtBuilder.
+            createUserToken("tester", RepoUserRole.USER).
+            addSimpleClaim("firstname", "test").
+            addSimpleClaim("lastname", "user").
+            addSimpleClaim("email", "test@mail.org").
+            addSimpleClaim("groupid", "USERS").
+            getJwtAuthenticationToken("test123");
+    Mockito.when(securityContext.getAuthentication()).thenReturn(userToken);
+    SecurityContextHolder.setContext(securityContext);
     ControllerUtils.checkAdministratorAccess();
   }
 

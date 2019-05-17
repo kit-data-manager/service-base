@@ -23,68 +23,50 @@ import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import edu.kit.datamanager.security.filter.ScopedPermission;
 import edu.kit.datamanager.util.AuthenticationHelper;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.mockito.ArgumentMatchers.any;
-import org.powermock.api.mockito.PowerMockito;
-import static org.powermock.api.mockito.PowerMockito.when;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  *
  * @author jejkal
  */
-@Ignore
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(AuthenticationHelper.class)
-@PowerMockIgnore({"javax.crypto.*" })
+@RunWith(MockitoJUnitRunner.class)
 public class AuthenticationHelperTest{
+
+  SecurityContext securityContext = Mockito.mock(SecurityContext.class);
 
   @Test
   public void testJwtUserToken() throws JsonProcessingException{
     mockJwtUserAuthentication();
-    when(AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.getValue())).thenCallRealMethod();
-    when(AuthenticationHelper.getFirstname()).thenCallRealMethod();
-    when(AuthenticationHelper.getLastname()).thenCallRealMethod();
-    when(AuthenticationHelper.getPrincipal()).thenCallRealMethod();
-    when(AuthenticationHelper.getAuthorizationIdentities()).thenCallRealMethod();
-    when(AuthenticationHelper.getScopedPermission(any(String.class), any(String.class))).thenCallRealMethod();
+
     Assert.assertTrue(AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.getValue()));
     Assert.assertEquals("test", AuthenticationHelper.getFirstname());
     Assert.assertEquals("user", AuthenticationHelper.getLastname());
     Assert.assertEquals("tester", AuthenticationHelper.getAuthorizationIdentities().get(0));
     Assert.assertEquals("USERS", AuthenticationHelper.getAuthorizationIdentities().get(1));
     Assert.assertEquals(PERMISSION.NONE, AuthenticationHelper.getScopedPermission(String.class.getSimpleName(), "1"));
-    PowerMockito.verifyStatic(AuthenticationHelper.class);
   }
 
   @Test
   public void testJwtServiceToken() throws JsonProcessingException{
     mockJwtServiceAuthentication();
-    when(AuthenticationHelper.getPrincipal()).thenCallRealMethod();
-    when(AuthenticationHelper.getAuthorizationIdentities()).thenCallRealMethod();
-    when(AuthenticationHelper.hasAuthority(any(String.class))).thenCallRealMethod();
-    when(AuthenticationHelper.hasIdentity(any(String.class))).thenCallRealMethod();
+
     Assert.assertEquals("metadata_extractor", AuthenticationHelper.getPrincipal());
     Assert.assertTrue(AuthenticationHelper.hasIdentity("metadata_extractor"));
     Assert.assertTrue(AuthenticationHelper.hasAuthority(RepoServiceRole.SERVICE_READ.getValue()));
-    PowerMockito.verifyStatic(AuthenticationHelper.class);
   }
 
   @Test
   public void testJwtTemporaryToken() throws JsonProcessingException{
     mockJwtTemporaryAuthentication();
-    when(AuthenticationHelper.getPrincipal()).thenCallRealMethod();
-    when(AuthenticationHelper.getAuthorizationIdentities()).thenCallRealMethod();
-    when(AuthenticationHelper.getScopedPermission("String", "1")).thenCallRealMethod();
-    when(AuthenticationHelper.hasIdentity(any(String.class))).thenCallRealMethod();
+
     Assert.assertEquals("test@mail.org", AuthenticationHelper.getPrincipal());
     Assert.assertTrue(AuthenticationHelper.hasIdentity("test@mail.org"));
     Assert.assertEquals(PERMISSION.READ, AuthenticationHelper.getScopedPermission(String.class.getSimpleName(), "1"));
-    PowerMockito.verifyStatic(AuthenticationHelper.class);
   }
 
   private void mockJwtUserAuthentication() throws JsonProcessingException{
@@ -95,8 +77,9 @@ public class AuthenticationHelperTest{
             addSimpleClaim("email", "test@mail.org").
             addSimpleClaim("groupid", "USERS").
             getJwtAuthenticationToken("test123");
-    PowerMockito.mockStatic(AuthenticationHelper.class);
-    when(AuthenticationHelper.getAuthentication()).thenReturn(userToken);
+
+    Mockito.when(securityContext.getAuthentication()).thenReturn(userToken);
+    SecurityContextHolder.setContext(securityContext);
   }
 
   private void mockJwtServiceAuthentication() throws JsonProcessingException{
@@ -104,8 +87,8 @@ public class AuthenticationHelperTest{
             createServiceToken("metadata_extractor", RepoServiceRole.SERVICE_READ).
             addSimpleClaim("groupid", "USERS").
             getJwtAuthenticationToken("test123");
-    PowerMockito.mockStatic(AuthenticationHelper.class);
-    when(AuthenticationHelper.getAuthentication()).thenReturn(serviceToken);
+    Mockito.when(securityContext.getAuthentication()).thenReturn(serviceToken);
+    SecurityContextHolder.setContext(securityContext);
   }
 
   private void mockJwtTemporaryAuthentication() throws JsonProcessingException{
@@ -113,8 +96,7 @@ public class AuthenticationHelperTest{
 
     JwtAuthenticationToken temporaryToken = edu.kit.datamanager.util.JwtBuilder.createTemporaryToken("test@mail.org", perms).
             getJwtAuthenticationToken("test123");
-    PowerMockito.mockStatic(AuthenticationHelper.class);
-    when(AuthenticationHelper.getAuthentication()).thenReturn(temporaryToken);
+    Mockito.when(securityContext.getAuthentication()).thenReturn(temporaryToken);
+    SecurityContextHolder.setContext(securityContext);
   }
-
 }
