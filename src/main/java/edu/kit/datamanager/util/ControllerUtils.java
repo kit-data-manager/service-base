@@ -141,6 +141,7 @@ public class ControllerUtils{
     String hostname = "localhost";
     try{
       InetAddress inetAddress = InetAddress.getLocalHost();
+      System.out.println("IN " + inetAddress);
       hostname = inetAddress.getHostName();
     } catch(UnknownHostException ex){
       LOGGER.warn("Unable to determine local host address. Returning default hostname 'localhost'.", ex);

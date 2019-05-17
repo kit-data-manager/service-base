@@ -126,7 +126,7 @@ public class ByExampleSpecification{
             }
           }
         } catch(IllegalAccessException | IllegalArgumentException e){
-          throw new IllegalStateException("OOOUCH!!!", e);
+          throw new IllegalStateException("Cannot create specification, IllegalAccessException or IllegalArgumentException occured.", e);
         }
       }
 
@@ -155,13 +155,12 @@ public class ByExampleSpecification{
         try{
           if(attr.getJavaType() == String.class){
             if(isNotEmpty(pattern)){
-              SingularAttribute<T, String> stringAttr = em.getMetamodel().entity(type)
-                      .getDeclaredSingularAttribute(fieldName, String.class);
+              SingularAttribute<T, String> stringAttr = em.getMetamodel().entity(type).getDeclaredSingularAttribute(fieldName, String.class);
               predicates.add(builder.like(root.get(stringAttr), pattern(pattern)));
             }
           }
         } catch(Exception e){
-          throw new IllegalStateException("OOOUCH!!!", e);
+          throw new IllegalStateException("Failed to add predicate for attribute " + fieldName + " for unknown reasons.", e);
         }
       }
 
