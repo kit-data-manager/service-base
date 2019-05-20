@@ -40,6 +40,8 @@ public class JwtBuilderTest{
   @Test
   public void testServiceToken() throws IOException{
     JwtBuilder builder = JwtBuilder.createServiceToken("myservice", RepoServiceRole.SERVICE_ADMINISTRATOR);
+    builder.addSimpleClaim("sources", "[\"localhost\"]");
+    
     Map<String, Object> claimMap = builder.getClaimMap();
     Assert.assertTrue(claimMap.containsKey("servicename"));
     Assert.assertEquals("myservice", claimMap.get("servicename"));

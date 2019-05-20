@@ -78,6 +78,7 @@ dependencies {
    compile('com.sun.xml.bind:jaxb-impl:2.2.11')
    compile('javax.activation:activation:1.1.1')
    compile('org.javassist:javassist:3.23.1-GA')
+   testCompile("org.springframework.boot:spring-boot-starter-test")
    testCompile("junit:junit:4.12")
    testCompile("org.mockito:mockito-core:2.23.4")
    testCompile("org.powermock:powermock-module-junit4:2.0.2")

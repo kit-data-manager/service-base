@@ -15,25 +15,20 @@
  */
 package edu.kit.datamanager.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.kit.datamanager.entities.RepoRole;
 import edu.kit.datamanager.entities.RepoServiceRole;
 import edu.kit.datamanager.entities.RepoUserRole;
+import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
 import edu.kit.datamanager.exceptions.UnauthorizedAccessException;
 import edu.kit.datamanager.security.filter.JwtAuthenticationFilter;
 import edu.kit.datamanager.security.filter.JwtAuthenticationProvider;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import edu.kit.datamanager.security.filter.JwtEmptyToken;
-import edu.kit.datamanager.security.filter.JwtServiceToken;
 import edu.kit.datamanager.security.filter.JwtUserToken;
 import edu.kit.datamanager.util.JwtBuilder;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
 import java.io.PrintWriter;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,12 +43,16 @@ import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  *
@@ -79,6 +78,7 @@ public class JwtAuthenticationFilterTest{
   @Test
   public void testNoBearerToken() throws Exception{
     Mockito.when(request.getHeader(JwtAuthenticationFilter.AUTHORIZATION_HEADER)).thenReturn("test123");
+
     JwtAuthenticationFilter filter = new JwtAuthenticationFilter(authenticationManager);
     filter.doFilter(request, response, filterChain);
     //expecting filterChain to be invoked
@@ -88,6 +88,14 @@ public class JwtAuthenticationFilterTest{
   @Test
   public void testInvalidBearerToken() throws Exception{
     Mockito.when(request.getHeader(JwtAuthenticationFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer test123");
+
+    doAnswer((Answer) new Answer(){
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable{
+        return new JwtAuthenticationProvider("test123", LoggerFactory.getLogger(JwtAuthenticationFilterTest.class)).authenticate(new JwtEmptyToken("test123"));
+      }
+    }).when(authenticationManager).authenticate(any(Authentication.class));
+
     JwtAuthenticationFilter filter = new JwtAuthenticationFilter(authenticationManager);
     filter.doFilter(request, response, filterChain);
     //expecting filterChain to be invoked
@@ -158,6 +166,22 @@ public class JwtAuthenticationFilterTest{
 
     //we assume that response status is set to UNAUTHORIZED
     Mockito.verify(response, times(1)).setStatus(HttpStatus.UNAUTHORIZED.value());
+  }
+
+  @Test
+  public void testAllowedServiceToken(){
+    final String token = JwtBuilder.createServiceToken("MyService", RepoServiceRole.SERVICE_READ).addSimpleClaim("sources", "[\"localhost\"]").getCompactToken("test123");
+    MockHttpServletRequest servletRequest = new MockHttpServletRequest();
+    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(servletRequest));
+    new JwtAuthenticationProvider("test123", LoggerFactory.getLogger(JwtAuthenticationFilterTest.class)).getJwtAuthentication(token);
+  }
+
+  @Test(expected = InvalidAuthenticationException.class)
+  public void testUnallowedServiceToken(){
+    final String token = JwtBuilder.createServiceToken("MyService", RepoServiceRole.SERVICE_READ).addSimpleClaim("sources", "[\"google.com\"]").getCompactToken("test123");
+    MockHttpServletRequest servletRequest = new MockHttpServletRequest();
+    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(servletRequest));
+    new JwtAuthenticationProvider("test123", LoggerFactory.getLogger(JwtAuthenticationFilterTest.class)).getJwtAuthentication(token);
   }
 
 }

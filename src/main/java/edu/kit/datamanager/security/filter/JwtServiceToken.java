@@ -46,12 +46,6 @@ public class JwtServiceToken extends JwtAuthenticationToken{
 
   @Override
   public Class getClassForClaim(String claim){
-//    switch(claim){
-//      case "servicename":
-//        return String.class;
-//      case "groupid":
-//        return String.class;
-//    }
     return String.class;
   }
 

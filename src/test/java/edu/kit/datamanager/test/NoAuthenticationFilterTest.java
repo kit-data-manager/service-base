@@ -49,7 +49,6 @@ public class NoAuthenticationFilterTest{
 
   @Test
   public void test() throws Exception{
-    Authentication authentication = Mockito.mock(Authentication.class);
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);
     doAnswer((Answer) new Answer(){
       @Override
@@ -76,7 +75,7 @@ public class NoAuthenticationFilterTest{
     }).when(securityContext).setAuthentication(any(Authentication.class));
 
     //Not needed? Re-used from elsewhere?
-   // Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+    // Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
     SecurityContextHolder.setContext(securityContext);
 
     FilterChain filterChain = Mockito.mock(FilterChain.class);
