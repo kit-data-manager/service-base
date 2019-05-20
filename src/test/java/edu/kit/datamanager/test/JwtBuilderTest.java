@@ -27,7 +27,6 @@ import edu.kit.datamanager.security.filter.ScopedPermission;
 import edu.kit.datamanager.util.JwtBuilder;
 import io.jsonwebtoken.Claims;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;

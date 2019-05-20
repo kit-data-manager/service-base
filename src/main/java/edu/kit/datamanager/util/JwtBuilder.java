@@ -27,6 +27,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -149,7 +150,16 @@ public class JwtBuilder{
   }
 
   public String getCompactToken(String secret){
-    return Jwts.builder().setClaims(getClaims()).signWith(SignatureAlgorithm.HS512, secret).compact();
+    return getCompactToken(secret, null);
+  }
+
+  public String getCompactToken(String secret, Date expiresAt){
+    if(expiresAt != null){
+      return Jwts.builder().setClaims(getClaims()).setExpiration(expiresAt).signWith(SignatureAlgorithm.HS512, secret).compact();
+    } else{
+      LOGGER.debug("Warn: Creating JWT token without expiration time.");
+      return Jwts.builder().setClaims(getClaims()).signWith(SignatureAlgorithm.HS512, secret).compact();
+    }
   }
 
   public JwtAuthenticationToken getJwtAuthenticationToken(String secret){

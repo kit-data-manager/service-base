@@ -36,8 +36,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
  */
 public class JwtAuthenticationFilter extends OncePerRequestFilter{
 
-  private final String AUTHORIZATION_HEADER = "Authorization";
-  private final String BEARER_TOKEN_IDENTIFIER = "Bearer ";
+  public final static String AUTHORIZATION_HEADER = "Authorization";
+  public final static String BEARER_TOKEN_IDENTIFIER = "Bearer ";
   private final AuthenticationManager authenticationManager;
 
   public JwtAuthenticationFilter(AuthenticationManager authenticationManager){
