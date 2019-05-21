@@ -40,11 +40,6 @@ public class JwtServiceToken extends JwtAuthenticationToken{
   }
 
   @Override
-  public TOKEN_TYPE getTokenType(){
-    return TOKEN_TYPE.SERVICE;
-  }
-
-  @Override
   public Class getClassForClaim(String claim){
     return String.class;
   }
@@ -93,6 +88,11 @@ public class JwtServiceToken extends JwtAuthenticationToken{
 
   public String[] getSources(){
     return sources;
+  }
+
+  @Override
+  public TOKEN_TYPE getTokenType(){
+    return TOKEN_TYPE.SERVICE;
   }
 
 }

@@ -102,7 +102,7 @@ public class JwtTemporaryToken extends JwtAuthenticationToken{
 
   @Override
   public TOKEN_TYPE getTokenType(){
-    return TOKEN_TYPE.USER;
+    return TOKEN_TYPE.TEMPORARY;
   }
 
 }

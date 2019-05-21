@@ -70,6 +70,7 @@ public class JwtAuthenticationTokenTest{
     Assert.assertEquals("USERS", token.getGroupId());
     Assert.assertEquals(RepoUserRole.ADMINISTRATOR.getValue(), ((SimpleGrantedAuthority) token.getAuthorities().toArray()[0]).getAuthority());
     Assert.assertEquals("test123", token.getToken());
+    Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.USER, token.getTokenType());
     Assert.assertTrue(token.isAuthenticated());
   }
 
@@ -86,6 +87,7 @@ public class JwtAuthenticationTokenTest{
     Assert.assertEquals("USERS", token.getGroupId());
     Assert.assertEquals("test123", token.getToken());
     Assert.assertEquals(RepoServiceRole.SERVICE_READ.getValue(), ((SimpleGrantedAuthority) token.getAuthorities().toArray()[0]).getAuthority());
+    Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.SERVICE, token.getTokenType());
     Assert.assertTrue(token.isAuthenticated());
   }
 
@@ -99,6 +101,10 @@ public class JwtAuthenticationTokenTest{
     claimMap.put("permissions", new ObjectMapper().writeValueAsString(perms));
 
     JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
+
+    //should work but nothing happens as claim is invalid
+    token.setValueFromClaim("invalid", "value");
+
     Assert.assertTrue(token instanceof JwtTemporaryToken);
     Assert.assertEquals("test@mail.org", token.getPrincipal());
     Assert.assertEquals(1, ((JwtTemporaryToken) token).getScopedPermissions().length);
@@ -106,7 +112,30 @@ public class JwtAuthenticationTokenTest{
     Assert.assertEquals("1", ((JwtTemporaryToken) token).getScopedPermissions()[0].getResourceId());
     Assert.assertEquals(PERMISSION.READ, ((JwtTemporaryToken) token).getScopedPermissions()[0].getPermission());
     Assert.assertEquals("test123", token.getToken());
+    Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY, token.getTokenType());
     Assert.assertTrue(token.isAuthenticated());
+  }
+
+  @Test(expected = InvalidAuthenticationException.class)
+  public void testTemporaryTokenWithNoPermissions() throws JsonProcessingException{
+    Map<String, Object> claimMap = new HashMap<>();
+    claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY.toString());
+    claimMap.put("principalname", "test@mail.org");
+
+    JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
+    Assert.fail("Token " + token + " should not have been created due to missing scoped permissions.");
+  }
+
+  @Test(expected = InvalidAuthenticationException.class)
+  public void testTemporaryTokenWithInvalidPermissions() throws JsonProcessingException{
+
+    Map<String, Object> claimMap = new HashMap<>();
+    claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY.toString());
+    claimMap.put("principalname", "test@mail.org");
+    claimMap.put("permissions", "invalid value");
+
+    JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
+    Assert.fail("Token " + token + " should not have been created due to missing scoped permissions.");
   }
 
   @Test

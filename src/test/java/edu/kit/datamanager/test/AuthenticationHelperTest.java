@@ -22,11 +22,14 @@ import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import edu.kit.datamanager.security.filter.ScopedPermission;
 import edu.kit.datamanager.util.AuthenticationHelper;
+import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -48,7 +51,17 @@ public class AuthenticationHelperTest{
     Assert.assertEquals("user", AuthenticationHelper.getLastname());
     Assert.assertEquals("tester", AuthenticationHelper.getAuthorizationIdentities().get(0));
     Assert.assertEquals("USERS", AuthenticationHelper.getAuthorizationIdentities().get(1));
+    Assert.assertFalse(AuthenticationHelper.isAuthenticatedAsService());
     Assert.assertEquals(PERMISSION.NONE, AuthenticationHelper.getScopedPermission(String.class.getSimpleName(), "1"));
+  }
+
+  @Test
+  public void testOtherAuthentication(){
+    mockNoAuthentication();
+
+    Assert.assertNull(AuthenticationHelper.getFirstname());
+    Assert.assertNull(AuthenticationHelper.getLastname());
+    Assert.assertEquals("anonymous", AuthenticationHelper.getPrincipal());
   }
 
   @Test
@@ -58,6 +71,8 @@ public class AuthenticationHelperTest{
     Assert.assertEquals("metadata_extractor", AuthenticationHelper.getPrincipal());
     Assert.assertTrue(AuthenticationHelper.hasIdentity("metadata_extractor"));
     Assert.assertTrue(AuthenticationHelper.hasAuthority(RepoServiceRole.SERVICE_READ.getValue()));
+    Assert.assertTrue(AuthenticationHelper.isAuthenticatedAsService());
+
   }
 
   @Test
@@ -67,6 +82,11 @@ public class AuthenticationHelperTest{
     Assert.assertEquals("test@mail.org", AuthenticationHelper.getPrincipal());
     Assert.assertTrue(AuthenticationHelper.hasIdentity("test@mail.org"));
     Assert.assertEquals(PERMISSION.READ, AuthenticationHelper.getScopedPermission(String.class.getSimpleName(), "1"));
+  }
+
+  private void mockNoAuthentication(){
+    Mockito.when(securityContext.getAuthentication()).thenReturn(new AnonymousAuthenticationToken("test", "anonymous", Arrays.asList(new SimpleGrantedAuthority("anonymous"))));
+    SecurityContextHolder.setContext(securityContext);
   }
 
   private void mockJwtUserAuthentication() throws JsonProcessingException{
