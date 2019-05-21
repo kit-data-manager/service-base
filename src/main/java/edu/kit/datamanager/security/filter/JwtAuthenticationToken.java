@@ -46,7 +46,9 @@ public abstract class JwtAuthenticationToken extends AbstractAuthenticationToken
   public enum TOKEN_TYPE{
     USER,
     SERVICE,
-    TEMPORARY;
+    TEMPORARY,
+    //unsupported type for internal use, should never be removed!
+    UNSUPPORTED;
 
     public static TOKEN_TYPE fromString(String value){
       JwtAuthenticationToken.TOKEN_TYPE result = JwtAuthenticationToken.TOKEN_TYPE.USER;
@@ -55,7 +57,8 @@ public abstract class JwtAuthenticationToken extends AbstractAuthenticationToken
           result = JwtAuthenticationToken.TOKEN_TYPE.valueOf(value);
         }
       } catch(IllegalArgumentException ex){
-        //ignore wrong scope
+        //ignore wrong type
+        result = JwtAuthenticationToken.TOKEN_TYPE.UNSUPPORTED;
       }
       return result;
     }

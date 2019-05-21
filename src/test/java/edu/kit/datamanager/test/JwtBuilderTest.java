@@ -41,7 +41,7 @@ public class JwtBuilderTest{
   public void testServiceToken() throws IOException{
     JwtBuilder builder = JwtBuilder.createServiceToken("myservice", RepoServiceRole.SERVICE_ADMINISTRATOR);
     builder.addSimpleClaim("sources", "[\"localhost\"]");
-    
+
     Map<String, Object> claimMap = builder.getClaimMap();
     Assert.assertTrue(claimMap.containsKey("servicename"));
     Assert.assertEquals("myservice", claimMap.get("servicename"));
@@ -106,6 +106,7 @@ public class JwtBuilderTest{
   @Test
   public void testTemporaryToken() throws IOException{
     JwtBuilder builder = JwtBuilder.createTemporaryToken("test@mail.org", ScopedPermission.factoryScopedPermission("DataResource", "1", PERMISSION.WRITE));
+
     Map<String, Object> claimMap = builder.getClaimMap();
     Assert.assertTrue(claimMap.containsKey("principalname"));
     Assert.assertEquals("test@mail.org", claimMap.get("principalname"));
@@ -127,5 +128,13 @@ public class JwtBuilderTest{
     Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY.toString(), (String) claims.get("tokenType"));
     permissions = new ObjectMapper().readValue((String) claims.get("permissions"), ScopedPermission[].class);
     Assert.assertArrayEquals(new ScopedPermission[]{ScopedPermission.factoryScopedPermission("DataResource", "1", PERMISSION.WRITE)}, permissions);
+  }
+
+  @Test
+  public void testTemporaryTokenWithInvalidScopedPermissions() throws IOException{
+    JwtBuilder builder = JwtBuilder.createTemporaryToken("test@mail.org");
+    Assert.assertEquals("[]", builder.getClaimMap().get("permissions"));
+    builder = JwtBuilder.createTemporaryToken("test@mail.org", null);
+    Assert.assertEquals("[]", builder.getClaimMap().get("permissions"));
   }
 }

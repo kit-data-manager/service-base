@@ -22,7 +22,6 @@ import edu.kit.datamanager.entities.RepoServiceRole;
 import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
-import edu.kit.datamanager.security.filter.JwtEmptyToken;
 import edu.kit.datamanager.security.filter.JwtTemporaryToken;
 import edu.kit.datamanager.security.filter.JwtUserToken;
 import edu.kit.datamanager.security.filter.ScopedPermission;
@@ -47,6 +46,32 @@ public class JwtAuthenticationTokenTest{
     Assert.assertNull(token.getPrincipal());
     Assert.assertEquals(JwtAuthenticationToken.NOT_AVAILABLE, token.getCredentials());
     Assert.assertFalse(token.isAuthenticated());
+  }
+
+  @Test
+  public void testTokenTypeFromString(){
+    Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.UNSUPPORTED, JwtAuthenticationToken.TOKEN_TYPE.fromString("invalid"));
+  }
+
+  @Test
+  public void testGrantedAuthoritiesFromNull(){
+    Assert.assertNotNull(JwtAuthenticationToken.grantedAuthorities(null));
+    Assert.assertTrue(JwtAuthenticationToken.grantedAuthorities(null).isEmpty());
+  }
+
+  @Test(expected = InvalidAuthenticationException.class)
+  public void testFactoryUnsupportedToken() throws JsonProcessingException{
+    Map<String, Object> claimMap = new HashMap<>();
+    claimMap.put("tokenType", "UNSUPPORTED");
+    claimMap.put("username", "tester");
+    claimMap.put("firstname", "test");
+    claimMap.put("lastname", "user");
+    claimMap.put("email", "test@mail.org");
+    claimMap.put("groupid", "USERS");
+    claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoUserRole.ADMINISTRATOR.getValue()}));
+
+    JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
+    Assert.fail("Token " + token + " should not have been created due to invalid token type.");
   }
 
   @Test
@@ -83,12 +108,30 @@ public class JwtAuthenticationTokenTest{
     claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoServiceRole.SERVICE_READ.getValue()}));
 
     JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
+
+    //should work but nothing happens as claim is invalid
+    token.setValueFromClaim("invalid", "value");
+
     Assert.assertEquals("testService", token.getPrincipal());
     Assert.assertEquals("USERS", token.getGroupId());
     Assert.assertEquals("test123", token.getToken());
     Assert.assertEquals(RepoServiceRole.SERVICE_READ.getValue(), ((SimpleGrantedAuthority) token.getAuthorities().toArray()[0]).getAuthority());
     Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.SERVICE, token.getTokenType());
     Assert.assertTrue(token.isAuthenticated());
+  }
+
+  @Test(expected = InvalidAuthenticationException.class)
+  public void testServiceTokenWithInvalidSources() throws JsonProcessingException{
+    Map<String, Object> claimMap = new HashMap<>();
+    claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.SERVICE.toString());
+    claimMap.put("servicename", "testService");
+    claimMap.put("groupid", "USERS");
+    claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoServiceRole.SERVICE_READ.getValue()}));
+    claimMap.put("sources", "invalidValue");
+
+    JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
+    Assert.fail("Token " + token + " should not have been created due to invalid sources claim.");
+
   }
 
   @Test

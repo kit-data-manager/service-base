@@ -93,7 +93,7 @@ public class JwtBuilder{
   }
 
   private JwtBuilder setScopedPermissions(ScopedPermission... permissions){
-    if(roles == null || !type.equals(JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY)){
+    if(permissions == null || permissions.length == 0){
       return this;
     }
     this.permissions.addAll(Arrays.asList(permissions));
