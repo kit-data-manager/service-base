@@ -119,7 +119,10 @@ jacocoTestReport {
                   'edu/kit/datamanager/dao/ByExampleSpecification*',
                   'edu/kit/datamanager/controller/hateoas/**',
                   //exceptions 
-            'edu/kit/datamanager/exceptions/**'
+            'edu/kit/datamanager/exceptions/**',
+                  'edu/kit/datamanager/service/impl/RabbitMQMessagingService',
+                  'edu/kit/datamanager/configuration/**',
+                  'edu/kit/datamanager/service/IGenericService'
                ])
          })
    }
