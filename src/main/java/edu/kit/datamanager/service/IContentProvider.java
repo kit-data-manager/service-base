@@ -42,9 +42,9 @@ public interface IContentProvider{
 
   /**
    * Check if this provider implementation is capable of providing content
-   * accessible via protocal 'schema', e.g. http(s) or file.
+   * accessible via protocol 'schema', e.g. http(s) or file.
    *
-   * @param The schema of 'contentUri'.
+   * @param schema The schema of 'contentUri'.
    *
    * @return TRUE if the content can be provided, FALSE otherwise.
    */
