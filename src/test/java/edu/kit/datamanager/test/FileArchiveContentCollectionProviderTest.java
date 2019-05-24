@@ -15,6 +15,8 @@
  */
 package edu.kit.datamanager.test;
 
+import edu.kit.datamanager.entities.CollectionElement;
+import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import edu.kit.datamanager.service.impl.FileArchiveContentCollectionProvider;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,7 +25,9 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -35,6 +39,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.springframework.http.MediaType;
+import org.springframework.web.server.UnsupportedMediaTypeStatusException;
 
 /**
  *
@@ -63,6 +68,20 @@ public class FileArchiveContentCollectionProviderTest{
     Assert.assertTrue(provider.supportsMediaType(FileArchiveContentCollectionProvider.ZIP_MEDIA_TYPE));
     Assert.assertFalse(provider.supportsMediaType(MediaType.parseMediaType("application/json")));
     Assert.assertFalse(provider.supportsMediaType(null));
+  }
+
+  @Test(expected = UnsupportedMediaTypeStatusException.class)
+  public void testProvideInvalidMediaType(){
+    FileArchiveContentCollectionProvider provider = new FileArchiveContentCollectionProvider();
+    provider.provide(null, MediaType.APPLICATION_JSON, null);
+  }
+
+  @Test(expected = CustomInternalServerError.class)
+  public void testProvideNotExistingFile() throws Exception{
+    FileArchiveContentCollectionProvider provider = new FileArchiveContentCollectionProvider();
+    List<CollectionElement> collection = new ArrayList<>();
+    collection.add(CollectionElement.createCollectionElement("firstFile.txt", Paths.get("notExistingFIle").toUri()));
+    provider.provide(collection, FileArchiveContentCollectionProvider.ZIP_MEDIA_TYPE, null);
   }
 
   @Test
@@ -99,7 +118,7 @@ public class FileArchiveContentCollectionProviderTest{
     pathMap.put(firstFile.getName(firstFile.getNameCount() - 1).toString(), firstFile);
     pathMap.put(secondFile.getName(secondFile.getNameCount() - 1).toString(), secondFile);
     pathMap.put(thirdFile.getName(thirdFile.getNameCount() - 1).toString(), thirdFile);
-    Map<String, URI> collection = new HashMap<>();
+    List<CollectionElement> collection = new ArrayList<>();
 
     try{
       //write content to files
@@ -108,9 +127,9 @@ public class FileArchiveContentCollectionProviderTest{
       Files.write(thirdFile, "And I'm from a subfolder.".getBytes());
 
       //create zip-collection map
-      collection.put("firstFile.txt", firstFile.toUri());
-      collection.put("secondFile.txt", secondFile.toUri());
-      collection.put("thirdFile.txt", thirdFile.toUri());
+      collection.add(CollectionElement.createCollectionElement("firstFile.txt", firstFile.toUri()));
+      collection.add(CollectionElement.createCollectionElement("secondFile.txt", secondFile.toUri()));
+      collection.add(CollectionElement.createCollectionElement("thirdFile.txt", thirdFile.toUri()));
 
       provider.provide(collection, FileArchiveContentCollectionProvider.ZIP_MEDIA_TYPE, response);
 

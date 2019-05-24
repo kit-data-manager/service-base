@@ -15,16 +15,14 @@
  */
 package edu.kit.datamanager.service.impl;
 
+import edu.kit.datamanager.entities.CollectionElement;
 import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import edu.kit.datamanager.service.IContentCollectionProvider;
-import java.io.FileNotFoundException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -49,18 +47,18 @@ public class FileArchiveContentCollectionProvider implements IContentCollectionP
   public final static MediaType ZIP_MEDIA_TYPE = MediaType.parseMediaType("application/zip");
 
   @Override
-  public void provide(@NotEmpty Map<String, URI> collection, MediaType mediaType, HttpServletResponse response){
+  public void provide(@NotEmpty List<CollectionElement> collection, MediaType mediaType, HttpServletResponse response){
     if(!ZIP_MEDIA_TYPE.toString().equals(mediaType.toString())){
       LOGGER.error("Unsupported media type {} received. Throwing HTTP 415 (UNSUPPORTED_MEDIA_TYPE).", mediaType);
       throw new UnsupportedMediaTypeStatusException(mediaType, Arrays.asList(getSupportedMediaTypes()));
     }
 
     LOGGER.trace("Checking received collection for missing/invalid elements.");
-    for(Entry<String, URI> fileEntry : collection.entrySet()){
-      Path path = Paths.get(fileEntry.getValue());
+    for(CollectionElement element : collection){
+      Path path = Paths.get(element.getContentUri());
       if(!Files.exists(path) || !Files.isReadable(path)){
-        LOGGER.error("Failed to locate/read file {} at relative path {} with URI {}. Aborting packaging operation.", fileEntry.getKey(), fileEntry.getValue());
-        throw new CustomInternalServerError("File at relative path " + fileEntry.getKey() + " not found. Aborting delivery.");
+        LOGGER.error("Failed to locate/read file {} at relative path {} with URI {}. Aborting packaging operation.", element.getContentUri(), element.getRelativePath());
+        throw new CustomInternalServerError("File at relative path " + element.getRelativePath() + " not found. Aborting delivery.");
       }
     }
 
@@ -71,11 +69,11 @@ public class FileArchiveContentCollectionProvider implements IContentCollectionP
     response.setStatus(HttpServletResponse.SC_OK);
     LOGGER.trace("Starting packaging operation.");
     try(ZipOutputStream zippedOut = new ZipOutputStream(response.getOutputStream())){
-      for(Entry<String, URI> fileEntry : collection.entrySet()){
-        LOGGER.trace("Opening new file system resource for element URI {}.", fileEntry.getValue());
-        FileSystemResource resource = new FileSystemResource(Paths.get(fileEntry.getValue()));
-        LOGGER.trace("Adding new zip entry for element {}.", fileEntry.getKey());
-        ZipEntry e = new ZipEntry(fileEntry.getKey());
+      for(CollectionElement element : collection){
+        LOGGER.trace("Opening new file system resource for element URI {}.", element.getContentUri());
+        FileSystemResource resource = new FileSystemResource(Paths.get(element.getContentUri()));
+        LOGGER.trace("Adding new zip entry for element {}.", element.getRelativePath());
+        ZipEntry e = new ZipEntry(element.getRelativePath());
         // Configure the zip entry, the properties of the file
         LOGGER.trace("Setting entry size to {}.", resource.contentLength());
         e.setSize(resource.contentLength());

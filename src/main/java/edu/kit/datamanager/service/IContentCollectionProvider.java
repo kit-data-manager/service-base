@@ -15,8 +15,8 @@
  */
 package edu.kit.datamanager.service;
 
-import java.net.URI;
-import java.util.Map;
+import edu.kit.datamanager.entities.CollectionElement;
+import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -31,13 +31,12 @@ public interface IContentCollectionProvider{
   /**
    * Provide the content collection provided as URI list argument.
    *
-   * @param collection A map of relative paths and the content URI at which the
-   * content is available.
+   * @param collection A list of collection elements.
    * @param mediaType The mediaType, e.g. obtained from an Accept header, that
    * should be returned.
    * @param response The response entity the data is written to.
    */
-  void provide(Map<String, URI> collection, MediaType mediaType, HttpServletResponse response);
+  void provide(List<CollectionElement> collection, MediaType mediaType, HttpServletResponse response);
 
   /**
    * Check if this provider implementation is capable of providing content
