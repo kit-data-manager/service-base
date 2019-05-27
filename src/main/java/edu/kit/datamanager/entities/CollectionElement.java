@@ -35,10 +35,12 @@ public class CollectionElement{
     this.relativePath = relativePath;
     this.contentUri = contentUri;
     this.checksum = checksum;
+    this.repositoryLocation = repositoryLocation;
     this.contentLength = contentLength;
   }
 
   public static CollectionElement createCollectionElement(String relativePath, URI contentUri, String checksum, String repositoryLocation, Long contentLength){
+    System.out.println("HERE " + repositoryLocation);
     return new CollectionElement(relativePath, contentUri, checksum, repositoryLocation, contentLength);
   }
 
