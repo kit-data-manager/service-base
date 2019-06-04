@@ -80,7 +80,10 @@ public class FileArchiveContentCollectionProviderTest{
   public void testProvideNotExistingFile() throws Exception{
     FileArchiveContentCollectionProvider provider = new FileArchiveContentCollectionProvider();
     List<CollectionElement> collection = new ArrayList<>();
-    collection.add(CollectionElement.createCollectionElement("firstFile.txt", Paths.get("notExistingFIle").toUri()));
+    collection.add(CollectionElement.createCollectionElement("firstFile.txt", Paths.get("notExistingFile").toUri()));
+    collection.add(CollectionElement.createCollectionElement("secondFile.txt", URI.create("file:///tmp/myFile.txt"), "http://localhost:8090/api/v1/dataresources/123", 1l));
+    collection.add(CollectionElement.createCollectionElement("thirdFile.txt", URI.create("file:///tmp/myFile.txt"), "sha256:123123123123", "http://localhost:8090/api/v1/dataresources/123", 1l));
+
     provider.provide(collection, FileArchiveContentCollectionProvider.ZIP_MEDIA_TYPE, null);
   }
 
