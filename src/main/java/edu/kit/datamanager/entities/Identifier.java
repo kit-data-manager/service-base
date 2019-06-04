@@ -30,6 +30,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import lombok.Data;
 
 /**
@@ -40,6 +42,7 @@ import lombok.Data;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @ApiModel(description = "An identifier for a resource.")
 @Data
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Identifier{
 
   public enum IDENTIFIER_TYPE implements BaseEnum{

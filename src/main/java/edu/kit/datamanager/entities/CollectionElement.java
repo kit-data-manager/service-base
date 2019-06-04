@@ -40,7 +40,6 @@ public class CollectionElement{
   }
 
   public static CollectionElement createCollectionElement(String relativePath, URI contentUri, String checksum, String repositoryLocation, Long contentLength){
-    System.out.println("HERE " + repositoryLocation);
     return new CollectionElement(relativePath, contentUri, checksum, repositoryLocation, contentLength);
   }
 
