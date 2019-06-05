@@ -64,6 +64,9 @@ public class DataCiteMapper{
                   fields("rights", "rightsList", FieldsMappingOptions.customConverter(RightsConverter.class)).
                   fields("fundingReferences", "fundingReferences", FieldsMappingOptions.customConverter(FundingReferencesConverter.class)).
                   fields("geoLocations", "geoLocations", FieldsMappingOptions.customConverter(GeoLocationsConverter.class));
+          
+          
+          
         }
       };
       mapper.addMapping(builder);

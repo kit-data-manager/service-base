@@ -1,1 +1,0 @@
-Simple content in testFile.txt

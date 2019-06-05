@@ -17,6 +17,7 @@ package edu.kit.datamanager.util.xml.converters;
 
 import edu.kit.datamanager.entities.repo.Identifier;
 import java.util.HashSet;
+import org.datacite.schema.kernel_4.ObjectFactory;
 import org.datacite.schema.kernel_4.Resource;
 import org.dozer.DozerConverter;
 import org.dozer.Mapper;
@@ -27,13 +28,13 @@ import org.dozer.MapperAware;
  * @author jejkal
  */
 public class AlternateIdentifierConverter extends DozerConverter<HashSet, Resource.AlternateIdentifiers> implements MapperAware{
-  
+
   private Mapper mapper;
-  
+
   public AlternateIdentifierConverter(){
     super(HashSet.class, Resource.AlternateIdentifiers.class);
   }
-  
+
   @Override
   public Resource.AlternateIdentifiers convertTo(HashSet a, Resource.AlternateIdentifiers b){
     Resource.AlternateIdentifiers result = new Resource.AlternateIdentifiers();
@@ -50,15 +51,15 @@ public class AlternateIdentifierConverter extends DozerConverter<HashSet, Resour
     }
     return result;
   }
-  
+
   @Override
   public HashSet convertFrom(Resource.AlternateIdentifiers b, HashSet a){
     return null;
   }
-  
+
   @Override
   public void setMapper(Mapper mapper){
     this.mapper = mapper;
   }
-  
+
 }

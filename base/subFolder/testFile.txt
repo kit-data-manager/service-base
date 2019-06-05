@@ -1,1 +1,0 @@
-Simple content in subFolder/testFile.txt
