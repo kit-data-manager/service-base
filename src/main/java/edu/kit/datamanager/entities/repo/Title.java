@@ -54,4 +54,17 @@ public class Title{
   private TITLE_TYPE titleType;
   private String lang;
 
+  public static Title createTitle(String value){
+    Title t = new Title();
+    t.value = value;
+    return t;
+  }
+
+  public static Title createTitle(String value, TITLE_TYPE type){
+    Title t = new Title();
+    t.titleType = type;
+    t.value = value;
+    return t;
+  }
+
 }

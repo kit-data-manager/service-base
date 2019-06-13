@@ -15,7 +15,12 @@
  */
 package edu.kit.datamanager.entities.repo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import edu.kit.datamanager.util.json.CustomInstantDeserializer;
+import edu.kit.datamanager.util.json.CustomInstantSerializer;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -27,6 +32,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 import lombok.Data;
@@ -46,6 +52,8 @@ public class DataResource implements Serializable{
   //mandatory
   private PrimaryIdentifier identifier;
 
+  @XmlTransient
+  private String id = null;
   //vocab
   @XmlElementWrapper(name = "creators")
   @XmlElement(name = "creator")
@@ -94,5 +102,10 @@ public class DataResource implements Serializable{
   @XmlElement(name = "rights")
   private Set<Scheme> rights = new HashSet<>();
   private Set<FundingReference> fundingReferences = new HashSet<>();
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+  @JsonDeserialize(using = CustomInstantDeserializer.class)
+  @JsonSerialize(using = CustomInstantSerializer.class)
+  private Instant lastUpdate;
 
 }

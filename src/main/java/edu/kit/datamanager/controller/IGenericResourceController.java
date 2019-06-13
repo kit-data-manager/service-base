@@ -20,6 +20,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.time.Instant;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Pageable;
@@ -50,6 +51,15 @@ public interface IGenericResourceController<C>{
           final WebRequest request,
           final HttpServletResponse response);
 
+  @ApiOperation(value = "Get a resource by id.",
+          notes = "Obtain is single resource by its identifier. Depending on a user's role, accessing a specific resource may be allowed or forbidden.")
+  @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+  @ResponseBody
+  public ResponseEntity<C> getById(@ApiParam(value = "The resource identifier.", required = true) @PathVariable("id") final String id,
+          @ApiParam(value = "The version of the resource, if supported.", required = false) @RequestParam("version") final Long version,
+          final WebRequest request,
+          final HttpServletResponse response);
+
   @ApiOperation(value = "List all resources.",
           notes = "List all resources in a paginated and/or sorted form. Possible queries are: listing with default values (X elements on first page sorted by database), "
           + "listing page wise, sorted query page wise, and combinations of the options above. "
@@ -67,19 +77,12 @@ public interface IGenericResourceController<C>{
   })
   @RequestMapping(value = "/", method = RequestMethod.GET)
   @ResponseBody
-  public ResponseEntity<List<C>> findAll(final Pageable pgbl,
+  public ResponseEntity<List<C>> findAll(@RequestParam(value = "The UTC time of the earliest update of a returned resource.", name = "from", required = false) final Instant lastUpdateFrom,
+          @RequestParam(value = "The UTC time of the latest update of a returned resource.", name = "until", required = false) final Instant lastUpdateUntil,
+          final Pageable pgbl,
           final WebRequest request,
           final HttpServletResponse response,
           final UriComponentsBuilder uriBuilder);
-
-  @ApiOperation(value = "Get a resource by id.",
-          notes = "Obtain is single resource by its identifier. Depending on a user's role, accessing a specific resource may be allowed or forbidden.")
-  @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-  @ResponseBody
-  public ResponseEntity<C> getById(@ApiParam(value = "The resource identifier.", required = true) @PathVariable("id") final String id,
-          @ApiParam(value = "The version of the resource, if supported.", required = false) @RequestParam("version") final Long version,
-          final WebRequest request,
-          final HttpServletResponse response);
 
   @ApiOperation(value = "List resources by example.",
           notes = "List all resources in a paginated and/or sorted form by example using an example document provided in the request body. "
@@ -100,6 +103,8 @@ public interface IGenericResourceController<C>{
   @RequestMapping(value = "/search", method = RequestMethod.POST)
   @ResponseBody
   public abstract ResponseEntity<List<C>> findByExample(@ApiParam(value = "Json representation of the resource serving as example for the search operation. Typically, only first level primitive attributes are evaluated while building queries from examples.", required = true) @RequestBody C example,
+          @RequestParam(value = "The UTC time of the earliest update of a returned resource.", name = "from", required = false) final Instant lastUpdateFrom,
+          @RequestParam(value = "The UTC time of the latest update of a returned resource.", name = "until", required = false) final Instant lastUpdateUntil,
           final Pageable pgbl,
           final WebRequest request,
           final HttpServletResponse response,

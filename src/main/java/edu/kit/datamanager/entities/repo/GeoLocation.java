@@ -39,4 +39,16 @@ public class GeoLocation{
   @XmlElement(name = "geoLocationPlace")
   private String place;
 
+  /**
+   * Basic factory method.
+   *
+   * @param place A place location
+   *
+   * @return A new instance of GeoLocation
+   */
+  public static GeoLocation factoryGeoLocation(String place){
+    GeoLocation result = new GeoLocation();
+    result.setPlace(place);
+    return result;
+  }
 }

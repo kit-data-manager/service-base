@@ -64,4 +64,18 @@ public class ResourceType{
   private String value;
   //vocab, e.g. Dataset, Image....
   private TYPE_GENERAL typeGeneral;
+
+  public static ResourceType createResourceType(String value){
+    ResourceType type = new ResourceType();
+    type.value = value;
+    type.typeGeneral = TYPE_GENERAL.DATASET;
+    return type;
+  }
+
+  public static ResourceType createResourceType(String value, TYPE_GENERAL typeGeneral){
+    ResourceType type = new ResourceType();
+    type.value = value;
+    type.typeGeneral = typeGeneral;
+    return type;
+  }
 }
