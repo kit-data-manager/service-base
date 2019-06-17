@@ -4,6 +4,11 @@
 // Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
 // Generiert: 2019.06.05 um 12:27:41 PM CEST 
 //
-
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://purl.org/dc/elements/1.1/", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@javax.xml.bind.annotation.XmlSchema(xmlns = {
+  @javax.xml.bind.annotation.XmlNs(prefix = "oai_dc",
+          namespaceURI = "http://www.openarchives.org/OAI/2.0/oai_dc/"),
+  @javax.xml.bind.annotation.XmlNs(prefix = "dc",
+          namespaceURI = "http://purl.org/dc/elements/1.1/"),
+  @javax.xml.bind.annotation.XmlNs(prefix = "schemaLocation",
+          namespaceURI = "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd")}, namespace = "http://www.openarchives.org/OAI/2.0/oai_dc/", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package org.purl.dc.elements._1;

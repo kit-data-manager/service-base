@@ -4,12 +4,11 @@
 // Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
 // Generiert: 2019.06.05 um 12:27:41 PM CEST 
 //
-
-
 package org.purl.dc.elements._1;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.ElementCollection;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -17,17 +16,19 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * 
- *     		This complexType is included as a convenience for schema authors who need to define a root
- *     		or container element for all of the DC elements.
- *     	
- * 
- * <p>Java-Klasse für elementContainer complex type.
- * 
- * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
- * 
+ *
+ * This complexType is included as a convenience for schema authors who need to
+ * define a root or container element for all of the DC elements.
+ *
+ *
+ * <p>
+ * Java-Klasse für elementContainer complex type.
+ *
+ * <p>
+ * Das folgende Schemafragment gibt den erwarteten Content an, der in dieser
+ * Klasse enthalten ist.
+ *
  * <pre>
  * &lt;complexType name="elementContainer">
  *   &lt;complexContent>
@@ -39,61 +40,60 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "elementContainer", propOrder = {
-    "any"
+  "any"
 })
-@XmlRootElement
-public class ElementContainer {
+@XmlRootElement(name = "dc", namespace = "http://www.openarchives.org/OAI/2.0/oai_dc/")
+public class ElementContainer{
 
-    @XmlElementRef(name = "any", namespace = "http://purl.org/dc/elements/1.1/", type = JAXBElement.class, required = false)
-    protected List<JAXBElement<SimpleLiteral>> any;
+  @XmlElementRef(name = "any", namespace = "http://purl.org/dc/elements/1.1/", type = JAXBElement.class, required = false)
+  protected List<JAXBElement<SimpleLiteral>> any;
 
-    /**
-     * Gets the value of the any property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the any property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAny().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
+  /**
+   * Gets the value of the any property.
+   *
+   * <p>
+   * This accessor method returns a reference to the live list, not a snapshot.
+   * Therefore any modification you make to the returned list will be present
+   * inside the JAXB object. This is why there is not a <CODE>set</CODE> method
+   * for the any property.
+   *
+   * <p>
+   * For example, to add a new item, do as follows:
+   * <pre>
+   *    getAny().add(newItem);
+   * </pre>
+   *
+   *
+   * <p>
+   * Objects of the following type(s) are allowed in the list null   {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
      * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
-     * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
-     * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
-     * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
-     * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
-     * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
-     * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
-     * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
-     * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
-     * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
-     * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
-     * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
-     * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
-     * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
-     * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
-     * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
-     * 
-     * 
-     */
-    public List<JAXBElement<SimpleLiteral>> getAny() {
-        if (any == null) {
-            any = new ArrayList<JAXBElement<SimpleLiteral>>();
-        }
-        return this.any;
+   * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
+   * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
+   * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
+   * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
+   * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
+   * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
+   * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
+   * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
+   * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
+   * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
+   * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
+   * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
+   * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
+   * {@link JAXBElement }{@code <}{@link SimpleLiteral }{@code >}
+   *
+   *
+   */
+  public List<JAXBElement<SimpleLiteral>> getAny(){
+    if(any == null){
+      any = new ArrayList<JAXBElement<SimpleLiteral>>();
     }
+    return this.any;
+  }
 
 }
