@@ -65,7 +65,7 @@ dependencies {
    compile("commons-validator:commons-validator:1.6")
    compile("commons-io:commons-io:2.5")
    compile('org.apache.httpcomponents:httpclient:4.5.6')
-   compile('commons-codec:commons-codec:1.4')
+   compile('commons-codec:commons-codec:1.7')
    compile('org.javers:javers-spring-boot-starter-sql:5.3.2')
    //compile("dnsjava:dnsjava:2.1.8")
      

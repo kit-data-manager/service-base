@@ -36,8 +36,11 @@ import org.springframework.http.MediaType;
 @EqualsAndHashCode(callSuper = false)
 public class ContentInformation implements Serializable{
 
+  public static final MediaType CONTENT_INFORMATION_MEDIA_TYPE = MediaType.parseMediaType("application/vnd.datamanager.content-information+json");
+
   private String relativePath;
   private String contentUri;
+  private String uploader;
   private String mediaType;
   private String hash;
   private long size;

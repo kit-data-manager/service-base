@@ -108,4 +108,8 @@ public class DataResource implements Serializable{
   @JsonSerialize(using = CustomInstantSerializer.class)
   private Instant lastUpdate;
 
+  @XmlElementWrapper(name = "aclEntries")
+  @XmlElement(name = "aclEntry")
+  private Set<AclEntry> acls = new HashSet<>();
+
 }
