@@ -22,7 +22,10 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kit.datamanager.exceptions.MessageValidationException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import lombok.Data;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Instant;
@@ -40,11 +43,13 @@ public class BasicMessage implements IAMQPSubmittable{
   private long timestamp;
 
   private String entityId;
+  //list of addressees for internal use, e.g. if triggering a dedicated handler 
+  private Set<String> addressees = new HashSet<>();
   private String action;
   @JsonInclude(Include.NON_NULL)
   private String subCategory;
   @JsonInclude(Include.NON_NULL)
-  private Map<String, String> metadata;
+  private Map<String, String> metadata = new HashMap<>();
 
   @JsonIgnore
   public String getEntityName(){
