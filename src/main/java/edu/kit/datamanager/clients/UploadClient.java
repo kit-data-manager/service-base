@@ -74,7 +74,7 @@ public class UploadClient{
     return this;
   }
 
-  public UploadClient withOverwrite(boolean overwrite){
+  public UploadClient overwrite(boolean overwrite){
     this.overwrite = overwrite;
     return this;
   }

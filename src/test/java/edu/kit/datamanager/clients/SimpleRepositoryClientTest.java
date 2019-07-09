@@ -92,7 +92,7 @@ public class SimpleRepositoryClientTest{
     res.setId("test123");
 
     SimpleRepositoryClient client = SimpleRepositoryClient.createClient("http://localhost:8080/api/v1/dataresources/");
-    MultiResourceAccessClient multiClient = client.page(0).withElementsPerPage(100);
+    MultiResourceAccessClient multiClient = client.elementsPerPage(100).page(0);
     multiClient.setRestTemplate(restTemplate);
 
     mockServer.expect(once(), requestTo("http://localhost:8080/api/v1/dataresources/?page=0&size=100"))
@@ -209,7 +209,7 @@ public class SimpleRepositoryClientTest{
 
       Files.write(tmp, "This is a test".getBytes());
 
-      UploadClient uploadClient = client.withResourceId("test123").withFile(tmp.toFile());
+      UploadClient uploadClient = client.withResourceId("test123").overwrite(false).withFile(tmp.toFile());
 
       uploadClient.setRestTemplate(restTemplate);
 
@@ -256,7 +256,7 @@ public class SimpleRepositoryClientTest{
 
       Files.write(tmp, "This is a test".getBytes());
 
-      UploadClient uploadClient = client.withResourceId("test123").withFile(tmp.toFile()).withOverwrite(true);
+      UploadClient uploadClient = client.withResourceId("test123").withFile(tmp.toFile()).overwrite(true);
 
       uploadClient.setRestTemplate(restTemplate);
 
@@ -286,7 +286,7 @@ public class SimpleRepositoryClientTest{
 
       Files.write(tmp, "This is a test".getBytes());
 
-      UploadClient uploadClient = client.withResourceId("test123").withFile(tmp.toFile()).withMetadata(res).withOverwrite(true);
+      UploadClient uploadClient = client.withResourceId("test123").withFile(tmp.toFile()).withMetadata(res).overwrite(true);
 
       uploadClient.setRestTemplate(restTemplate);
 
@@ -316,7 +316,7 @@ public class SimpleRepositoryClientTest{
 
       Files.write(tmp, "This is a test".getBytes());
 
-      UploadClient uploadClient = client.withResourceId("test123").withMetadata(res).withOverwrite(true);
+      UploadClient uploadClient = client.withResourceId("test123").withMetadata(res).overwrite(true);
 
       uploadClient.setRestTemplate(restTemplate);
 

@@ -49,13 +49,13 @@ public class MultiResourceAccessClient{
     this.restTemplate = restTemplate;
   }
 
-  public MultiResourceAccessClient withPage(int page){
+  public MultiResourceAccessClient page(int page){
     LOGGER.trace("Calling withPage({}).", page);
     this.page = page >= 0 ? page : 0;
     return this;
   }
 
-  public MultiResourceAccessClient withElementsPerPage(int elementsPerPage){
+  public MultiResourceAccessClient elementsPerPage(int elementsPerPage){
     LOGGER.trace("Calling withElementsPerPage({}).", elementsPerPage);
     this.elementsPerPage = (elementsPerPage <= 100) ? elementsPerPage : 100;
     return this;

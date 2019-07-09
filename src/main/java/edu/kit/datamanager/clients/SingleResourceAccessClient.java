@@ -47,11 +47,6 @@ public class SingleResourceAccessClient{
     this.resourceId = resourceId;
   }
 
-  public void setAccept(MediaType accept){
-    LOGGER.trace("Setting accept header to value {}.", accept);
-    headers.setAccept(Arrays.asList(accept));
-  }
-
   protected void setRestTemplate(RestTemplate restTemplate){
     this.restTemplate = restTemplate;
   }
@@ -119,6 +114,6 @@ public class SingleResourceAccessClient{
   public UploadClient overwrite(boolean overwrite){
     LOGGER.trace("Calling overwrite({}) and switching to UploadClient.", overwrite);
     UploadClient client = new UploadClient(resourceBaseUrl, resourceId);
-    return client.withOverwrite(overwrite);
+    return client.overwrite(overwrite);
   }
 }

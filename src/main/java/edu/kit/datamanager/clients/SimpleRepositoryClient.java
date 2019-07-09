@@ -44,12 +44,12 @@ public class SimpleRepositoryClient{
 
   public MultiResourceAccessClient elementsPerPage(int elementsPerPage){
     LOGGER.trace("Creating SingleResourceAccessClient with {} elements per page.", elementsPerPage);
-    return new MultiResourceAccessClient(resourceBaseUrl).withElementsPerPage(elementsPerPage);
+    return new MultiResourceAccessClient(resourceBaseUrl).elementsPerPage(elementsPerPage);
   }
 
   public MultiResourceAccessClient page(int page){
     LOGGER.trace("Creating MultiResourceAccessClient with page {}.", page);
-    return new MultiResourceAccessClient(resourceBaseUrl).withPage(page);
+    return new MultiResourceAccessClient(resourceBaseUrl).page(page);
   }
 
 //  public static void main(String[] args) throws Exception{
