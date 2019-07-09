@@ -58,15 +58,11 @@ public class DataCiteMapperTest{
     a.setFamilyName("Jejkal");
     dataResource.getCreators().add(a);
 //
-    Title t = new Title();
+    Title t = Title.createTitle("This is the title", Title.TITLE_TYPE.SUBTITLE);
     t.setLang("en");
-    t.setTitleType(Title.TITLE_TYPE.SUBTITLE);
-    t.setValue("This is the title");
     dataResource.getTitles().add(t);
 //
-    ResourceType type = new ResourceType();
-    type.setTypeGeneral(ResourceType.TYPE_GENERAL.DATASET);
-    type.setValue("Custom Dataset");
+    ResourceType type = ResourceType.createResourceType("Custom Dataset",ResourceType.TYPE_GENERAL.DATASET);
     dataResource.setResourceType(type);
 //
     Contributor con = new Contributor();
@@ -116,12 +112,11 @@ public class DataCiteMapperTest{
     ref.setFunderIdentifier(fid);
     dataResource.getFundingReferences().add(ref);
 //
-    GeoLocation geo = new GeoLocation();
+    GeoLocation geo = GeoLocation.factoryGeoLocation("Karlsruhe");
     Point po = new Point();
     po.setLatitude(1.0f);
     po.setLongitude(2.0f);
     geo.setPoint(po);
-    geo.setPlace("Karlsruhe");
 
     Box box = new Box();
     box.setEastLongitude(0.0f);

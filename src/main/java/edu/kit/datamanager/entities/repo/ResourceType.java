@@ -66,10 +66,7 @@ public class ResourceType{
   private TYPE_GENERAL typeGeneral;
 
   public static ResourceType createResourceType(String value){
-    ResourceType type = new ResourceType();
-    type.value = value;
-    type.typeGeneral = TYPE_GENERAL.DATASET;
-    return type;
+    return createResourceType(value, TYPE_GENERAL.DATASET);
   }
 
   public static ResourceType createResourceType(String value, TYPE_GENERAL typeGeneral){

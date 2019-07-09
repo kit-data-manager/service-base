@@ -112,6 +112,7 @@ jacocoTestReport {
             fileTree(dir: it, exclude: [\
                       //pure entity package currently not needed
             'org/datacite/**', \
+                   'org/purl/**', \
                   //performance tests
             'edu/kit/datamanager/perf/**', \
                   //remove AuthenticationHelper tests due to mocking -> code coverage cannot be determined

@@ -55,9 +55,7 @@ public class Title{
   private String lang;
 
   public static Title createTitle(String value){
-    Title t = new Title();
-    t.value = value;
-    return t;
+    return createTitle(value, null);
   }
 
   public static Title createTitle(String value, TITLE_TYPE type){
