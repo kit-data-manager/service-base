@@ -37,7 +37,7 @@ public class SingleResourceAccessClient{
 
   private final static Logger LOGGER = LoggerFactory.getLogger(SingleResourceAccessClient.class);
 
-  private RestTemplate restTemplate;
+  private RestTemplate restTemplate = new RestTemplate();
   private HttpHeaders headers;
   private final String resourceBaseUrl;
   private final String resourceId;
@@ -50,6 +50,10 @@ public class SingleResourceAccessClient{
   public void setAccept(MediaType accept){
     LOGGER.trace("Setting accept header to value {}.", accept);
     headers.setAccept(Arrays.asList(accept));
+  }
+
+  protected void setRestTemplate(RestTemplate restTemplate){
+    this.restTemplate = restTemplate;
   }
 
   public DataResource getResource(){
@@ -87,7 +91,6 @@ public class SingleResourceAccessClient{
     String destinationUri = resourceBaseUrl + resourceId + "/data/" + relativePath;
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri);
     LOGGER.trace("Obtaining content information from URI {}.", uriBuilder.toUriString());
-    restTemplate = new RestTemplate();
     if(relativePath.length() == 0 || relativePath.endsWith("/")){
       LOGGER.trace("Expecting content information collection for relative path '{}'.", relativePath);
       ResponseEntity<ContentInformation[]> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, new HttpEntity<>(headers), ContentInformation[].class);

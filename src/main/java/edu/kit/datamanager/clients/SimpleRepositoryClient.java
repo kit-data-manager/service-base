@@ -15,8 +15,6 @@
  */
 package edu.kit.datamanager.clients;
 
-import edu.kit.datamanager.entities.repo.ContentInformation;
-import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,16 +52,15 @@ public class SimpleRepositoryClient{
     return new MultiResourceAccessClient(resourceBaseUrl).withPage(page);
   }
 
-  public static void main(String[] args) throws Exception{
-//    System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").accept(MediaType.APPLICATION_JSON).withResourceId("f241b201-aed3-4753-a051-a349caf21fe5").getResource());
-    // System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").page(0).getResources());
-    //  System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").withResourceId("f241b201-aed3-4753-a051-a349caf21fe5").getContentInformation("generated/f241b201-aed3-4753-a051-a349caf21fe5_metadata.elastic.json"));
-    ContentInformation metadata = new ContentInformation();
-    metadata.getTags().add("file");
-    metadata.getTags().add("uploadClient");
-
-    SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").withResourceId("f241b201-aed3-4753-a051-a349caf21fe5").withFile(new File("/Users/jejkal/Downloads/810434162_3053947.pdf")).withMetadata(metadata).upload("myFile2.pdf");
-
-  }
+//  public static void main(String[] args) throws Exception{
+////    System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").accept(MediaType.APPLICATION_JSON).withResourceId("f241b201-aed3-4753-a051-a349caf21fe5").getResource());
+//    // System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").page(0).getResources());
+//    //  System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").withResourceId("f241b201-aed3-4753-a051-a349caf21fe5").getContentInformation("generated/f241b201-aed3-4753-a051-a349caf21fe5_metadata.elastic.json"));
+//    ContentInformation metadata = new ContentInformation();
+//    metadata.getTags().add("file");
+//    metadata.getTags().add("uploadClient");
+//
+//    SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").withResourceId("f241b201-aed3-4753-a051-a349caf21fe5").withFile(new File("/Users/jejkal/Downloads/810434162_3053947.pdf")).withMetadata(metadata).upload("myFile2.pdf");
+//  }
 
 }

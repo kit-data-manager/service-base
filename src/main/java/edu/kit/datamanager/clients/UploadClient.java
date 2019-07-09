@@ -40,7 +40,7 @@ public class UploadClient{
 
   private final static Logger LOGGER = LoggerFactory.getLogger(UploadClient.class);
 
-  private RestTemplate restTemplate;
+  private RestTemplate restTemplate = new RestTemplate();
   private HttpHeaders headers;
   private final String resourceBaseUrl;
   private final String resourceId;
@@ -54,6 +54,10 @@ public class UploadClient{
     this.headers = new HttpHeaders();
     this.resourceBaseUrl = resourceBaseUrl;
     this.resourceId = resourceId;
+  }
+
+  protected void setRestTemplate(RestTemplate restTemplate){
+    this.restTemplate = restTemplate;
   }
 
   public UploadClient withFile(File file){
@@ -107,7 +111,6 @@ public class UploadClient{
             fromHttpUrl(destinationUri).
             queryParam("force", overwrite);
     LOGGER.trace("Uploading content to destination URI {}.", uriBuilder.toUriString());
-    restTemplate = new RestTemplate();
     ResponseEntity<String> response = restTemplate.postForEntity(uriBuilder.toUriString(), new HttpEntity<>(body, headers), String.class);
     LOGGER.trace("Upload returned with status {}.", response.getStatusCodeValue());
     return response.getStatusCodeValue();

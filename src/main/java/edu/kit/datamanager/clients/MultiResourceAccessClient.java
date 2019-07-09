@@ -35,7 +35,7 @@ public class MultiResourceAccessClient{
 
   private final static Logger LOGGER = LoggerFactory.getLogger(MultiResourceAccessClient.class);
 
-  private RestTemplate restTemplate;
+  private RestTemplate restTemplate = new RestTemplate();
   private HttpHeaders headers;
   private final String resourceBaseUrl;
   private int elementsPerPage = 20;
@@ -43,6 +43,10 @@ public class MultiResourceAccessClient{
 
   MultiResourceAccessClient(String resourceBaseUrl){
     this.resourceBaseUrl = resourceBaseUrl;
+  }
+
+  protected void setRestTemplate(RestTemplate restTemplate){
+    this.restTemplate = restTemplate;
   }
 
   public MultiResourceAccessClient withPage(int page){
@@ -64,7 +68,6 @@ public class MultiResourceAccessClient{
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(resourceBaseUrl).queryParam("page", page).queryParam("size", elementsPerPage);
     LOGGER.trace("Requesting resource sfrom URI {}.", uriBuilder.toUriString());
-    restTemplate = new RestTemplate();
     ResponseEntity<DataResource[]> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, new HttpEntity<>(headers), DataResource[].class);
     LOGGER.trace("Request returned with status {}. Returning response body.", response.getStatusCodeValue());
     return response.getBody();
