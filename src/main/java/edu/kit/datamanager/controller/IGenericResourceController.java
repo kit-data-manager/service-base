@@ -78,7 +78,7 @@ public interface IGenericResourceController<C>{
   @RequestMapping(value = "/", method = RequestMethod.GET)
   @ResponseBody
   public ResponseEntity<List<C>> findAll(@RequestParam(value = "The UTC time of the earliest update of a returned resource.", name = "from", required = false) final Instant lastUpdateFrom,
-          @RequestParam(value = "The UTC time of the latest update of a returned resource.", name = "until", required = false) final Instant lastUpdateUntil,
+          @ApiParam(value = "The UTC time of the latest update of a returned resource.", required = false) @RequestParam(name = "until", required = false) final Instant lastUpdateUntil,
           final Pageable pgbl,
           final WebRequest request,
           final HttpServletResponse response,
@@ -103,8 +103,8 @@ public interface IGenericResourceController<C>{
   @RequestMapping(value = "/search", method = RequestMethod.POST)
   @ResponseBody
   public abstract ResponseEntity<List<C>> findByExample(@ApiParam(value = "Json representation of the resource serving as example for the search operation. Typically, only first level primitive attributes are evaluated while building queries from examples.", required = true) @RequestBody C example,
-          @RequestParam(value = "The UTC time of the earliest update of a returned resource.", name = "from", required = false) final Instant lastUpdateFrom,
-          @RequestParam(value = "The UTC time of the latest update of a returned resource.", name = "until", required = false) final Instant lastUpdateUntil,
+          @ApiParam(value = "The UTC time of the earliest update of a returned resource.", required = false) @RequestParam(name = "from", required = false) final Instant lastUpdateFrom,
+          @ApiParam(value = "The UTC time of the latest update of a returned resource.", required = false) @RequestParam(name = "until", required = false) final Instant lastUpdateUntil,
           final Pageable pgbl,
           final WebRequest request,
           final HttpServletResponse response,

@@ -150,4 +150,10 @@ public class DataResourceMessage extends BasicMessage{
     return "dataresource";
   }
   
+  public static void main(String[] args) throws Exception{
+    DataResourceMessage msg = DataResourceMessage.factoryCreateMessage("test123", "me", "you");
+    System.out.println(msg.toJson());
+    
+  }
+  
   }

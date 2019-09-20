@@ -67,7 +67,7 @@ public class MultiResourceAccessClient{
     LOGGER.trace("Setting accept header to value {}.", MediaType.APPLICATION_JSON);
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(resourceBaseUrl).queryParam("page", page).queryParam("size", elementsPerPage);
-    LOGGER.trace("Requesting resource sfrom URI {}.", uriBuilder.toUriString());
+    LOGGER.trace("Requesting resource from URI {}.", uriBuilder.toUriString());
     ResponseEntity<DataResource[]> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, new HttpEntity<>(headers), DataResource[].class);
     LOGGER.trace("Request returned with status {}. Returning response body.", response.getStatusCodeValue());
     return response.getBody();

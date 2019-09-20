@@ -61,5 +61,4 @@ public class RabbitMQConfiguration{
   public TopicExchange exchange(){
     return new TopicExchange(topic);
   }
-
 }
