@@ -42,9 +42,9 @@ public class RabbitMQMessagingService implements IMessagingService{
       try{
         String msgString = msg.toJson();
         String msgRoute = msg.getRoutingKey();
-        String exchangeName = configuration.exchange().getName();
+        String exchangeName = configuration.rabbitMQExchange().getName();
         logger.trace("Sending message {} via exchange {} and route {}.", msgString, exchangeName, msgRoute);
-        configuration.rabbitTemplate().convertAndSend(configuration.exchange().getName(), msgRoute, msgString);
+        configuration.rabbitMQTemplate().convertAndSend(configuration.rabbitMQExchange().getName(), msgRoute, msgString);
         logger.trace("Message sent.");
       } catch(JsonProcessingException ex){
         logger.error("Failed to send message " + msg + ". Unable to serialize message to JSON.", ex);
@@ -57,7 +57,7 @@ public class RabbitMQMessagingService implements IMessagingService{
   @Override
   public Health health(){
     logger.trace("Obtaining health information.");
-    return Health.up().withDetail("RabbitMQMessaging", configuration.exchange()).build();
+    return Health.up().withDetail("RabbitMQMessaging", configuration.rabbitMQExchange()).build();
   }
 
 }

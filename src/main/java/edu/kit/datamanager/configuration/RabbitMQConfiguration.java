@@ -47,18 +47,18 @@ public class RabbitMQConfiguration{
   private boolean messagingEnabled;
 
   @Bean
-  public ConnectionFactory connectionFactory(){
+  public ConnectionFactory rabbitMQConnectionFactory(){
     logger.trace("Connecting to RabbitMQ service at host {} and port {}.", hostname, port);
     return new CachingConnectionFactory(hostname, port);
   }
 
   @Bean
-  public RabbitTemplate rabbitTemplate(){
-    return new RabbitTemplate(connectionFactory());
+  public RabbitTemplate rabbitMQTemplate(){
+    return new RabbitTemplate(rabbitMQConnectionFactory());
   }
 
   @Bean
-  public TopicExchange exchange(){
+  public TopicExchange rabbitMQExchange(){
     return new TopicExchange(topic);
   }
 }
