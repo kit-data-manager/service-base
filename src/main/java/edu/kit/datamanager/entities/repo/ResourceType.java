@@ -60,7 +60,7 @@ public class ResourceType{
     }
 
   }
-
+  private long id;
   private String value;
   //vocab, e.g. Dataset, Image....
   private TYPE_GENERAL typeGeneral;

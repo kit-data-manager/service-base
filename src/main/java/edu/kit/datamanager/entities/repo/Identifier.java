@@ -63,7 +63,7 @@ public class Identifier{
       return value;
     }
   }
-
+  private long id;
   private String value;
   private IDENTIFIER_TYPE identifierType;
 }

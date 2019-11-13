@@ -48,7 +48,8 @@ public class Title{
     }
 
   }
-
+  
+  private long id;
   private String value;
   //vocab, e.g. Subtitle, AlternativeTitle
   private TITLE_TYPE titleType;

@@ -30,6 +30,7 @@ import lombok.Data;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GeoLocation{
 
+  private long id;
   @XmlElement(name = "geoLocationPoint")
   private Point point;
   @XmlElement(name = "geoLocationBox")

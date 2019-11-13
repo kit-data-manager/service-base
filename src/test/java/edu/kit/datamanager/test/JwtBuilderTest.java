@@ -134,7 +134,7 @@ public class JwtBuilderTest{
   public void testTemporaryTokenWithInvalidScopedPermissions() throws IOException{
     JwtBuilder builder = JwtBuilder.createTemporaryToken("test@mail.org");
     Assert.assertEquals("[]", builder.getClaimMap().get("permissions"));
-    builder = JwtBuilder.createTemporaryToken("test@mail.org", null);
+    builder = JwtBuilder.createTemporaryToken("test@mail.org", (ScopedPermission[])null);
     Assert.assertEquals("[]", builder.getClaimMap().get("permissions"));
   }
 }

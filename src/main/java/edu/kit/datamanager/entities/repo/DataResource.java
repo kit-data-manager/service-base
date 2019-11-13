@@ -16,14 +16,17 @@
 package edu.kit.datamanager.entities.repo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import edu.kit.datamanager.entities.BaseEnum;
 import edu.kit.datamanager.util.json.CustomInstantDeserializer;
 import edu.kit.datamanager.util.json.CustomInstantSerializer;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -42,6 +45,18 @@ import lombok.Data;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "resource", namespace = "http://datacite.org/schema/kernel-4")
 public class DataResource implements Serializable{
+
+  public enum State implements BaseEnum{
+    VOLATILE,
+    FIXED,
+    REVOKED,
+    GONE;
+
+    @Override
+    public String getValue(){
+      return toString();
+    }
+  }
 
   //The internal resource identifier assigned once during creation
   //mandatory
@@ -79,6 +94,7 @@ public class DataResource implements Serializable{
   @XmlElementWrapper(name = "descriptions")
   @XmlElement(name = "description")
   private Set<Description> descriptions = new HashSet<>();
+  private State state;
   @XmlElementWrapper(name = "geoLocations")
   @XmlElement(name = "geoLocation")
   private Set<GeoLocation> geoLocations = new HashSet<>();
@@ -106,5 +122,9 @@ public class DataResource implements Serializable{
   @XmlElementWrapper(name = "aclEntries")
   @XmlElement(name = "aclEntry")
   private Set<AclEntry> acls = new HashSet<>();
+
+  @XmlTransient
+  @JsonIgnore
+  private List<ContentInformation> associatedContentInformation;
 
 }

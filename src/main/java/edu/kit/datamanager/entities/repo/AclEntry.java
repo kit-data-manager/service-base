@@ -25,6 +25,7 @@ import lombok.Data;
 @Data
 public class AclEntry{
 
+  private long id;
   private String sid;
   private PERMISSION permission;
 

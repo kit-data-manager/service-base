@@ -79,7 +79,7 @@ public class SimpleRepositoryClientTest{
     mockServer.expect(once(), requestTo("http://localhost:8080/api/v1/dataresources/?page=0&size=20"))
             .andRespond(withSuccess(mapper.writeValueAsString(new DataResource[]{res}), MediaType.APPLICATION_JSON));
 
-    DataResource[] result = multiClient.getResources();
+    DataResource[] result = multiClient.getResources().getResources();
 
     mockServer.verify();
     assertEquals(1, result.length);
@@ -98,7 +98,7 @@ public class SimpleRepositoryClientTest{
     mockServer.expect(once(), requestTo("http://localhost:8080/api/v1/dataresources/?page=0&size=100"))
             .andRespond(withSuccess(mapper.writeValueAsString(new DataResource[]{res}), MediaType.APPLICATION_JSON));
 
-    DataResource[] result = multiClient.getResources();
+    DataResource[] result = multiClient.getResources().getResources();
     System.out.println("testGetRootResourceOnce: " + result);
 
     mockServer.verify();
@@ -118,7 +118,7 @@ public class SimpleRepositoryClientTest{
     mockServer.expect(once(), requestTo("http://localhost:8080/api/v1/dataresources/?page=10&size=20"))
             .andRespond(withSuccess(mapper.writeValueAsString(new DataResource[]{res}), MediaType.APPLICATION_JSON));
 
-    DataResource[] result = multiClient.getResources();
+    DataResource[] result = multiClient.getResources().getResources();
     System.out.println("testGetRootResourceOnce: " + result);
 
     mockServer.verify();

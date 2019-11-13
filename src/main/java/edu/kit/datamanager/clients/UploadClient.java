@@ -19,10 +19,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kit.datamanager.entities.repo.ContentInformation;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -46,6 +50,7 @@ public class UploadClient{
   private final String resourceId;
 
   private File file;
+  private InputStream stream;
   private ContentInformation metadata;
   private boolean overwrite;
 
@@ -61,10 +66,16 @@ public class UploadClient{
   }
 
   public UploadClient withFile(File file){
-    if(file != null){
-      LOGGER.trace("Setting file to upload to {}.", file);
-      this.file = file;
-    }
+    LOGGER.trace("Setting file to upload to {}.", file);
+    this.file = file;
+    this.stream = null;
+    return this;
+  }
+
+  public UploadClient withStream(InputStream stream){
+    LOGGER.trace("Setting stream to upload.");
+    this.file = null;
+    this.stream = stream;
     return this;
   }
 
@@ -79,20 +90,29 @@ public class UploadClient{
     return this;
   }
 
-  public int upload(String relativePath) throws JsonProcessingException{
+  public int upload(String relativePath) throws JsonProcessingException, IOException{
     LOGGER.trace("Calling upload({}).", relativePath);
     headers = new HttpHeaders();
     LOGGER.trace("Adding content type header with value {}.", MediaType.MULTIPART_FORM_DATA);
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
     LOGGER.trace("Adding file argument for file {}.", file);
-    if(file == null && metadata == null){
-      throw new IllegalArgumentException("Unable to perform upload without file and metadata.");
-    } else if(file == null && metadata.getContentUri() == null){
-      throw new IllegalArgumentException("Unable to perform upload without file and metadata content uri.");
+    if(file == null && stream == null && metadata == null){
+      throw new IllegalArgumentException("Unable to perform upload with none of file, stream and metadata.");
+    } else if(file == null && stream == null && metadata.getContentUri() == null){
+      throw new IllegalArgumentException("Unable to perform upload without file, stream and metadata content uri.");
     } else if(file != null){
       body.add("file", new FileSystemResource(file));
+    } else if(stream != null){
+      body.add("file", new ByteArrayResource(stream.readAllBytes()){
+        //overwriting filename required by spring (see https://medium.com/@voziv/posting-a-byte-array-instead-of-a-file-using-spring-s-resttemplate-56268b45140b)
+        @Override
+        public String getFilename(){
+          return "stream#" + UUID.randomUUID().toString();
+        }
+      });
     }
+
     if(metadata != null){
       String contentMetadataString = new ObjectMapper().writeValueAsString(metadata);
       LOGGER.trace("Adding metadata argument from JSON document {}.", contentMetadataString);

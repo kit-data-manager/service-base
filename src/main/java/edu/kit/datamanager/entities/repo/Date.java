@@ -61,7 +61,8 @@ public class Date{
       return value;
     }
   }
-
+  
+  private long id;
   //ISO format
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
   @JsonDeserialize(using = CustomInstantDeserializer.class)

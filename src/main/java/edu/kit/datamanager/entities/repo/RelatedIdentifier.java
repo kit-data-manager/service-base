@@ -105,7 +105,7 @@ public class RelatedIdentifier{
       return value;
     }
   }
-
+  private long id;
   private RELATED_IDENTIFIER_TYPE identifierType;
   private String value;
   //vocab, e.g. IsMetadataFor...

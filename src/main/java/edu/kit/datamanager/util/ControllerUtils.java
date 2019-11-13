@@ -24,12 +24,16 @@ import edu.kit.datamanager.exceptions.EtagMissingException;
 import edu.kit.datamanager.exceptions.UnauthorizedAccessException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.context.request.WebRequest;
+
 /**
  *
  * @author jejkal
@@ -37,6 +41,7 @@ import org.springframework.web.context.request.WebRequest;
 public class ControllerUtils{
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ControllerUtils.class);
+  private static final Pattern CONTENT_RANGE_PATTERN = Pattern.compile("([\\d]+)[-]([\\d]+)[/]([\\d]+)");
 
   /**
    * Hidden constructor.
@@ -164,4 +169,46 @@ public class ControllerUtils{
       throw new BadArgumentException("Provided id must be numeric.");
     }
   }
+
+  public static String getContentRangeHeader(int currentPage, int pageSize, long totalElements){
+    int indexStart = currentPage * pageSize;
+    int indexEnd = indexStart + pageSize;
+    return indexStart + "-" + indexEnd + "/" + totalElements;
+  }
+
+  public static ContentRange parseContentRangeHeader(String headerValue){
+    Matcher m = CONTENT_RANGE_PATTERN.matcher(headerValue);
+    ContentRange range = new ContentRange();
+
+    if(m.find()){
+      range.indexStart = Integer.parseInt(m.group(1));
+      range.indexEnd = Integer.parseInt(m.group(2));
+      range.totalElements = Long.parseLong(m.group(3));
+    }
+
+    return range;
+  }
+
+  @Data
+  public static class ContentRange{
+
+    public static ContentRange empty(){
+      return new ContentRange();
+    }
+
+    private int indexStart = 0;
+    private int indexEnd = 0;
+    private long totalElements = 0l;
+  }
+
+//  public static void main(String[] args){
+//    Pattern p = Pattern.compile("([\\d]+)[-]([\\d]+)[/]([\\d]+)");
+//    String s = "12-34/123";
+//    Matcher m = p.matcher(s);
+//    System.out.println(m.find());
+//
+//    System.out.println(m.group(1));
+//    System.out.println(m.group(2));
+//    System.out.println(m.group(3));
+//  }
 }

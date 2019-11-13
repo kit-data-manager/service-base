@@ -29,6 +29,7 @@ import lombok.Data;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Subject{
 
+  private long id;
   private String value;
   private Scheme scheme;
   private String valueUri;

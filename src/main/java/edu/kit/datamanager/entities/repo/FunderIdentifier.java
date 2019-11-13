@@ -86,7 +86,7 @@ public class FunderIdentifier{
       return value;
     }
   }
-
+  private long id;
   private FUNDER_IDENTIFIER_TYPE identifierType;
   private String value;
   private FUNDER_TYPE type;

@@ -53,6 +53,7 @@ public class Contributor{
     SUPERVISOR("Supervisor"),
     WORK_PACKAGE_LEADER("WorkPackageLeader");
 
+    private long id;
     private final String value;
 
     CONTRIBUTOR_TYPE(String value){

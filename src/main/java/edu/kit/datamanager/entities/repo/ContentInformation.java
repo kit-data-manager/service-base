@@ -17,6 +17,7 @@ package edu.kit.datamanager.entities.repo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +39,7 @@ public class ContentInformation implements Serializable{
 
   public static final MediaType CONTENT_INFORMATION_MEDIA_TYPE = MediaType.parseMediaType("application/vnd.datamanager.content-information+json");
 
+  private long id;
   private String relativePath;
   private String contentUri;
   private String uploader;
@@ -46,6 +48,7 @@ public class ContentInformation implements Serializable{
   private long size;
   private Map<String, String> metadata = new HashMap<>();
   private Set<String> tags = new HashSet<>();
+  private InputStream contentStream;
 
   public String getFilename(){
 

@@ -29,6 +29,7 @@ import lombok.Data;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FundingReference{
 
+  private long id;
   private String funderName;
   //use identifier?
   private FunderIdentifier funderIdentifier;

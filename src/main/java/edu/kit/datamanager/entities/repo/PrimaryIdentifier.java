@@ -31,6 +31,7 @@ import lombok.Data;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PrimaryIdentifier{
 
+  private long id;
   @XmlValue
   private String value;
   @XmlAttribute(name = "identifierType", required = true)

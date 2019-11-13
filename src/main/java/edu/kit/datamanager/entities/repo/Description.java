@@ -52,6 +52,7 @@ public class Description{
     }
   }
 
+  private long id;
   private String description;
   //vocab, e.g. Abstract
   private TYPE type;
