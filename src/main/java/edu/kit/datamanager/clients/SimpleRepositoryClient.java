@@ -15,6 +15,7 @@
  */
 package edu.kit.datamanager.clients;
 
+import edu.kit.datamanager.entities.repo.DataResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +53,10 @@ public class SimpleRepositoryClient{
     return new MultiResourceAccessClient(resourceBaseUrl).page(page);
   }
 
+  public DataResource createResource(DataResource resource){
+    return new SingleResourceAccessClient(resourceBaseUrl).createResource(resource);
+  }
+
 //  public static void main(String[] args) throws Exception{
 ////    System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").accept(MediaType.APPLICATION_JSON).withResourceId("f241b201-aed3-4753-a051-a349caf21fe5").getResource());
 //    // System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").page(0).getResources());
@@ -62,5 +67,4 @@ public class SimpleRepositoryClient{
 //
 //    SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").withResourceId("f241b201-aed3-4753-a051-a349caf21fe5").withFile(new File("/Users/jejkal/Downloads/810434162_3053947.pdf")).withMetadata(metadata).upload("myFile2.pdf");
 //  }
-
 }

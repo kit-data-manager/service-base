@@ -41,10 +41,14 @@ public class SingleResourceAccessClient{
   private RestTemplate restTemplate = new RestTemplate();
   private HttpHeaders headers;
   private final String resourceBaseUrl;
-  private final String resourceId;
+  private String resourceId;
+
+  public SingleResourceAccessClient(String resourceBaseUrl){
+    this.resourceBaseUrl = resourceBaseUrl;
+  }
 
   public SingleResourceAccessClient(String resourceBaseUrl, String resourceId){
-    this.resourceBaseUrl = resourceBaseUrl;
+    this(resourceBaseUrl);
     this.resourceId = resourceId;
   }
 
@@ -100,7 +104,7 @@ public class SingleResourceAccessClient{
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
-    String destinationUri = resourceBaseUrl + resourceId;
+    String destinationUri = resourceBaseUrl;
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri);
 
     LOGGER.trace("Sending POST request for resource.");
@@ -197,7 +201,7 @@ public class SingleResourceAccessClient{
    *
    * @return The upload client.
    */
-  public UploadClient withStream(String filename, InputStream stream){
+  public UploadClient withStream(InputStream stream){
     LOGGER.trace("Calling withStream(#stream) and switching to UploadClient.");
     UploadClient client = new UploadClient(resourceBaseUrl, resourceId);
     return client.withStream(stream);
@@ -229,5 +233,30 @@ public class SingleResourceAccessClient{
     LOGGER.trace("Calling overwrite({}) and switching to UploadClient.", overwrite);
     UploadClient client = new UploadClient(resourceBaseUrl, resourceId);
     return client.overwrite(overwrite);
+  }
+
+  /**
+   * Delete a resource. This call, if supported and authorized, should always
+   * return without result.
+   */
+  public void delete(){
+    LOGGER.trace("Calling delete().");
+
+    headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+    String destinationUri = resourceBaseUrl + resourceId;
+    UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri);
+    LOGGER.trace("Obtaining resource from resource URI {}.", uriBuilder.toUriString());
+    ResponseEntity<DataResource> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, new HttpEntity<>(headers), DataResource.class);
+    LOGGER.trace("Reading ETag from response header.");
+    String etag = response.getHeaders().getFirst("ETag");
+    LOGGER.trace("Obtained ETag value {}.", etag);
+
+    LOGGER.trace("Sending DELETE request for resource with ETag {}.", etag);
+    headers.setIfMatch(etag);
+    response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.DELETE, new HttpEntity<>(headers), DataResource.class);
+    LOGGER.trace("Request returned with status {}. No response body expected.", response.getStatusCodeValue());
   }
 }
