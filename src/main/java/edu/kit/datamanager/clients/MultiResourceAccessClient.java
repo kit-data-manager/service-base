@@ -45,9 +45,15 @@ public class MultiResourceAccessClient{
   private int elementsPerPage = 20;
   private int page = 0;
   private final List<SortField> sortFields = new ArrayList<>();
+  private String bearerToken;
 
   MultiResourceAccessClient(String resourceBaseUrl){
     this.resourceBaseUrl = resourceBaseUrl;
+  }
+
+  MultiResourceAccessClient(String resourceBaseUrl, String bearerToken){
+    this(resourceBaseUrl);
+    this.bearerToken = bearerToken;
   }
 
   protected void setRestTemplate(RestTemplate restTemplate){
@@ -118,6 +124,10 @@ public class MultiResourceAccessClient{
     headers = new HttpHeaders();
     LOGGER.trace("Setting accept header to value {}.", MediaType.APPLICATION_JSON);
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+    if(bearerToken != null){
+      headers.set("Authorization", "Bearer " + bearerToken);
+    }
+
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(resourceBaseUrl).queryParam("page", page).queryParam("size", elementsPerPage);
 
     for(SortField field : sortFields){
@@ -152,13 +162,16 @@ public class MultiResourceAccessClient{
     LOGGER.trace("Setting accept header to value {}.", MediaType.APPLICATION_JSON);
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+    if(bearerToken != null){
+      headers.set("Authorization", "Bearer " + bearerToken);
+    }
+
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(resourceBaseUrl + "search").queryParam("page", page).queryParam("size", elementsPerPage);
 
     for(SortField field : sortFields){
       uriBuilder = uriBuilder.queryParam("sort", field.getFieldName()).queryParam(field.getFieldName() + ".dir", field.getDirection().toString().toLowerCase());
     }
 
-    System.out.println("URI " + uriBuilder.toUriString());
     LOGGER.trace("Requesting resources from URI {}.", uriBuilder.toUriString());
 
     ResponseEntity<DataResource[]> response = restTemplate.postForEntity(uriBuilder.toUriString(), new HttpEntity<>(example, headers), DataResource[].class);

@@ -42,6 +42,7 @@ public class SingleResourceAccessClient{
   private HttpHeaders headers;
   private final String resourceBaseUrl;
   private String resourceId;
+  private String bearerToken;
 
   public SingleResourceAccessClient(String resourceBaseUrl){
     this.resourceBaseUrl = resourceBaseUrl;
@@ -50,6 +51,11 @@ public class SingleResourceAccessClient{
   public SingleResourceAccessClient(String resourceBaseUrl, String resourceId){
     this(resourceBaseUrl);
     this.resourceId = resourceId;
+  }
+
+  public SingleResourceAccessClient(String resourceBaseUrl, String resourceId, String bearerToken){
+    this(resourceBaseUrl, resourceId);
+    this.bearerToken = bearerToken;
   }
 
   protected void setRestTemplate(RestTemplate restTemplate){
@@ -68,6 +74,9 @@ public class SingleResourceAccessClient{
     LOGGER.trace("Obtaining resource from resource URI {}.", uriBuilder.toUriString());
     headers = new HttpHeaders();
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+    if(bearerToken != null){
+      headers.set("Authorization", "Bearer " + bearerToken);
+    }
     ResponseEntity<DataResource> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, new HttpEntity<>(headers), DataResource.class);
     LOGGER.trace("Request returned with status {}. Returning response body.", response.getStatusCodeValue());
     return response.getBody();
@@ -85,6 +94,9 @@ public class SingleResourceAccessClient{
     LOGGER.trace("Obtaining resource from resource URI {}.", uriBuilder.toUriString());
     headers = new HttpHeaders();
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+    if(bearerToken != null){
+      headers.set("Authorization", "Bearer " + bearerToken);
+    }
     ResponseEntity<String> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, new HttpEntity<>(headers), String.class);
     LOGGER.trace("Request returned with status {}. Returning response body.", response.getStatusCodeValue());
     return response.getBody();
@@ -103,7 +115,9 @@ public class SingleResourceAccessClient{
     headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-
+    if(bearerToken != null){
+      headers.set("Authorization", "Bearer " + bearerToken);
+    }
     String destinationUri = resourceBaseUrl;
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri);
 
@@ -126,7 +140,9 @@ public class SingleResourceAccessClient{
     headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-
+    if(bearerToken != null){
+      headers.set("Authorization", "Bearer " + bearerToken);
+    }
     String destinationUri = resourceBaseUrl + resourceId;
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri);
     LOGGER.trace("Obtaining resource from resource URI {}.", uriBuilder.toUriString());
@@ -162,7 +178,9 @@ public class SingleResourceAccessClient{
     LOGGER.trace("Setting accept header to value {}.", ContentInformation.CONTENT_INFORMATION_MEDIA_TYPE);
     headers = new HttpHeaders();
     headers.setAccept(Arrays.asList(ContentInformation.CONTENT_INFORMATION_MEDIA_TYPE));
-
+    if(bearerToken != null){
+      headers.set("Authorization", "Bearer " + bearerToken);
+    }
     String destinationUri = resourceBaseUrl + resourceId + "/data/" + relativePath;
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri);
     LOGGER.trace("Obtaining content information from URI {}.", uriBuilder.toUriString());
@@ -180,62 +198,6 @@ public class SingleResourceAccessClient{
   }
 
   /**
-   * Create an upload client for uploading the provided file to the addressed
-   * resource. Content information metadata can be provided at the UploadClient.
-   *
-   * @param file The file to upload.
-   *
-   * @return The upload client.
-   */
-  public UploadClient withFile(File file){
-    LOGGER.trace("Calling withFile({}) and switching to UploadClient.", file);
-    UploadClient client = new UploadClient(resourceBaseUrl, resourceId);
-    return client.withFile(file);
-  }
-
-  /**
-   * Create an upload client for uploading the provided stream to the addressed
-   * resource. Content information metadata can be provided at the UploadClient.
-   *
-   * @param stream The stream to upload.
-   *
-   * @return The upload client.
-   */
-  public UploadClient withStream(InputStream stream){
-    LOGGER.trace("Calling withStream(#stream) and switching to UploadClient.");
-    UploadClient client = new UploadClient(resourceBaseUrl, resourceId);
-    return client.withStream(stream);
-  }
-
-  /**
-   * Create an upload client for uploading the provided metadata to the
-   * addressed resource. File/stream data can be provided at the UploadClient.
-   *
-   * @param metadata The content information metadata.
-   *
-   * @return The upload client.
-   */
-  public UploadClient withMetadata(ContentInformation metadata){
-    LOGGER.trace("Calling withMetadata({}) and switching to UploadClient.", metadata);
-    UploadClient client = new UploadClient(resourceBaseUrl, resourceId);
-    return client.withMetadata(metadata);
-  }
-
-  /**
-   * Create an upload client forcing the upload. Content information metadata as
-   * well as file/stream data can be provided at the UploadClient.
-   *
-   * @param overwrite TRUE to overwrite existing files, FALSE otherwise..
-   *
-   * @return The upload client.
-   */
-  public UploadClient overwrite(boolean overwrite){
-    LOGGER.trace("Calling overwrite({}) and switching to UploadClient.", overwrite);
-    UploadClient client = new UploadClient(resourceBaseUrl, resourceId);
-    return client.overwrite(overwrite);
-  }
-
-  /**
    * Delete a resource. This call, if supported and authorized, should always
    * return without result.
    */
@@ -245,7 +207,9 @@ public class SingleResourceAccessClient{
     headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-
+    if(bearerToken != null){
+      headers.set("Authorization", "Bearer " + bearerToken);
+    }
     String destinationUri = resourceBaseUrl + resourceId;
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri);
     LOGGER.trace("Obtaining resource from resource URI {}.", uriBuilder.toUriString());
@@ -259,4 +223,61 @@ public class SingleResourceAccessClient{
     response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.DELETE, new HttpEntity<>(headers), DataResource.class);
     LOGGER.trace("Request returned with status {}. No response body expected.", response.getStatusCodeValue());
   }
+
+  /**
+   * Create an upload client for uploading the provided file to the addressed
+   * resource. Content information metadata can be provided at the UploadClient.
+   *
+   * @param file The file to upload.
+   *
+   * @return The upload client.
+   */
+  public UploadClient withFile(File file){
+    LOGGER.trace("Calling withFile({}) and switching to UploadClient.", file);
+    UploadClient client = new UploadClient(resourceBaseUrl, resourceId, bearerToken);
+    return client.withFile(file);
+  }
+
+  /**
+   * Create an upload client for uploading the provided stream to the addressed
+   * resource. Content information metadata can be provided at the UploadClient.
+   *
+   * @param stream The stream to upload.
+   *
+   * @return The upload client.
+   */
+  public UploadClient withStream(InputStream stream){
+    LOGGER.trace("Calling withStream(#stream) and switching to UploadClient.");
+    UploadClient client = new UploadClient(resourceBaseUrl, resourceId, bearerToken);
+    return client.withStream(stream);
+  }
+
+  /**
+   * Create an upload client for uploading the provided metadata to the
+   * addressed resource. File/stream data can be provided at the UploadClient.
+   *
+   * @param metadata The content information metadata.
+   *
+   * @return The upload client.
+   */
+  public UploadClient withMetadata(ContentInformation metadata){
+    LOGGER.trace("Calling withMetadata({}) and switching to UploadClient.", metadata);
+    UploadClient client = new UploadClient(resourceBaseUrl, resourceId, bearerToken);
+    return client.withMetadata(metadata);
+  }
+
+  /**
+   * Create an upload client forcing the upload. Content information metadata as
+   * well as file/stream data can be provided at the UploadClient.
+   *
+   * @param overwrite TRUE to overwrite existing files, FALSE otherwise..
+   *
+   * @return The upload client.
+   */
+  public UploadClient overwrite(boolean overwrite){
+    LOGGER.trace("Calling overwrite({}) and switching to UploadClient.", overwrite);
+    UploadClient client = new UploadClient(resourceBaseUrl, resourceId, bearerToken);
+    return client.overwrite(overwrite);
+  }
+
 }

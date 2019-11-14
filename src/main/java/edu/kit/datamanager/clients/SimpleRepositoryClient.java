@@ -28,6 +28,7 @@ public class SimpleRepositoryClient{
   private final static Logger LOGGER = LoggerFactory.getLogger(SimpleRepositoryClient.class);
 
   private final String resourceBaseUrl;
+  private String bearerToken = null;
 
   private SimpleRepositoryClient(String resourceBaseUrl){
     this.resourceBaseUrl = resourceBaseUrl;
@@ -38,23 +39,28 @@ public class SimpleRepositoryClient{
     return new SimpleRepositoryClient(resourceBaseUrl);
   }
 
+  public SimpleRepositoryClient withBearerToken(String bearerToken){
+    this.bearerToken = bearerToken;
+    return this;
+  }
+
   public SingleResourceAccessClient withResourceId(String resourceId){
     LOGGER.trace("Creating SingleResourceAccessClient with resourceId {}.", resourceId);
-    return new SingleResourceAccessClient(resourceBaseUrl, resourceId);
+    return new SingleResourceAccessClient(resourceBaseUrl, resourceId, bearerToken);
   }
 
   public MultiResourceAccessClient elementsPerPage(int elementsPerPage){
     LOGGER.trace("Creating SingleResourceAccessClient with {} elements per page.", elementsPerPage);
-    return new MultiResourceAccessClient(resourceBaseUrl).elementsPerPage(elementsPerPage);
+    return new MultiResourceAccessClient(resourceBaseUrl, bearerToken).elementsPerPage(elementsPerPage);
   }
 
   public MultiResourceAccessClient page(int page){
     LOGGER.trace("Creating MultiResourceAccessClient with page {}.", page);
-    return new MultiResourceAccessClient(resourceBaseUrl).page(page);
+    return new MultiResourceAccessClient(resourceBaseUrl, bearerToken).page(page);
   }
 
   public DataResource createResource(DataResource resource){
-    return new SingleResourceAccessClient(resourceBaseUrl).createResource(resource);
+    return new SingleResourceAccessClient(resourceBaseUrl, bearerToken).createResource(resource);
   }
 
 //  public static void main(String[] args) throws Exception{

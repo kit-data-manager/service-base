@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -53,7 +52,14 @@ public class UploadClient{
   private InputStream stream;
   private ContentInformation metadata;
   private boolean overwrite;
+  private String bearerToken;
 
+  /**
+   * Default constructor.
+   *
+   * @param resourceBaseUrl Base Url for accessing resources.
+   * @param resourceId Identifier of the resource to access.
+   */
   UploadClient(String resourceBaseUrl, String resourceId){
     restTemplate = new RestTemplate();
     this.headers = new HttpHeaders();
@@ -61,10 +67,32 @@ public class UploadClient{
     this.resourceId = resourceId;
   }
 
+  /**
+   * Default constructor.
+   *
+   * @param resourceBaseUrl Base Url for accessing resources.
+   * @param resourceId Identifier of the resource to access.
+   * @param bearerToken Bearer token for authentication.
+   */
+  UploadClient(String resourceBaseUrl, String resourceId, String bearerToken){
+    this(resourceBaseUrl, resourceId);
+    this.bearerToken = bearerToken;
+  }
+
+  /**
+   * Set the rest template externally.
+   */
   protected void setRestTemplate(RestTemplate restTemplate){
     this.restTemplate = restTemplate;
   }
 
+  /**
+   * Do an upload with the provided file.
+   *
+   * @param file The file to upload.
+   *
+   * @return this
+   */
   public UploadClient withFile(File file){
     LOGGER.trace("Setting file to upload to {}.", file);
     this.file = file;
@@ -72,6 +100,13 @@ public class UploadClient{
     return this;
   }
 
+  /**
+   * Do an upload with the provided stream.
+   *
+   * @param stream The stream to upload.
+   *
+   * @return this
+   */
   public UploadClient withStream(InputStream stream){
     LOGGER.trace("Setting stream to upload.");
     this.file = null;
@@ -79,12 +114,27 @@ public class UploadClient{
     return this;
   }
 
+  /**
+   * Do an upload using the provided content metdata.
+   *
+   * @param metadata The content metadata.
+   *
+   * @return this
+   */
   public UploadClient withMetadata(ContentInformation metadata){
     LOGGER.trace("Setting metadata to upload to {}.", metadata);
     this.metadata = metadata;
     return this;
   }
 
+  /**
+   * Do an upload overwriting existing data. If true, existing data is
+   * overwritten. If false, HTTP Conflict will be returned.
+   *
+   * @param overwrite TRUE for forced upload, FALSE otherwise.
+   *
+   * @return this
+   */
   public UploadClient overwrite(boolean overwrite){
     this.overwrite = overwrite;
     return this;
@@ -95,6 +145,9 @@ public class UploadClient{
     headers = new HttpHeaders();
     LOGGER.trace("Adding content type header with value {}.", MediaType.MULTIPART_FORM_DATA);
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+    if(bearerToken != null){
+      headers.set("Authorization", "Bearer " + bearerToken);
+    }
     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
     LOGGER.trace("Adding file argument for file {}.", file);
     if(file == null && stream == null && metadata == null){
