@@ -64,13 +64,19 @@ public class SimpleRepositoryClient{
   }
 
 //  public static void main(String[] args) throws Exception{
-////    System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").accept(MediaType.APPLICATION_JSON).withResourceId("f241b201-aed3-4753-a051-a349caf21fe5").getResource());
-//    // System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").page(0).getResources());
-//    //  System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").withResourceId("f241b201-aed3-4753-a051-a349caf21fe5").getContentInformation("generated/f241b201-aed3-4753-a051-a349caf21fe5_metadata.elastic.json"));
+//    System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").accept(MediaType.APPLICATION_JSON).withResourceId("f241b201-aed3-4753-a051-a349caf21fe5").getResource());
+    // System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").page(0).getResources());
+    //  System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").withResourceId("f241b201-aed3-4753-a051-a349caf21fe5").getContentInformation("generated/f241b201-aed3-4753-a051-a349caf21fe5_metadata.elastic.json"));
 //    ContentInformation metadata = new ContentInformation();
 //    metadata.getTags().add("file");
 //    metadata.getTags().add("uploadClient");
 //
 //    SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").withResourceId("f241b201-aed3-4753-a051-a349caf21fe5").withFile(new File("/Users/jejkal/Downloads/810434162_3053947.pdf")).withMetadata(metadata).upload("myFile2.pdf");
+//    
+//    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+//    System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").withResourceId("35dd5dcc-9b98-4c0d-a964-e353b0395411").toStream(bout).download("generated/35dd5dcc-9b98-4c0d-a964-e353b0395411_metadata.elastic.json"));
+//    
+//    System.out.println(bout.toString());
+//    
 //  }
 }

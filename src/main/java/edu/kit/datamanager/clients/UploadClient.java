@@ -140,6 +140,18 @@ public class UploadClient{
     return this;
   }
 
+  /**
+   * Perform the upload to the provided relative path. Together with the
+   * previously provided elements resourceId, metadata, file/stream, force and
+   * bearer token, the upload URI is created and the data is transferred. The
+   * return value is the status code returned by the service, typically HTTP
+   * CREATED (201).
+   *
+   * @param relativePath The relative path within the addressed resource, where
+   * the file/stream is uploaded to.
+   *
+   * @return The returned HTTP status code.
+   */
   public int upload(String relativePath) throws JsonProcessingException, IOException{
     LOGGER.trace("Calling upload({}).", relativePath);
     headers = new HttpHeaders();

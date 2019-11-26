@@ -19,6 +19,7 @@ import edu.kit.datamanager.entities.repo.ContentInformation;
 import edu.kit.datamanager.entities.repo.DataResource;
 import java.io.File;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -239,6 +240,20 @@ public class SingleResourceAccessClient{
   }
 
   /**
+   * Create a download client for downloading the addressed data to the provided
+   * file.
+   *
+   * @param file The file to download to.
+   *
+   * @return The download client.
+   */
+  public DownloadClient toFile(File file){
+    LOGGER.trace("Calling toFile({}) and switching to DownloadClient.", file);
+    DownloadClient client = new DownloadClient(resourceBaseUrl, resourceId, bearerToken);
+    return client.toFile(file);
+  }
+
+  /**
    * Create an upload client for uploading the provided stream to the addressed
    * resource. Content information metadata can be provided at the UploadClient.
    *
@@ -250,6 +265,20 @@ public class SingleResourceAccessClient{
     LOGGER.trace("Calling withStream(#stream) and switching to UploadClient.");
     UploadClient client = new UploadClient(resourceBaseUrl, resourceId, bearerToken);
     return client.withStream(stream);
+  }
+
+  /**
+   * Create a download client for downloading the addressed data to the provided
+   * stream.
+   *
+   * @param stream The stream to download to.
+   *
+   * @return The upload client.
+   */
+  public DownloadClient toStream(OutputStream stream){
+    LOGGER.trace("Calling toStream(#stream) and switching to DownloadClient.");
+    DownloadClient client = new DownloadClient(resourceBaseUrl, resourceId, bearerToken);
+    return client.toStream(stream);
   }
 
   /**
