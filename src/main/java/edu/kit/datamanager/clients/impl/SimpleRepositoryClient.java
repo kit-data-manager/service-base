@@ -16,12 +16,15 @@
 package edu.kit.datamanager.clients.impl;
 
 import edu.kit.datamanager.clients.SimpleServiceClient;
+import edu.kit.datamanager.clients.SimpleServiceClient.ResultPage;
 import edu.kit.datamanager.entities.repo.ContentInformation;
 import edu.kit.datamanager.entities.repo.DataResource;
+import edu.kit.datamanager.util.ControllerUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -54,24 +57,48 @@ public class SimpleRepositoryClient{
     return SimpleServiceClient.create(resourceBaseUrl).withResourcePath(resourceId).accept(MediaType.APPLICATION_JSON).withBearerToken(bearerToken).getResource(DataResource.class);
   }
 
+  public ResultPage<DataResource> getResources(int page, int elementsPerPage, SimpleServiceClient.SortField... fields){
+    return getResources(null, page, elementsPerPage, fields);
+  }
+
+  public ResultPage<DataResource> getResources(DataResource example, int page, int elementsPerPage, SimpleServiceClient.SortField... fields){
+    SimpleServiceClient client = SimpleServiceClient.
+            create(resourceBaseUrl).
+            accept(MediaType.APPLICATION_JSON).
+            withBearerToken(bearerToken).
+            withQueryParam("page", Integer.toString(page)).
+            withQueryParam("size", Integer.toString(elementsPerPage));
+
+    if(fields != null){
+      for(SimpleServiceClient.SortField field : fields){
+        client = client.withQueryParam("sort", field.toQueryParam());
+      }
+    }
+
+    if(example == null){
+      return client.getResources(DataResource[].class);
+    }
+    return client.findResources(example, DataResource[].class);
+  }
+
   public int getData(String resourceId, String relativePath, OutputStream stream){
     return SimpleServiceClient.create(resourceBaseUrl).withResourcePath(resourceId + "/data/" + relativePath).accept(MediaType.APPLICATION_OCTET_STREAM).withBearerToken(bearerToken).getResource(stream);
   }
 
-  public HttpStatus uploadData(String resourceId, String relativePath, InputStream stream) throws IOException{
-    return uploadData(resourceId, relativePath, stream, null);
+  public HttpStatus uploadData(String resourceId, String relativePath, InputStream stream, boolean force) throws IOException{
+    return uploadData(resourceId, relativePath, stream, null, force);
   }
 
-  public HttpStatus uploadData(String resourceId, String relativePath, InputStream stream, ContentInformation metadata) throws IOException{
-    return SimpleServiceClient.create(resourceBaseUrl).withResourcePath(resourceId + "/data/" + relativePath).withBearerToken(bearerToken).withFormParam("file", stream).withFormParam("metadata", metadata).postForm();
+  public HttpStatus uploadData(String resourceId, String relativePath, InputStream stream, ContentInformation metadata, boolean force) throws IOException{
+    return SimpleServiceClient.create(resourceBaseUrl).withResourcePath(resourceId + "/data/" + relativePath).withBearerToken(bearerToken).withQueryParam("force", Boolean.toString(force)).withFormParam("file", stream).withFormParam("metadata", metadata).postForm();
   }
 
-  public HttpStatus uploadData(String resourceId, String relativePath, File file) throws IOException{
-    return uploadData(resourceId, relativePath, file, null);
+  public HttpStatus uploadData(String resourceId, String relativePath, File file, boolean force) throws IOException{
+    return uploadData(resourceId, relativePath, file, null, force);
   }
 
-  public HttpStatus uploadData(String resourceId, String relativePath, File file, ContentInformation metadata) throws IOException{
-    return SimpleServiceClient.create(resourceBaseUrl).withResourcePath(resourceId + "/data/" + relativePath).withBearerToken(bearerToken).withFormParam("file", file).withFormParam("metadata", metadata).postForm();
+  public HttpStatus uploadData(String resourceId, String relativePath, File file, ContentInformation metadata, boolean force) throws IOException{
+    return SimpleServiceClient.create(resourceBaseUrl).withResourcePath(resourceId + "/data/" + relativePath).withQueryParam("force", Boolean.toString(force)).withBearerToken(bearerToken).withFormParam("file", file).withFormParam("metadata", metadata).postForm();
   }
 
   public ContentInformation[] getContentInformation(String resourceId, String relativePath){
@@ -86,7 +113,7 @@ public class SimpleRepositoryClient{
   }
 
   public DataResource updateResource(DataResource resource){
-    return SimpleServiceClient.create(resourceBaseUrl).withContentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).withBearerToken(bearerToken).putResource(resource, DataResource.class);
+    return SimpleServiceClient.create(resourceBaseUrl).withContentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).withBearerToken(bearerToken).withResourcePath(resource.getId()).putResource(resource, DataResource.class);
   }
 
   public void deleteResource(String resourceId){

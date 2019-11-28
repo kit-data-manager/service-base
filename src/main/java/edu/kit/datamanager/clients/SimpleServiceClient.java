@@ -17,6 +17,8 @@ package edu.kit.datamanager.clients;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kit.datamanager.entities.repo.DataResource;
+import edu.kit.datamanager.util.ControllerUtils;
+import edu.kit.datamanager.util.ControllerUtils.ContentRange;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +28,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
@@ -147,8 +150,30 @@ public class SimpleServiceClient{
     return response.getBody();
   }
 
-  public int getResource(OutputStream outputStream){
+  public <C> ResultPage<C> getResources(Class<C[]> responseType){
+    LOGGER.trace("Calling getResource().");
+    String destinationUri = resourceBaseUrl + ((resourcePath != null) ? resourcePath : "");
+    UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri).queryParams(queryParams);
+    LOGGER.trace("Obtaining resource from resource URI {}.", uriBuilder.toUriString());
+    ResponseEntity<C[]> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, new HttpEntity<>(headers), responseType);
+    LOGGER.trace("Request returned with status {}. Returning response body.", response.getStatusCodeValue());
+    ContentRange contentRange = ControllerUtils.parseContentRangeHeader(response.getHeaders().getFirst("Content-Range"));
+    return new ResultPage<>(response.getBody(), contentRange);
+  }
 
+  public <C> ResultPage<C> findResources(C resource, Class<C[]> responseType){
+    LOGGER.trace("Calling getResource().");
+    String destinationUri = resourceBaseUrl + "search";
+    UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri).queryParams(queryParams);
+    LOGGER.trace("Obtaining resource from resource URI {}.", uriBuilder.toUriString());
+    ResponseEntity<C[]> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, new HttpEntity<>(resource, headers), responseType);
+
+    LOGGER.trace("Request returned with status {}. Returning response body.", response.getStatusCodeValue());
+    ContentRange contentRange = ControllerUtils.parseContentRangeHeader(response.getHeaders().getFirst("Content-Range"));
+    return new ResultPage<>(response.getBody(), contentRange);
+  }
+
+  public int getResource(OutputStream outputStream){
     String sourceUri = resourceBaseUrl + ((resourcePath != null) ? resourcePath : "");
 
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(sourceUri).queryParams(queryParams);
@@ -236,39 +261,44 @@ public class SimpleServiceClient{
   }
 
   public static void main(String[] args){
-    DataResource[] result = SimpleServiceClient.create("http://localhost:8090/api/v1/dataresources/").getResource(DataResource[].class);
-    for(DataResource r : result){
+    ResultPage<DataResource> result = SimpleServiceClient.create("http://localhost:8090/api/v1/dataresources1/").getResources(DataResource[].class);
+    System.out.println(result.getContentRange());
+    for(DataResource r : result.getResources()){
       System.out.println(r);
     }
   }
 
-//  public MultiResourceAccessClient<C> elementsPerPage(int elementsPerPage){
-//    LOGGER.trace("Creating SingleResourceAccessClient with {} elements per page.", elementsPerPage);
-//    return new MultiResourceAccessClient(resourceBaseUrl, bearerToken, getResponseTypeArray()).elementsPerPage(elementsPerPage);
-//  }
-//
-//  public MultiResourceAccessClient<C> page(int page){
-//    LOGGER.trace("Creating MultiResourceAccessClient with page {}.", page);
-//    return new MultiResourceAccessClient(resourceBaseUrl, bearerToken, getResponseTypeArray()).page(page);
-//  }
-//
-//  public C createResource(C resource){
-//    return new SingleResourceAccessClient<>(resourceBaseUrl, bearerToken, getResponseType()).createResource(resource, getResponseType());
-//  }
-//  public static void main(String[] args) throws Exception{
-//    System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").accept(MediaType.APPLICATION_JSON).withResourceId("f241b201-aed3-4753-a051-a349caf21fe5").getResource());
-  // System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").page(0).getResources());
-  //  System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").withResourceId("f241b201-aed3-4753-a051-a349caf21fe5").getContentInformation("generated/f241b201-aed3-4753-a051-a349caf21fe5_metadata.elastic.json"));
-//    ContentInformation metadata = new ContentInformation();
-//    metadata.getTags().add("file");
-//    metadata.getTags().add("uploadClient");
-//
-//    SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").withResourceId("f241b201-aed3-4753-a051-a349caf21fe5").withFile(new File("/Users/jejkal/Downloads/810434162_3053947.pdf")).withMetadata(metadata).upload("myFile2.pdf");
-//    
-//    ByteArrayOutputStream bout = new ByteArrayOutputStream();
-//    System.out.println(SimpleRepositoryClient.createClient("http://localhost:8090/api/v1/dataresources/").withResourceId("35dd5dcc-9b98-4c0d-a964-e353b0395411").toStream(bout).download("generated/35dd5dcc-9b98-4c0d-a964-e353b0395411_metadata.elastic.json"));
-//    
-//    System.out.println(bout.toString());
-//    
-//  }
+  @Data
+  public static class ResultPage<C>{
+
+    public ResultPage(C[] resources, ControllerUtils.ContentRange range){
+      this.resources = resources;
+      this.contentRange = range;
+    }
+
+    ControllerUtils.ContentRange contentRange;
+    C[] resources;
+  }
+
+  @Data
+  public static class SortField{
+
+    public enum DIR{
+      ASC,
+      DESC;
+    }
+
+    String fieldName;
+    DIR direction;
+
+    public SortField(String fieldName, DIR direction){
+      this.fieldName = fieldName;
+      this.direction = direction;
+    }
+
+    public String toQueryParam(){
+      return fieldName + ((direction != null) ? "," + direction.toString().toLowerCase() : "");
+    }
+
+  }
 }
