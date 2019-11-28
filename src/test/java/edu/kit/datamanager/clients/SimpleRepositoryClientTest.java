@@ -192,11 +192,10 @@ public class SimpleRepositoryClientTest{
     mockServer.expect(once(), requestTo("http://localhost:8080/api/v1/dataresources/test123/data/myFile.txt"))
             .andRespond(withSuccess(mapper.writeValueAsString(res), MediaType.APPLICATION_JSON));
 
-    ContentInformation[] result = client.getResource(ContentInformation[].class);
+    ContentInformation result = client.getResource(ContentInformation.class);
 
     mockServer.verify();
-    assertEquals(1, result.length);
-    assertEquals("myFile.txt", result[0].getRelativePath());
+    assertEquals("myFile.txt", result.getRelativePath());
   }
 
   @Test
