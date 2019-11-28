@@ -17,11 +17,8 @@ package edu.kit.datamanager.clients;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kit.datamanager.SpringTestConfig;
-import edu.kit.datamanager.clients.MultiResourceAccessClient;
-import edu.kit.datamanager.clients.SimpleRepositoryClient;
 import edu.kit.datamanager.entities.repo.ContentInformation;
 import edu.kit.datamanager.entities.repo.DataResource;
-import java.io.File;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,6 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -72,14 +70,14 @@ public class SimpleRepositoryClientTest{
     DataResource res = new DataResource();
     res.setId("test123");
 
-    SimpleRepositoryClient client = SimpleRepositoryClient.createClient("http://localhost:8080/api/v1/dataresources/");
-    MultiResourceAccessClient multiClient = client.page(0);
-    multiClient.setRestTemplate(restTemplate);
+    SimpleServiceClient client = new SimpleServiceClient("http://localhost:8080/api/v1/dataresources/");
+    client = client.withQueryParam("page", "0").withQueryParam("size", "20");
+    client.setRestTemplate(restTemplate);
 
     mockServer.expect(once(), requestTo("http://localhost:8080/api/v1/dataresources/?page=0&size=20"))
             .andRespond(withSuccess(mapper.writeValueAsString(new DataResource[]{res}), MediaType.APPLICATION_JSON));
 
-    DataResource[] result = multiClient.getResources().getResources();
+    DataResource[] result = client.getResource(DataResource[].class);
 
     mockServer.verify();
     assertEquals(1, result.length);
@@ -91,15 +89,14 @@ public class SimpleRepositoryClientTest{
     DataResource res = new DataResource();
     res.setId("test123");
 
-    SimpleRepositoryClient client = SimpleRepositoryClient.createClient("http://localhost:8080/api/v1/dataresources/");
-    MultiResourceAccessClient multiClient = client.elementsPerPage(100).page(0);
-    multiClient.setRestTemplate(restTemplate);
+    SimpleServiceClient client = new SimpleServiceClient("http://localhost:8080/api/v1/dataresources/");
+    client = client.withQueryParam("page", "0").withQueryParam("size", "100");
+    client.setRestTemplate(restTemplate);
 
     mockServer.expect(once(), requestTo("http://localhost:8080/api/v1/dataresources/?page=0&size=100"))
             .andRespond(withSuccess(mapper.writeValueAsString(new DataResource[]{res}), MediaType.APPLICATION_JSON));
 
-    DataResource[] result = multiClient.getResources().getResources();
-    System.out.println("testGetRootResourceOnce: " + result);
+    DataResource[] result = client.getResource(DataResource[].class);
 
     mockServer.verify();
     assertEquals(1, result.length);
@@ -111,15 +108,14 @@ public class SimpleRepositoryClientTest{
     DataResource res = new DataResource();
     res.setId("test123");
 
-    SimpleRepositoryClient client = SimpleRepositoryClient.createClient("http://localhost:8080/api/v1/dataresources/");
-    MultiResourceAccessClient multiClient = client.page(10);
-    multiClient.setRestTemplate(restTemplate);
+    SimpleServiceClient client = new SimpleServiceClient("http://localhost:8080/api/v1/dataresources/");
+    client = client.withQueryParam("page", "10");
+    client.setRestTemplate(restTemplate);
 
-    mockServer.expect(once(), requestTo("http://localhost:8080/api/v1/dataresources/?page=10&size=20"))
+    mockServer.expect(once(), requestTo("http://localhost:8080/api/v1/dataresources/?page=10"))
             .andRespond(withSuccess(mapper.writeValueAsString(new DataResource[]{res}), MediaType.APPLICATION_JSON));
 
-    DataResource[] result = multiClient.getResources().getResources();
-    System.out.println("testGetRootResourceOnce: " + result);
+    DataResource[] result = client.getResource(DataResource[].class);
 
     mockServer.verify();
     assertEquals(1, result.length);
@@ -131,14 +127,14 @@ public class SimpleRepositoryClientTest{
     DataResource res = new DataResource();
     res.setId("test123");
 
-    SimpleRepositoryClient client = SimpleRepositoryClient.createClient("http://localhost:8080/api/v1/dataresources/");
-    SingleResourceAccessClient singleClient = client.withResourceId("test123");
-    singleClient.setRestTemplate(restTemplate);
+    SimpleServiceClient client = new SimpleServiceClient("http://localhost:8080/api/v1/dataresources/");
+    client = client.withResourcePath("test123");
+    client.setRestTemplate(restTemplate);
 
     mockServer.expect(once(), requestTo("http://localhost:8080/api/v1/dataresources/test123"))
             .andRespond(withSuccess(mapper.writeValueAsString(res), MediaType.APPLICATION_JSON));
 
-    DataResource result = singleClient.getResource();
+    DataResource result = client.getResource(DataResource.class);
 
     mockServer.verify();
     assertEquals("test123", result.getId());
@@ -149,15 +145,15 @@ public class SimpleRepositoryClientTest{
     DataResource res = new DataResource();
     res.setId("test123");
 
-    SimpleRepositoryClient client = SimpleRepositoryClient.createClient("http://localhost:8080/api/v1/dataresources/");
-    SingleResourceAccessClient singleClient = client.withResourceId("test123");
-    singleClient.setRestTemplate(restTemplate);
+    SimpleServiceClient client = new SimpleServiceClient("http://localhost:8080/api/v1/dataresources/");
+    client = client.withResourcePath("test123");
+    client = client.accept(MediaType.TEXT_PLAIN);
+    client.setRestTemplate(restTemplate);
 
     mockServer.expect(once(), requestTo("http://localhost:8080/api/v1/dataresources/test123"))
             .andRespond(withSuccess(mapper.writeValueAsString(res), MediaType.APPLICATION_JSON));
 
-    String result = singleClient.getResourceAsString();
-
+    String result = client.getResource(String.class);
     mockServer.verify();
     res = mapper.readValue(result, DataResource.class);
     Assert.assertNotNull(res);
@@ -168,14 +164,15 @@ public class SimpleRepositoryClientTest{
     ContentInformation res = new ContentInformation();
     res.setRelativePath("myFile.txt");
 
-    SimpleRepositoryClient client = SimpleRepositoryClient.createClient("http://localhost:8080/api/v1/dataresources/");
-    SingleResourceAccessClient singleClient = client.withResourceId("test123");
-    singleClient.setRestTemplate(restTemplate);
+    SimpleServiceClient client = new SimpleServiceClient("http://localhost:8080/api/v1/dataresources/");
+    client = client.withResourcePath("test123/data/");
+    client = client.accept(ContentInformation.CONTENT_INFORMATION_MEDIA_TYPE);
+    client.setRestTemplate(restTemplate);
 
     mockServer.expect(once(), requestTo("http://localhost:8080/api/v1/dataresources/test123/data/"))
-            .andRespond(withSuccess(mapper.writeValueAsString(new ContentInformation[]{res}), MediaType.APPLICATION_JSON));
+            .andRespond(withSuccess(mapper.writeValueAsString(new ContentInformation[]{res}), ContentInformation.CONTENT_INFORMATION_MEDIA_TYPE));
 
-    ContentInformation[] result = singleClient.getContentInformation("/");
+    ContentInformation[] result = client.getResource(ContentInformation[].class);
 
     mockServer.verify();
     assertEquals(1, result.length);
@@ -187,14 +184,15 @@ public class SimpleRepositoryClientTest{
     ContentInformation res = new ContentInformation();
     res.setRelativePath("myFile.txt");
 
-    SimpleRepositoryClient client = SimpleRepositoryClient.createClient("http://localhost:8080/api/v1/dataresources/");
-    SingleResourceAccessClient singleClient = client.withResourceId("test123");
-    singleClient.setRestTemplate(restTemplate);
+    SimpleServiceClient client = new SimpleServiceClient("http://localhost:8080/api/v1/dataresources/");
+    client = client.withResourcePath("test123/data/myFile.txt");
+    client = client.accept(ContentInformation.CONTENT_INFORMATION_MEDIA_TYPE);
+    client.setRestTemplate(restTemplate);
 
     mockServer.expect(once(), requestTo("http://localhost:8080/api/v1/dataresources/test123/data/myFile.txt"))
             .andRespond(withSuccess(mapper.writeValueAsString(res), MediaType.APPLICATION_JSON));
 
-    ContentInformation[] result = singleClient.getContentInformation("myFile.txt");
+    ContentInformation[] result = client.getResource(ContentInformation[].class);
 
     mockServer.verify();
     assertEquals(1, result.length);
@@ -203,23 +201,22 @@ public class SimpleRepositoryClientTest{
 
   @Test
   public void testUploadContent() throws Exception{
-    SimpleRepositoryClient client = SimpleRepositoryClient.createClient("http://localhost:8080/api/v1/dataresources/");
+    SimpleServiceClient client = new SimpleServiceClient("http://localhost:8080/api/v1/dataresources/");
     Path tmp = Paths.get("testFile.txt");
     try{
 
       Files.write(tmp, "This is a test".getBytes());
 
-      UploadClient uploadClient = client.withResourceId("test123").overwrite(false).withFile(tmp.toFile());
-
-      uploadClient.setRestTemplate(restTemplate);
+      client = client.withResourcePath("test123/data/testFile.txt").withQueryParam("force", "false").withFormParam("file", tmp.toFile());
+      client.setRestTemplate(restTemplate);
 
       mockServer.expect(once(), requestTo("http://localhost:8080/api/v1/dataresources/test123/data/testFile.txt?force=false"))
               .andRespond(MockRestResponseCreators.withCreatedEntity(URI.create("http://localhost:8080/api/v1/dataresources/test123/data/testFile.txt")));
 
-      int status = uploadClient.upload("testFile.txt");
+      HttpStatus status = client.postForm();
 
       mockServer.verify();
-      assertEquals(201, status);
+      assertEquals(HttpStatus.CREATED, status);
     } finally{
       try{
         Files.delete(tmp);
@@ -230,49 +227,9 @@ public class SimpleRepositoryClientTest{
 
   @Test(expected = IllegalArgumentException.class)
   public void testUploadWithNullFile() throws Exception{
-    SimpleRepositoryClient client = SimpleRepositoryClient.createClient("http://localhost:8080/api/v1/dataresources/");
+    SimpleServiceClient client = new SimpleServiceClient("http://localhost:8080/api/v1/dataresources/");
 
-    UploadClient uploadClient = client.withResourceId("test123").withFile(null);
-
-    uploadClient.upload("testShouldFail");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testUploadWithNullFileAndNoContentUri() throws Exception{
-    SimpleRepositoryClient client = SimpleRepositoryClient.createClient("http://localhost:8080/api/v1/dataresources/");
-    ContentInformation res = new ContentInformation();
-    res.getMetadata().put("test", "OK");
-
-    UploadClient uploadClient = client.withResourceId("test123").withFile(null).withMetadata(res);
-
-    uploadClient.upload("testShouldFail");
-  }
-
-  @Test
-  public void testUploadContentWithForce() throws Exception{
-    SimpleRepositoryClient client = SimpleRepositoryClient.createClient("http://localhost:8080/api/v1/dataresources/");
-    Path tmp = Paths.get("testFile.txt");
-    try{
-
-      Files.write(tmp, "This is a test".getBytes());
-
-      UploadClient uploadClient = client.withResourceId("test123").withFile(tmp.toFile()).overwrite(true);
-
-      uploadClient.setRestTemplate(restTemplate);
-
-      mockServer.expect(once(), requestTo("http://localhost:8080/api/v1/dataresources/test123/data/testFile.txt?force=true"))
-              .andRespond(MockRestResponseCreators.withCreatedEntity(URI.create("http://localhost:8080/api/v1/dataresources/test123/data/testFile.txt")));
-
-      int status = uploadClient.upload("testFile.txt");
-
-      mockServer.verify();
-      assertEquals(201, status);
-    } finally{
-      try{
-        Files.delete(tmp);
-      } catch(Exception e){
-      }
-    }
+    client.withResourcePath("test123/data/testFile.txt").withFormParam("file", null);
   }
 
   @Test
@@ -280,53 +237,22 @@ public class SimpleRepositoryClientTest{
     ContentInformation res = new ContentInformation();
     res.getMetadata().put("test", "OK");
 
-    SimpleRepositoryClient client = SimpleRepositoryClient.createClient("http://localhost:8080/api/v1/dataresources/");
+    SimpleServiceClient client = new SimpleServiceClient("http://localhost:8080/api/v1/dataresources/");
     Path tmp = Paths.get("testFile.txt");
     try{
 
       Files.write(tmp, "This is a test".getBytes());
 
-      UploadClient uploadClient = client.withResourceId("test123").withFile(tmp.toFile()).withMetadata(res).overwrite(true);
-
-      uploadClient.setRestTemplate(restTemplate);
-
-      mockServer.expect(once(), requestTo("http://localhost:8080/api/v1/dataresources/test123/data/testFile.txt?force=true"))
-              .andRespond(MockRestResponseCreators.withCreatedEntity(URI.create("http://localhost:8080/api/v1/dataresources/test123/data/testFile.txt")));
-
-      int status = uploadClient.upload("testFile.txt");
-
-      mockServer.verify();
-      assertEquals(201, status);
-    } finally{
-      try{
-        Files.delete(tmp);
-      } catch(Exception e){
-      }
-    }
-  }
-
-  @Test
-  public void testUploadContentOnlyWithMetadata() throws Exception{
-    ContentInformation res = new ContentInformation();
-    res.setContentUri("http://google.com");
-
-    SimpleRepositoryClient client = SimpleRepositoryClient.createClient("http://localhost:8080/api/v1/dataresources/");
-    Path tmp = Paths.get("testFile.txt");
-    try{
-
-      Files.write(tmp, "This is a test".getBytes());
-
-      UploadClient uploadClient = client.withResourceId("test123").withMetadata(res).overwrite(true);
-
-      uploadClient.setRestTemplate(restTemplate);
+      client = client.withResourcePath("test123/data/testFile.txt").withFormParam("file", tmp.toFile()).withFormParam("metadata", res).withQueryParam("force", "true");
+      client.setRestTemplate(restTemplate);
 
       mockServer.expect(once(), requestTo("http://localhost:8080/api/v1/dataresources/test123/data/testFile.txt?force=true"))
               .andRespond(MockRestResponseCreators.withCreatedEntity(URI.create("http://localhost:8080/api/v1/dataresources/test123/data/testFile.txt")));
 
-      int status = uploadClient.upload("testFile.txt");
+      HttpStatus status = client.postForm();
 
       mockServer.verify();
-      assertEquals(201, status);
+      assertEquals(HttpStatus.CREATED, status);
     } finally{
       try{
         Files.delete(tmp);
