@@ -20,6 +20,7 @@ import edu.kit.datamanager.clients.SimpleServiceClient.ResultPage;
 import edu.kit.datamanager.entities.repo.ContentInformation;
 import edu.kit.datamanager.entities.repo.DataResource;
 import edu.kit.datamanager.util.ControllerUtils;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -121,7 +122,7 @@ public class SimpleRepositoryClient{
   }
 
 //  public static void main(String[] args) throws Exception{
-//    String baseUrl = "http://localhost:8090/api/v1/dataresources/";
+//       String baseUrl = "http://localhost:8090/api/v1/schemas/";
 //    String resourceId = "35dd5dcc-9b98-4c0d-a964-e353b0395411";
 //
 //    System.out.println(SimpleRepositoryClient.create(baseUrl).getResource(resourceId));

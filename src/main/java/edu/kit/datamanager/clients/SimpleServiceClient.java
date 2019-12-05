@@ -124,7 +124,7 @@ public class SimpleServiceClient{
     } else{
       String metadataString = new ObjectMapper().writeValueAsString(object);
       LOGGER.trace("Adding argument from JSON document {}.", metadataString);
-      body.add("metadata", new ByteArrayResource(metadataString.getBytes()){
+      body.add(name, new ByteArrayResource(metadataString.getBytes()){
         //overwriting filename required by spring (see https://medium.com/@voziv/posting-a-byte-array-instead-of-a-file-using-spring-s-resttemplate-56268b45140b)
         @Override
         public String getFilename(){
@@ -210,8 +210,12 @@ public class SimpleServiceClient{
   }
 
   public HttpStatus postForm(){
-    LOGGER.trace("Adding content type header with value {}.", MediaType.MULTIPART_FORM_DATA);
-    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+    return postForm(MediaType.MULTIPART_FORM_DATA);
+  }
+
+  public HttpStatus postForm(MediaType contentType){
+    LOGGER.trace("Adding content type header with value {}.", contentType);
+    headers.setContentType(contentType);
 
     String destinationUri = resourceBaseUrl + ((resourcePath != null) ? resourcePath : "");
 
