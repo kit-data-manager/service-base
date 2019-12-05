@@ -3,7 +3,6 @@ package edu.kit.datamanager.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Path;
 import java.util.Map;
 
 public interface IVersioningService{
@@ -21,7 +20,7 @@ public interface IVersioningService{
    * @return OcflObjectIdentifier : resourceId, versionId, parent version,
    * finalize, token
    */
-  void write(String resourceId, String callerId, Path path, InputStream data, Map<String, String> options) throws IOException;
+  void write(String resourceId, String callerId, String path, InputStream data, Map<String, String> options) throws IOException;
 
   /**
    * returns files of an object's version.
@@ -34,7 +33,7 @@ public interface IVersioningService{
    * @param options
    * @return
    */
-  void read(String resourceId, String callerId, Path path, String versionId, OutputStream destination, Map<String, String> options) throws IOException;
+  void read(String resourceId, String callerId, String path, String versionId, OutputStream destination, Map<String, String> options) throws IOException;
 
   /**
    * returns information for a specific resource
@@ -45,5 +44,5 @@ public interface IVersioningService{
    * @param options
    * @return
    */
-  void info(String resourceId, Path path, String versionId, Map<String, String> options);
+  void info(String resourceId, String path, String versionId, Map<String, String> options);
 }
