@@ -29,6 +29,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Data;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
@@ -114,7 +115,7 @@ public class SimpleServiceClient{
     if(object instanceof File){
       body.add(name, new FileSystemResource((File) object));
     } else if(object instanceof InputStream){
-      body.add(name, new ByteArrayResource(((InputStream) object).readAllBytes()){
+      body.add(name, new ByteArrayResource(IOUtils.toByteArray((InputStream) object)){
         //overwriting filename required by spring (see https://medium.com/@voziv/posting-a-byte-array-instead-of-a-file-using-spring-s-resttemplate-56268b45140b)
         @Override
         public String getFilename(){
@@ -187,7 +188,7 @@ public class SimpleServiceClient{
     };
 
     ResponseExtractor<Integer> responseExtractor = response -> {
-      response.getBody().transferTo(outputStream);
+      IOUtils.copy(response.getBody(),outputStream);
 
       return response.getRawStatusCode();
     };
