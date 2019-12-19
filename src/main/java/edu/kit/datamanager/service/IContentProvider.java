@@ -15,9 +15,9 @@
  */
 package edu.kit.datamanager.service;
 
-import java.net.URI;
+import edu.kit.datamanager.entities.ContentElement;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 
 /**
  *
@@ -30,15 +30,15 @@ public interface IContentProvider{
    * and name 'filename'. The result is a ResponseEntity holding either the bit
    * stream to the content or another appropriate response, e.g. a redirect.
    *
-   * @param contentUri The URI at which the content is available.
+   * @param element The content element to provide.
    * @param mediaType The media type of the content used for content
    * negotiation.
    * @param filename The filename the content is available locally. This
    * filename may differ from the last path element of contentUri.
+   * @param response The response object to write the data to.
    *
-   * @return A ResponseEntity containing the bit stream or another valid status.
    */
-  ResponseEntity provide(URI contentUri, MediaType mediaType, String filename);
+  void provide(ContentElement element, MediaType mediaType, String filename, HttpServletResponse response);
 
   /**
    * Check if this provider implementation is capable of providing content

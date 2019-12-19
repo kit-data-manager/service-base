@@ -15,15 +15,22 @@
  */
 package edu.kit.datamanager.service.impl;
 
+import edu.kit.datamanager.entities.ContentElement;
+import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import edu.kit.datamanager.service.IContentProvider;
-import java.io.File;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import org.springframework.core.io.FileSystemResource;
+import edu.kit.datamanager.service.IVersioningService;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,18 +40,42 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileContentProvider implements IContentProvider{
 
+  @Autowired
+  private Logger logger;
+  @Autowired
+  private IVersioningService[] versioningServices;
+
   @Override
-  public ResponseEntity provide(URI contentUri, MediaType mediaType, String filename){
-    if(!Files.exists(Paths.get(contentUri))){
-      throw new edu.kit.datamanager.exceptions.ResourceNotFoundException("The provided resource was not found on the server.");
+  public void provide(ContentElement contentElement, MediaType mediaType, String filename, HttpServletResponse response){
+    logger.trace("Providing content element {}.", contentElement);
+    try{
+      logger.trace("Checking for proper versioning service named {}.", contentElement.getVersioningService());
+      for(IVersioningService versioningService : versioningServices){
+        if(versioningService.getServiceName().equals(contentElement.getVersioningService())){
+          logger.trace("Versioning service found. Building response.");
+          versioningService.configure();
+          response.setStatus(HttpStatus.OK.value());
+          if(contentElement.getContentLength() > 0){
+            response.setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(contentElement.getContentLength()));
+          }
+          Map<String, String> options = new HashMap<>();
+          options.put("contentUri", contentElement.getContentUri());
+          options.put("checksum", contentElement.getChecksum());
+          options.put("size", Long.toString(contentElement.getContentLength()));
+          logger.trace("Forwarding request to versioning service.");
+          versioningService.read(contentElement.getResourceId(), null, contentElement.getRelativePath(), (contentElement.getVersion() != null) ? Integer.toString(contentElement.getVersion()) : null, response.getOutputStream(), options);
+          break;
+        }
+      }
+    } catch(IOException ex){
+      logger.error("Failed to send content to response.", ex);
+      throw new CustomInternalServerError("Failed to read content from repository.");
+    } catch(Throwable t){
+      logger.error("Unknown error while reading content from versioning service.", t);
+      throw new CustomInternalServerError("Failed to read content from repository.");
+
     }
 
-    return ResponseEntity.
-            ok().
-            contentType(mediaType).
-           // header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"").
-            header(HttpHeaders.CONTENT_LENGTH, String.valueOf(new File(contentUri).length())).
-            body(new FileSystemResource(new File(contentUri)));
   }
 
   @Override

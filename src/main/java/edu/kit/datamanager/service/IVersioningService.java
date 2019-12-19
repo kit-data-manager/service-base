@@ -1,6 +1,6 @@
 package edu.kit.datamanager.service;
 
-import java.io.IOException;
+import edu.kit.datamanager.entities.VersionInfo;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
@@ -20,7 +20,7 @@ public interface IVersioningService{
    * @return OcflObjectIdentifier : resourceId, versionId, parent version,
    * finalize, token
    */
-  void write(String resourceId, String callerId, String path, InputStream data, Map<String, String> options) throws IOException;
+  void write(String resourceId, String callerId, String path, InputStream data, Map<String, String> options);
 
   /**
    * returns files of an object's version.
@@ -33,7 +33,7 @@ public interface IVersioningService{
    * @param options
    * @return
    */
-  void read(String resourceId, String callerId, String path, String versionId, OutputStream destination, Map<String, String> options) throws IOException;
+  void read(String resourceId, String callerId, String path, String versionId, OutputStream destination, Map<String, String> options);
 
   /**
    * returns information for a specific resource
@@ -44,5 +44,13 @@ public interface IVersioningService{
    * @param options
    * @return
    */
-  void info(String resourceId, String path, String versionId, Map<String, String> options);
+  VersionInfo info(String resourceId, String path, String versionId, Map<String, String> options);
+
+  /**
+   * Returns the name of this versioning service. The name should be unique.
+   * Otherwise, a random implementation with the provided name will be used.
+   *
+   * @return The service name.
+   */
+  String getServiceName();
 }

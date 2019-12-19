@@ -15,7 +15,7 @@
  */
 package edu.kit.datamanager.service;
 
-import edu.kit.datamanager.entities.CollectionElement;
+import edu.kit.datamanager.entities.ContentElement;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
@@ -36,7 +36,7 @@ public interface IContentCollectionProvider{
    * should be returned.
    * @param response The response entity the data is written to.
    */
-  void provide(List<CollectionElement> collection, MediaType mediaType, HttpServletResponse response);
+  void provide(List<ContentElement> collection, MediaType mediaType, HttpServletResponse response);
 
   /**
    * Check if this provider implementation is capable of providing content
