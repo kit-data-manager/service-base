@@ -55,6 +55,9 @@ public class FileContentProvider implements IContentProvider{
           logger.trace("Versioning service found. Building response.");
           versioningService.configure();
           response.setStatus(HttpStatus.OK.value());
+          if(mediaType != null){
+            response.setHeader("Content-Type", mediaType.toString());
+          }
           if(contentElement.getContentLength() > 0){
             response.setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(contentElement.getContentLength()));
           }
@@ -62,6 +65,7 @@ public class FileContentProvider implements IContentProvider{
           options.put("contentUri", contentElement.getContentUri());
           options.put("checksum", contentElement.getChecksum());
           options.put("size", Long.toString(contentElement.getContentLength()));
+          options.put("mediaType", mediaType.toString());
           logger.trace("Forwarding request to versioning service.");
           versioningService.read(contentElement.getResourceId(), null, contentElement.getRelativePath(), (contentElement.getVersion() != null) ? Integer.toString(contentElement.getVersion()) : null, response.getOutputStream(), options);
           break;
@@ -72,10 +76,8 @@ public class FileContentProvider implements IContentProvider{
       throw new CustomInternalServerError("Failed to read content from repository.");
     } catch(Throwable t){
       logger.error("Unknown error while reading content from versioning service.", t);
-      throw new CustomInternalServerError("Failed to read content from repository.");
-
+      throw t;
     }
-
   }
 
   @Override

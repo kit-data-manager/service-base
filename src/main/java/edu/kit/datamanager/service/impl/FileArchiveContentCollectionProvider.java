@@ -16,6 +16,7 @@
 package edu.kit.datamanager.service.impl;
 
 import edu.kit.datamanager.entities.ContentElement;
+import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import edu.kit.datamanager.service.IContentCollectionProvider;
 import edu.kit.datamanager.service.IVersioningService;
 import java.util.Arrays;
@@ -57,7 +58,6 @@ public class FileArchiveContentCollectionProvider implements IContentCollectionP
     response.setContentType(mediaType.toString());
     //response.setHeader("Content-Disposition", "attachment;filename=download.zip");
     LOGGER.trace("Setting response status {}.", HttpServletResponse.SC_OK);
-    response.setStatus(HttpServletResponse.SC_OK);
     LOGGER.trace("Starting packaging operation.");
     try(ZipOutputStream zippedOut = new ZipOutputStream(response.getOutputStream())){
       for(ContentElement element : collection){
@@ -83,23 +83,25 @@ public class FileArchiveContentCollectionProvider implements IContentCollectionP
             options.put("checksum", element.getChecksum());
             options.put("size", Long.toString(element.getContentLength()));
 
-            versioningService.read(element.getResourceId(), null, element.getRelativePath(), Integer.toString(element.getVersion()), zippedOut, options);
+            versioningService.read(element.getResourceId(), null, element.getRelativePath(), (element.getVersion() != null) ? Integer.toString(element.getVersion()) : null, zippedOut, options);
             break;
           }
         }
 
         //  LOGGER.trace("Starting streaming resource content.");
-        //  StreamUtils.copy(resource.getInputStream(), zippedOut);
         LOGGER.trace("Closing entry.");
         zippedOut.closeEntry();
-
       }
+      //Keep an eye on this...it seems weird to set the status at the very end, but it's the only way to be able to set an error state in case of an exception
+      //as setting the status is only possible once.
+      response.setStatus(HttpServletResponse.SC_OK);
       LOGGER.trace("Finishing zip operation.");
       zippedOut.finish();
       LOGGER.trace("Zip operation successfully finished.");
     } catch(Exception e){
       // Exception handling goes here
       LOGGER.error("Failed to package requested collection.", e);
+      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       //just end as we cannot do anything else here...the status has already been set, so no server error can be returned.
     }
   }
