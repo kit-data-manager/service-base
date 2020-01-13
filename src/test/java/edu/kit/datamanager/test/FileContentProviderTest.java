@@ -40,9 +40,9 @@ public class FileContentProviderTest{
   @Test(expected = ResourceNotFoundException.class)
   @Ignore
   public void testProvideInvalidFile(){
-        //@TODO re-activate using mocking of ServletResponse
+    //@TODO re-activate using mocking of ServletResponse
     FileContentProvider prov = new FileContentProvider();
-    prov.provide(ContentElement.createContentElement("123", "notExist.txt", 1, "kitdm_simple"), MediaType.APPLICATION_JSON, "doesNotExist.123", null);
+    prov.provide(ContentElement.createContentElement("123", "notExist.txt", "1", "kitdm_simple"), MediaType.APPLICATION_JSON, "doesNotExist.123", null);
   }
 
   @Test

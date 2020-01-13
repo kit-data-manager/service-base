@@ -19,10 +19,7 @@ import edu.kit.datamanager.entities.ContentElement;
 import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import edu.kit.datamanager.service.IContentProvider;
 import edu.kit.datamanager.service.IVersioningService;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
@@ -42,11 +39,16 @@ public class FileContentProvider implements IContentProvider{
 
   @Autowired
   private Logger logger;
-  @Autowired
+  @Autowired(required = false)
   private IVersioningService[] versioningServices;
 
   @Override
   public void provide(ContentElement contentElement, MediaType mediaType, String filename, HttpServletResponse response){
+
+    if(versioningServices == null){
+      throw new CustomInternalServerError("No versioning service found. Unable to provide any content.");
+    }
+
     logger.trace("Providing content element {}.", contentElement);
     try{
       logger.trace("Checking for proper versioning service named {}.", contentElement.getVersioningService());
@@ -65,9 +67,9 @@ public class FileContentProvider implements IContentProvider{
           options.put("contentUri", contentElement.getContentUri());
           options.put("checksum", contentElement.getChecksum());
           options.put("size", Long.toString(contentElement.getContentLength()));
-          options.put("mediaType", mediaType.toString());
+          options.put("mediaType", (mediaType != null) ? mediaType.toString() : "<unknown>");
           logger.trace("Forwarding request to versioning service.");
-          versioningService.read(contentElement.getResourceId(), null, contentElement.getRelativePath(), (contentElement.getVersion() != null) ? Integer.toString(contentElement.getVersion()) : null, response.getOutputStream(), options);
+          versioningService.read(contentElement.getResourceId(), null, contentElement.getRelativePath(), contentElement.getFileVersion(), response.getOutputStream(), options);
           break;
         }
       }

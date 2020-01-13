@@ -27,37 +27,37 @@ public class ContentElement{
 
   private String resourceId;
   private String relativePath;
-  private Integer version;
+  private String fileVersion;
   private long contentLength;
   private String contentUri;
   private String checksum;
   private String repositoryLocation;
   private String versioningService;
 
-  private ContentElement(String resourceId, String relativePath, String contentUri, Integer version, String versioningService, String checksum, String repositoryLocation, Long contentLength){
+  private ContentElement(String resourceId, String relativePath, String contentUri, String version, String versioningService, String checksum, String repositoryLocation, Long contentLength){
     this.resourceId = resourceId;
     this.relativePath = relativePath;
     this.contentUri = contentUri;
-    this.version = version;
+    this.fileVersion = version;
     this.versioningService = versioningService;
     this.checksum = checksum;
     this.repositoryLocation = repositoryLocation;
     this.contentLength = contentLength;
   }
 
-  public static ContentElement createContentElement(String resourceId, String relativePath, String contentUri, Integer version, String versioningService, String checksum, String repositoryLocation, Long contentLength){
-    return new ContentElement(resourceId, relativePath, contentUri, version, versioningService, checksum, repositoryLocation, contentLength);
+  public static ContentElement createContentElement(String resourceId, String relativePath, String contentUri, String fileVersion, String versioningService, String checksum, String repositoryLocation, Long contentLength){
+    return new ContentElement(resourceId, relativePath, contentUri, fileVersion, versioningService, checksum, repositoryLocation, contentLength);
   }
 
-  public static ContentElement createContentElement(String resourceId, String relativePath, Integer version, String versioningService, String checksum, String repositoryLocation, Long contentLength){
-    return new ContentElement(resourceId, relativePath, null, version, versioningService, checksum, repositoryLocation, contentLength);
+  public static ContentElement createContentElement(String resourceId, String relativePath, String fileVersion, String versioningService, String checksum, String repositoryLocation, Long contentLength){
+    return new ContentElement(resourceId, relativePath, null, fileVersion, versioningService, checksum, repositoryLocation, contentLength);
   }
 
-  public static ContentElement createContentElement(String resourceId, String relativePath, Integer version, String versioningService, String repositoryLocation, Long contentLength){
-    return new ContentElement(resourceId, relativePath, null, version, versioningService, null, repositoryLocation, contentLength);
+  public static ContentElement createContentElement(String resourceId, String relativePath, String fileVersion, String versioningService, String repositoryLocation, Long contentLength){
+    return new ContentElement(resourceId, relativePath, null, fileVersion, versioningService, null, repositoryLocation, contentLength);
   }
 
-  public static ContentElement createContentElement(String resourceId, String relativePath, Integer version, String versioningService){
-    return new ContentElement(resourceId, relativePath, null, version, versioningService, null, null, 0l);
+  public static ContentElement createContentElement(String resourceId, String relativePath, String fileVersion, String versioningService){
+    return new ContentElement(resourceId, relativePath, null, fileVersion, versioningService, null, null, 0l);
   }
 }

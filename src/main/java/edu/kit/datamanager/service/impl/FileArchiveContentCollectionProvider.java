@@ -44,7 +44,7 @@ public class FileArchiveContentCollectionProvider implements IContentCollectionP
   private final static Logger LOGGER = LoggerFactory.getLogger(FileArchiveContentCollectionProvider.class);
 
   public final static MediaType ZIP_MEDIA_TYPE = MediaType.parseMediaType("application/zip");
-  @Autowired
+  @Autowired(required = false)
   private IVersioningService[] versioningServices;
 
   @Override
@@ -52,6 +52,11 @@ public class FileArchiveContentCollectionProvider implements IContentCollectionP
     if(!ZIP_MEDIA_TYPE.toString().equals(mediaType.toString())){
       LOGGER.error("Unsupported media type {} received. Throwing HTTP 415 (UNSUPPORTED_MEDIA_TYPE).", mediaType);
       throw new UnsupportedMediaTypeStatusException(mediaType, Arrays.asList(getSupportedMediaTypes()));
+    }
+
+    if(versioningServices == null){
+      //should never happen
+      throw new CustomInternalServerError("No versioning service found. Unable to provide any content.");
     }
 
     LOGGER.trace("Setting content type {}.", mediaType);
@@ -83,7 +88,7 @@ public class FileArchiveContentCollectionProvider implements IContentCollectionP
             options.put("checksum", element.getChecksum());
             options.put("size", Long.toString(element.getContentLength()));
 
-            versioningService.read(element.getResourceId(), null, element.getRelativePath(), (element.getVersion() != null) ? Integer.toString(element.getVersion()) : null, zippedOut, options);
+            versioningService.read(element.getResourceId(), null, element.getRelativePath(), element.getFileVersion(), zippedOut, options);
             break;
           }
         }

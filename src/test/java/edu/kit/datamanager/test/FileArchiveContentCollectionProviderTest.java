@@ -84,9 +84,9 @@ public class FileArchiveContentCollectionProviderTest{
 
     FileArchiveContentCollectionProvider provider = new FileArchiveContentCollectionProvider();
     List<ContentElement> collection = new ArrayList<>();
-    collection.add(ContentElement.createContentElement("123", "firstFile.txt", 1, "kitdm_simple"));
-    collection.add(ContentElement.createContentElement("123", "secondFile.txt", 1, "kitdm_simple", "http://localhost:8090/api/v1/dataresources/123", 1l));
-    collection.add(ContentElement.createContentElement("123", "thirdFile.txt", 1, "kitdm_simple", "sha256:123123123123", "http://localhost:8090/api/v1/dataresources/123", 1l));
+    collection.add(ContentElement.createContentElement("123", "firstFile.txt", "1", "kitdm_simple"));
+    collection.add(ContentElement.createContentElement("123", "secondFile.txt", "1", "kitdm_simple", "http://localhost:8090/api/v1/dataresources/123", 1l));
+    collection.add(ContentElement.createContentElement("123", "thirdFile.txt", "1", "kitdm_simple", "sha256:123123123123", "http://localhost:8090/api/v1/dataresources/123", 1l));
 
     provider.provide(collection, FileArchiveContentCollectionProvider.ZIP_MEDIA_TYPE, null);
   }
@@ -137,9 +137,9 @@ public class FileArchiveContentCollectionProviderTest{
       Files.write(thirdFile, "And I'm from a subfolder.".getBytes());
 
       //create zip-collection map
-      collection.add(ContentElement.createContentElement("123", "firstFile.txt", 1, "kitdm_simple"));
-      collection.add(ContentElement.createContentElement("123", "secondFile.txt", 1, "kitdm_simple"));
-      collection.add(ContentElement.createContentElement("123", "thirdFile.txt", 1, "kitdm_simple"));
+      collection.add(ContentElement.createContentElement("123", "firstFile.txt", "1", "kitdm_simple"));
+      collection.add(ContentElement.createContentElement("123", "secondFile.txt", "1", "kitdm_simple"));
+      collection.add(ContentElement.createContentElement("123", "thirdFile.txt", "1", "kitdm_simple"));
 
       provider.provide(collection, FileArchiveContentCollectionProvider.ZIP_MEDIA_TYPE, response);
 
