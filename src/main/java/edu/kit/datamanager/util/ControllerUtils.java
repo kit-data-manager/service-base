@@ -172,7 +172,7 @@ public class ControllerUtils{
 
   public static String getContentRangeHeader(int currentPage, int pageSize, long totalElements){
     int indexStart = currentPage * pageSize;
-    int indexEnd = indexStart + pageSize;
+    int indexEnd = indexStart + pageSize - 1;
     return indexStart + "-" + indexEnd + "/" + totalElements;
   }
 
@@ -199,6 +199,17 @@ public class ControllerUtils{
     private int indexStart = 0;
     private int indexEnd = 0;
     private long totalElements = 0l;
+
+    public int getPages(){
+      int recordsPerPage = indexEnd - indexStart;
+      return (int) (totalElements + recordsPerPage - 1) / recordsPerPage;
+    }
+
+    public int getPage(){
+      int recordsPerPage = indexEnd - indexStart;
+      return (indexStart / recordsPerPage) + 1;
+    }
+
   }
 
 //  public static void main(String[] args){

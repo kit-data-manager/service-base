@@ -67,7 +67,7 @@ dependencies {
    api("commons-io:commons-io:2.5")
    api('org.apache.httpcomponents:httpclient:4.5.6')
    api('commons-codec:commons-codec:1.7')
-   api('org.javers:javers-spring-boot-starter-sql:5.8.7')
+   api('org.javers:javers-spring-boot-starter-sql:5.8.8')
    //compile("dnsjava:dnsjava:2.1.8")
      
    api("org.apache.commons:commons-collections4:4.1")

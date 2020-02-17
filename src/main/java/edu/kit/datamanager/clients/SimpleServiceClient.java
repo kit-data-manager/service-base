@@ -24,7 +24,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
@@ -40,8 +42,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
@@ -60,6 +64,7 @@ public class SimpleServiceClient{
   private String resourcePath = null;
   private String bearerToken = null;
   private HttpHeaders headers;
+  private Map<String, String> requestedResponseHeaders = null;
 
   MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
   MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
@@ -71,6 +76,7 @@ public class SimpleServiceClient{
 
   public void setRestTemplate(RestTemplate restTemplate){
     this.restTemplate = restTemplate;
+
   }
 
   public static SimpleServiceClient create(String baseUrl){
@@ -94,6 +100,11 @@ public class SimpleServiceClient{
 
   public SimpleServiceClient accept(MediaType... mediaType){
     headers.setAccept(Arrays.asList(mediaType));
+    return this;
+  }
+
+  public SimpleServiceClient collectResponseHeader(Map<String, String> container){
+    requestedResponseHeaders = container;
     return this;
   }
 
@@ -147,6 +158,7 @@ public class SimpleServiceClient{
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri).queryParams(queryParams);
     LOGGER.trace("Obtaining resource from resource URI {}.", uriBuilder.toUriString());
     ResponseEntity<C> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, new HttpEntity<>(headers), responseType);
+    collectResponseHeaders(response.getHeaders());
     LOGGER.trace("Request returned with status {}. Returning response body.", response.getStatusCodeValue());
     return response.getBody();
   }
@@ -159,6 +171,7 @@ public class SimpleServiceClient{
     ResponseEntity<C[]> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, new HttpEntity<>(headers), responseType);
     LOGGER.trace("Request returned with status {}. Returning response body.", response.getStatusCodeValue());
     ContentRange contentRange = ControllerUtils.parseContentRangeHeader(response.getHeaders().getFirst("Content-Range"));
+    collectResponseHeaders(response.getHeaders());
     return new ResultPage<>(response.getBody(), contentRange);
   }
 
@@ -168,9 +181,9 @@ public class SimpleServiceClient{
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri).queryParams(queryParams);
     LOGGER.trace("Obtaining resource from resource URI {}.", uriBuilder.toUriString());
     ResponseEntity<C[]> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, new HttpEntity<>(resource, headers), responseType);
-
     LOGGER.trace("Request returned with status {}. Returning response body.", response.getStatusCodeValue());
     ContentRange contentRange = ControllerUtils.parseContentRangeHeader(response.getHeaders().getFirst("Content-Range"));
+    collectResponseHeaders(response.getHeaders());
     return new ResultPage<>(response.getBody(), contentRange);
   }
 
@@ -187,14 +200,21 @@ public class SimpleServiceClient{
       });
     };
 
-    ResponseExtractor<Integer> responseExtractor = response -> {
-      IOUtils.copy(response.getBody(),outputStream);
+    ResponseExtractor<ClientHttpResponse> responseExtractor = response -> {
+      IOUtils.copy(response.getBody(), outputStream);
 
-      return response.getRawStatusCode();
+      return response;
     };
-    Integer status = restTemplate.execute(uriBuilder.toUriString(), HttpMethod.GET, requestCallback, responseExtractor);
 
-    LOGGER.trace("Download returned with status {}.", status);
+    ClientHttpResponse response = restTemplate.execute(uriBuilder.toUriString(), HttpMethod.GET, requestCallback, responseExtractor);
+    int status = -1;
+    try{
+      status = response.getRawStatusCode();
+      LOGGER.trace("Download returned with status {}.", status);
+      collectResponseHeaders(response.getHeaders());
+    } catch(IOException ex){
+      LOGGER.error("Failed to extract raw status from response.", ex);
+    }
     return status;
   }
 
@@ -207,6 +227,7 @@ public class SimpleServiceClient{
     LOGGER.trace("Sending POST request for resource.");
     ResponseEntity<C> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, new HttpEntity<>(resource, headers), responseType);
     LOGGER.trace("Request returned with status {}. Returning response body.", response.getStatusCodeValue());
+    collectResponseHeaders(response.getHeaders());
     return response.getBody();
   }
 
@@ -225,6 +246,7 @@ public class SimpleServiceClient{
     LOGGER.trace("Uploading content to destination URI {}.", uriBuilder.toUriString());
     ResponseEntity<String> response = restTemplate.postForEntity(uriBuilder.toUriString(), new HttpEntity<>(body, headers), String.class);
     LOGGER.trace("Upload returned with status {}.", response.getStatusCodeValue());
+    collectResponseHeaders(response.getHeaders());
     return response.getStatusCode();
 
   }
@@ -241,6 +263,7 @@ public class SimpleServiceClient{
     LOGGER.trace("Sending PUT request for resource with ETag {}.", etag);
     headers.setIfMatch(etag);
     response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.PUT, new HttpEntity<>(resource, headers), responseType);
+    collectResponseHeaders(response.getHeaders());
     LOGGER.trace("Request returned with status {}. Returning response body.", response.getStatusCodeValue());
     return response.getBody();
   }
@@ -262,7 +285,18 @@ public class SimpleServiceClient{
     LOGGER.trace("Sending DELETE request for resource with ETag {}.", etag);
     headers.setIfMatch(etag);
     response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.DELETE, new HttpEntity<>(headers), DataResource.class);
+    collectResponseHeaders(response.getHeaders());
     LOGGER.trace("Request returned with status {}. No response body expected.", response.getStatusCodeValue());
+  }
+
+  private void collectResponseHeaders(HttpHeaders responseHeaders){
+    if(requestedResponseHeaders != null){
+      Set<Entry<String, String>> entries = requestedResponseHeaders.entrySet();
+
+      entries.forEach((entry) -> {
+        requestedResponseHeaders.put(entry.getKey(), responseHeaders.getFirst(entry.getKey()));
+      });
+    }
   }
 
   public static void main(String[] args){
