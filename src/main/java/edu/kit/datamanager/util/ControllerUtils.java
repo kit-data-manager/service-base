@@ -70,9 +70,13 @@ public class ControllerUtils{
    * @param sort The sort criteria applied to the page request. If 'null',
    * Sort.unsorted() is applied.
    *
-   * @return The validated (and fixed) page request.
+   * @return The validated (and fixed) page request. If pgbl is null, a page
+   * request of page 0 with a size of 20 elements is returned.
    */
   public static PageRequest checkPaginationInformation(Pageable pgbl, Sort sort){
+    if(pgbl == null){
+      return PageRequest.of(0, 20);
+    }
     int pageSize = pgbl.getPageSize();
     if(pageSize > 100){
       LOGGER.debug("Restricting user-provided page size {} to max. page size 100.", pageSize);
