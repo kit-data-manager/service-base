@@ -18,8 +18,7 @@ package edu.kit.datamanager.entities;
 import edu.kit.datamanager.annotations.Searchable;
 import edu.kit.datamanager.annotations.SecureUpdate;
 import edu.kit.datamanager.util.EnumUtils;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.Parameter;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.Entity;
@@ -30,6 +29,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.validation.constraints.NotBlank;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import lombok.Data;
@@ -40,7 +40,6 @@ import lombok.Data;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@ApiModel(description = "An identifier for a resource.")
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Identifier{
@@ -84,9 +83,9 @@ public class Identifier{
   @SecureUpdate({"FORBIDDEN"})
   @Searchable
   private Long id;
-  @ApiModelProperty(value = "10.1234/foo", dataType = "String", required = true)
+  @NotBlank
   private String value;
-  @ApiModelProperty(value = "Controlled vocabulary, e.g. INTERNAL or DOI.", required = true)
+  @NotBlank
   @Enumerated(EnumType.STRING)
   private IDENTIFIER_TYPE identifierType;
 
