@@ -18,6 +18,7 @@ package edu.kit.datamanager.entities;
 import edu.kit.datamanager.annotations.Searchable;
 import edu.kit.datamanager.annotations.SecureUpdate;
 import edu.kit.datamanager.util.EnumUtils;
+import io.swagger.v3.oas.annotations.Parameter;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.Entity;
@@ -29,7 +30,6 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import lombok.Data;
@@ -85,7 +85,7 @@ public class Identifier{
   private Long id;
   @NotBlank
   private String value;
-  //@NotEmpty
+  @NotBlank
   @Enumerated(EnumType.STRING)
   private IDENTIFIER_TYPE identifierType;
 
