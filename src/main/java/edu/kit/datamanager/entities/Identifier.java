@@ -85,7 +85,7 @@ public class Identifier{
   private Long id;
   @NotBlank
   private String value;
-  @NotBlank
+ // @NotBlank
   @Enumerated(EnumType.STRING)
   private IDENTIFIER_TYPE identifierType;
 

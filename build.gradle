@@ -113,7 +113,7 @@ jacocoTestReport {
    }
    afterEvaluate {
       //exclude some classes/package from code coverage report
-      classDirectories = files(classDirectories.files.collect {
+      files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [\
                       //pure entity package currently not needed
             'org/datacite/**', \
