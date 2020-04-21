@@ -1,5 +1,9 @@
 # KIT Data Manager - Service Base Module
 
+![Build Status](https://img.shields.io/travis/kit-data-manager/service-base.svg)
+![Code Coverage](https://img.shields.io/coveralls/github/kit-data-manager/service-base.svg)
+![License](https://img.shields.io/github/license/kit-data-manager/service-base.svg)
+
 Helper module for KIT DM 2.0 services providing commonly used dependencies and general purpose implementations, e.g. helpers and exception.
 
 ## How to build
