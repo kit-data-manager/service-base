@@ -4,6 +4,10 @@ buildscript {
         mavenCentral()
         jcenter()
     }
+    
+    dependencies {
+        classpath 'net.researchgate:gradle-release:2.6.0'
+    }
 }
 
 plugins { 
@@ -21,7 +25,6 @@ apply plugin: 'java-library'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'jacoco'
-
 group = 'edu.kit.datamanager'
 version = '0.1'
 
@@ -97,6 +100,11 @@ lombok {
     sha256 = ""
 }
 
+if (project.hasProperty('deploy')) {
+    println 'Using deploy profile for building ' + project.getName()
+    apply from: 'gradle/profile-deploy.gradle'
+}
+
 jacoco {
     toolVersion = "0.8.5"
 }
@@ -115,25 +123,25 @@ jacocoTestReport {
     afterEvaluate {
         //exclude some classes/package from code coverage report
         classDirectories.setFrom(files(classDirectories.files.collect {
-                fileTree(dir: it, exclude: [\
-                            //pure entity package currently not needed
+                    fileTree(dir: it, exclude: [\
+                                //pure entity package currently not needed
             'org/datacite/**', \
                    'org/purl/**', \
-                        //performance tests
+                            //performance tests
             'edu/kit/datamanager/perf/**', \
-                        //remove AuthenticationHelper tests due to mocking -> code coverage cannot be determined
-                        //'edu/kit/datamanager/util/AuthenticationHelper*',
-                        //deprecated stuff
+                            //remove AuthenticationHelper tests due to mocking -> code coverage cannot be determined
+                            //'edu/kit/datamanager/util/AuthenticationHelper*',
+                            //deprecated stuff
             'edu/kit/datamanager/util/DCTransformationHelper*',
                   'edu/kit/datamanager/dao/ByExampleSpecification*',
                   'edu/kit/datamanager/controller/hateoas/**',
-                        //exceptions 
+                            //exceptions 
             'edu/kit/datamanager/exceptions/**',
                   'edu/kit/datamanager/service/impl/RabbitMQMessagingService*',
                   'edu/kit/datamanager/configuration/**',
                   'edu/kit/datamanager/service/IGenericService*'
-                    ])
-            }))
+                        ])
+                }))
     }
 }
 
