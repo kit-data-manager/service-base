@@ -4,7 +4,7 @@ apply plugin: 'net.researchgate.release'
 //Sonatype settings
 group = "edu.kit.datamanager"
 archivesBaseName = "service-base"
-version = "0.1-SNAPSHOT"
+version = "0.2-SNAPSHOT"
 
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
@@ -22,7 +22,9 @@ release {
 }
 
 artifacts {
-    archives javadocJar, sourcesJar
+    archives jar
+    archives javadocJar
+    archives sourcesJar
 }
 
 signing {
@@ -38,9 +40,9 @@ uploadArchives {
                 authentication(userName: ossrhUsername, password: ossrhPassword)
             }
 
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
+//            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+//                authentication(userName: ossrhUsername, password: ossrhPassword)
+//            }
 
             pom.project {
                 name 'service-base'
@@ -50,8 +52,8 @@ uploadArchives {
                 url 'http://datamanager.kit.edu'
 
                 scm {
-                    connection 'scm:git:https://github.com/kit-data-manager/service-base'
-                    developerConnection 'scm:git:https://github.com/kit-data-manager/service-base'
+                    connection 'scm:git:github.com/kit-data-manager/service-base'
+                    developerConnection 'scm:git:github.com/kit-data-manager/service-base'
                     url 'https://github.com/kit-data-manager/service-base'
                 }
 
@@ -64,7 +66,7 @@ uploadArchives {
 
                 developers {
                     developer {
-                        id 'tjejkal'
+                        id 'Jejkal'
                         name 'Thomas Jejkal'
                         email 'webmaster@datamanager.kit.edu'
                     }

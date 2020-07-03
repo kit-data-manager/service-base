@@ -25,8 +25,6 @@ apply plugin: 'java-library'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'jacoco'
-group = 'edu.kit.datamanager'
-version = '0.1'
 
 description = """Base service module containing entities, interfaces and helpers."""
 
@@ -35,7 +33,7 @@ targetCompatibility = 1.8
 
 jar {
     baseName = 'service-base'
-    version =  '0.1'
+    version =  '0.2-SNAPSHOT'
 }
 
 repositories {
