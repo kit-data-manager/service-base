@@ -24,6 +24,27 @@ user@localhost:/home/user/service-base$
 The gradle wrapper will download and install gradle, if not already available. Afterwards, the module artifact
 will be built and installed into the local maven repository, from where it can be used by other projects.
 
+## Dependency from Maven Central Repository
+
+Instead of using a local build you may also use the most recent version from the Central Maven Repository directly. 
+
+### Maven
+
+~~~~
+<dependency>
+    <groupId>edu.kit.datamanager</groupId>
+    <artifactId>service-base</artifactId>
+    <version>0.1</version>
+</dependency>
+~~~~
+
+### Gradle
+
+~~~~
+compile group: 'edu.kit.datamanager', name: 'service-base', version: '0.1'
+~~~~
+
+
 ## License
 
 The KIT Data Manager is licensed under the Apache License, Version 2.0.
