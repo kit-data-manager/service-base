@@ -33,14 +33,13 @@ targetCompatibility = 1.8
 
 jar {
     baseName = 'service-base'
-    version =  '0.2-SNAPSHOT'
+    version =  System.getenv('version')
 }
 
 repositories {
     mavenLocal()   
     mavenCentral()
     jcenter()
-    maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }
 }
 
 dependencies {
