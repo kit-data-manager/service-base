@@ -36,6 +36,8 @@ jar {
     version =  System.getenv('version')
 }
 
+group = "edu.kit.datamanager"
+
 repositories {
     mavenLocal()   
     mavenCentral()
