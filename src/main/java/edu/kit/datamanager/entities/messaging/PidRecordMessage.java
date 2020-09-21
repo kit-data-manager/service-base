@@ -12,6 +12,7 @@ public class PidRecordMessage extends BasicMessage {
 
     // A url-string that will simply resolve the pid.
     public static final String RESOLVING_URL = "resolvingUrl";
+    public static final String PID = "pid";
 
     public enum ACTION {
         ADD("add"),
@@ -58,32 +59,30 @@ public class PidRecordMessage extends BasicMessage {
         return "pidrecord";
     }
 
-    public static PidRecordMessage recordCreationMessage(String pid, String url, String principal, String sender) {
-        return recordMessage(pid, url, ACTION.ADD, principal, sender);
-    }
-
-    public static PidRecordMessage recordUpdateMessage(String pid, String url, String principal, String sender) {
-        return recordMessage(pid, url, ACTION.UPDATE, principal, sender);
-    }
-
-    public static PidRecordMessage recordMessage(String pid, String url, ACTION action, String principal, String sender) {
+    public static PidRecordMessage recordCreationMessage(
+            String entityId,
+            String pid,
+            String recordUrl,
+            SUB_CATEGORY subCategory,
+            String principal,
+            String sender)
+    {
         Map<String, String> properties = new HashMap<>();
-        properties.put(RESOLVING_URL, url);
-        
-        PidRecordMessage msg = new PidRecordMessage();
-        msg.setEntityId(pid);
-        msg.setAction(action.getValue());
-        msg.setPrincipal(principal);
-        msg.setSender(sender);
-        msg.setMetadata(properties);
-        msg.setCurrentTimestamp();
-        return msg;
+        properties.put(RESOLVING_URL, recordUrl);
+        properties.put(PID, pid);
+        return recordMessage(entityId, properties, ACTION.ADD, subCategory, principal, sender);
     }
 
-    public static PidRecordMessage recordMessage(String pid, ACTION action, SUB_CATEGORY subCategory,
-            Map<String, String> properties, String principal, String sender) {
+    public static PidRecordMessage recordMessage(
+            String entityId,
+            Map<String, String> properties,
+            ACTION action,
+            SUB_CATEGORY subCategory,
+            String principal,
+            String sender)
+    {
         PidRecordMessage msg = new PidRecordMessage();
-        msg.setEntityId(pid);
+        msg.setEntityId(entityId);
         msg.setAction(action.getValue());
         msg.setSubCategory(subCategory.getValue());
         msg.setPrincipal(principal);
