@@ -60,7 +60,6 @@ public class PidRecordMessage extends BasicMessage {
     }
 
     public static PidRecordMessage recordCreationMessage(
-            String entityId,
             String pid,
             String recordUrl,
             SUB_CATEGORY subCategory,
@@ -69,8 +68,7 @@ public class PidRecordMessage extends BasicMessage {
     {
         Map<String, String> properties = new HashMap<>();
         properties.put(RESOLVING_URL, recordUrl);
-        properties.put(PID, pid);
-        return recordMessage(entityId, properties, ACTION.ADD, subCategory, principal, sender);
+        return recordMessage(pid, properties, ACTION.ADD, subCategory, principal, sender);
     }
 
     public static PidRecordMessage recordMessage(
