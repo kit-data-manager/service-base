@@ -1,3 +1,10 @@
 **/build
 **/.gradle
 **/.nb-gradle
+**/bin
+
+# IDE specific
+*.eclipse*
+.project
+.classpath
+.vscode
