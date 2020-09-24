@@ -2,6 +2,7 @@ package edu.kit.datamanager.entities.messaging;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -59,30 +60,42 @@ public class PidRecordMessage extends BasicMessage {
         return "pidrecord";
     }
 
-    public static PidRecordMessage recordCreationMessage(
+    public static PidRecordMessage creation(
             String pid,
             String recordUrl,
-            SUB_CATEGORY subCategory,
             String principal,
             String sender)
     {
         Map<String, String> properties = new HashMap<>();
         properties.put(RESOLVING_URL, recordUrl);
-        return recordMessage(pid, properties, ACTION.ADD, subCategory, principal, sender);
+        return recordMessage(pid, properties, ACTION.ADD, Optional.empty(), principal, sender);
+    }
+
+    public static PidRecordMessage update(
+            String pid,
+            String recordUrl,
+            String principal,
+            String sender)
+    {
+        Map<String, String> properties = new HashMap<>();
+        properties.put(RESOLVING_URL, recordUrl);
+        return recordMessage(pid, properties, ACTION.UPDATE, Optional.empty(), principal, sender);
     }
 
     public static PidRecordMessage recordMessage(
             String entityId,
             Map<String, String> properties,
             ACTION action,
-            SUB_CATEGORY subCategory,
+            Optional<SUB_CATEGORY> subCategory,
             String principal,
             String sender)
     {
         PidRecordMessage msg = new PidRecordMessage();
         msg.setEntityId(entityId);
         msg.setAction(action.getValue());
-        msg.setSubCategory(subCategory.getValue());
+        subCategory.map(
+            sub -> { msg.setSubCategory(sub.getValue()); return sub; }
+        );
         msg.setPrincipal(principal);
         msg.setSender(sender);
         if (properties != null) {
