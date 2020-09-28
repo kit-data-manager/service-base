@@ -33,7 +33,6 @@ targetCompatibility = 1.8
 
 jar {
     baseName = 'service-base'
-    archiveVersion =  System.getenv('version')
 }
 
 group = "edu.kit.datamanager"
