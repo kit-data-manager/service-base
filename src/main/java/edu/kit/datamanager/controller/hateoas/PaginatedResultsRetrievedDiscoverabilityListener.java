@@ -42,7 +42,6 @@ class PaginatedResultsRetrievedDiscoverabilityListener implements ApplicationLis
   @Override
   public final void onApplicationEvent(final PaginatedResultsRetrievedEvent ev){
     Preconditions.checkNotNull(ev);
-
     addLinkHeaderOnPagedResourceRetrieval(ev.getUriBuilder(), ev.getResponse(), ev.getClazz(), ev.getPage(), ev.getTotalPages(), ev.getPageSize());
   }
 

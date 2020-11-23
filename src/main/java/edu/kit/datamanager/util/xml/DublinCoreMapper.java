@@ -36,6 +36,7 @@ import edu.kit.datamanager.entities.repo.Title;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import org.purl.dc.elements._1.ElementContainer;
@@ -244,7 +245,7 @@ public class DublinCoreMapper{
 //
     Date d = new Date();
     d.setType(Date.DATE_TYPE.ACCEPTED);
-    d.setValue(Instant.now());
+    d.setValue(Instant.now().truncatedTo( ChronoUnit.MILLIS ));
     res.getDates().add(d);
 //
     res.getSizes().add("test");

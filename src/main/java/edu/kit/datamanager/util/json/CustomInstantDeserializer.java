@@ -23,20 +23,21 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 /**
  *
  * @author jejkal
  */
-public class CustomInstantDeserializer extends JsonDeserializer<Instant>{
+public class CustomInstantDeserializer extends JsonDeserializer<Instant> {
 
-  private final DateTimeFormatter fmt = DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC);//DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").withZone(ZoneOffset.UTC);
+    private final DateTimeFormatter fmt = DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC);//DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").withZone(ZoneOffset.UTC);
 
-  @Override
-  public Instant deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException{
-    if(p.getText() == null || p.getText().length() == 0){
-      return null;
+    @Override
+    public Instant deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+        if (p.getText() == null || p.getText().length() == 0) {
+            return null;
+        }
+        return Instant.from(fmt.parse(p.getText())).truncatedTo(ChronoUnit.MILLIS);
     }
-    return Instant.from(fmt.parse(p.getText()));
-  }
 }

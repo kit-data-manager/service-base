@@ -29,35 +29,37 @@ import org.springframework.stereotype.Service;
  * @author jejkal
  */
 @Service
-public class RabbitMQMessagingService implements IMessagingService{
+public class RabbitMQMessagingService implements IMessagingService {
 
-  @Autowired
-  private RabbitMQConfiguration configuration;
-  @Autowired
-  private Logger logger;
+    @Autowired
+    private RabbitMQConfiguration configuration;
+    @Autowired
+    private Logger logger;
 
-  @Override
-  public void send(IAMQPSubmittable msg){
-    if(configuration.isMessagingEnabled()){
-      try{
-        String msgString = msg.toJson();
-        String msgRoute = msg.getRoutingKey();
-        String exchangeName = configuration.rabbitMQExchange().getName();
-        logger.trace("Sending message {} via exchange {} and route {}.", msgString, exchangeName, msgRoute);
-        configuration.rabbitMQTemplate().convertAndSend(configuration.rabbitMQExchange().getName(), msgRoute, msgString);
-        logger.trace("Message sent.");
-      } catch(JsonProcessingException ex){
-        logger.error("Failed to send message " + msg + ". Unable to serialize message to JSON.", ex);
-      }
-    } else{
-      logger.trace("Messaging is disabled. All messages are discarded.");
+    @Override
+    public void send(IAMQPSubmittable msg) {
+        logger.trace("Processing new AMQPSubmittable via RabbitMQMessagingService.");
+        if (configuration.isMessagingEnabled()) {
+            logger.trace("Messaging enabled, serializing and submitting message.");
+            try {
+                String msgString = msg.toJson();
+                String msgRoute = msg.getRoutingKey();
+                String exchangeName = configuration.rabbitMQExchange().getName();
+                logger.trace("Sending message {} via exchange {} and route {}.", msgString, exchangeName, msgRoute);
+                configuration.rabbitMQTemplate().convertAndSend(configuration.rabbitMQExchange().getName(), msgRoute, msgString);
+                logger.trace("Message sent.");
+            } catch (JsonProcessingException ex) {
+                logger.error("Failed to send message " + msg + ". Unable to serialize message to JSON.", ex);
+            }
+        } else {
+            logger.trace("Messaging is disabled. All messages are discarded.");
+        }
     }
-  }
 
-  @Override
-  public Health health(){
-    logger.trace("Obtaining health information.");
-    return Health.up().withDetail("RabbitMQMessaging", configuration.rabbitMQExchange()).build();
-  }
+    @Override
+    public Health health() {
+        logger.trace("Obtaining health information.");
+        return Health.up().withDetail("RabbitMQMessaging", configuration.rabbitMQExchange()).build();
+    }
 
 }
