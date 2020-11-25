@@ -24,53 +24,70 @@ import org.springframework.web.util.UriComponentsBuilder;
  *
  * @author jejkal
  */
-public final class PaginatedResultsRetrievedEvent<T extends Serializable> extends ApplicationEvent{
+public final class PaginatedResultsRetrievedEvent<T extends Serializable> extends ApplicationEvent {
 
-  private final UriComponentsBuilder uriBuilder;
-  private final HttpServletResponse response;
-  private final int page;
-  private final int totalPages;
-  private final int pageSize;
+    private final UriComponentsBuilder uriBuilder;
+    private final HttpServletResponse response;
+    private final String suffix;
+    private final int page;
+    private final int totalPages;
+    private final int pageSize;
 
-  public PaginatedResultsRetrievedEvent(final Class<T> clazz, final UriComponentsBuilder uriBuilderToSet, final HttpServletResponse responseToSet, final int pageToSet, final int totalPagesToSet, final int pageSizeToSet){
-    super(clazz);
+    public PaginatedResultsRetrievedEvent(final Class<T> clazz, final String suffix, final UriComponentsBuilder uriBuilderToSet, final HttpServletResponse responseToSet, final int pageToSet, final int totalPagesToSet, final int pageSizeToSet) {
+        super(clazz);
 
-    uriBuilder = uriBuilderToSet;
-    response = responseToSet;
-    page = pageToSet;
-    totalPages = totalPagesToSet;
-    pageSize = pageSizeToSet;
-  }
+        uriBuilder = uriBuilderToSet;
+        response = responseToSet;
+        this.suffix = suffix;
+        page = pageToSet;
+        totalPages = totalPagesToSet;
+        pageSize = pageSizeToSet;
+    }
 
-  // API
-  public final UriComponentsBuilder getUriBuilder(){
-    return uriBuilder;
-  }
+    public PaginatedResultsRetrievedEvent(final Class<T> clazz, final UriComponentsBuilder uriBuilderToSet, final HttpServletResponse responseToSet, final int pageToSet, final int totalPagesToSet, final int pageSizeToSet) {
+        super(clazz);
 
-  public final HttpServletResponse getResponse(){
-    return response;
-  }
+        uriBuilder = uriBuilderToSet;
+        response = responseToSet;
+        this.suffix = null;
+        page = pageToSet;
+        totalPages = totalPagesToSet;
+        pageSize = pageSizeToSet;
+    }
 
-  public final int getPage(){
-    return page;
-  }
+    // API
+    public final UriComponentsBuilder getUriBuilder() {
+        return uriBuilder;
+    }
 
-  public final int getTotalPages(){
-    return totalPages;
-  }
+    public final HttpServletResponse getResponse() {
+        return response;
+    }
 
-  public final int getPageSize(){
-    return pageSize;
-  }
+    public String getSuffix() {
+        return suffix;
+    }
 
-  /**
-   * The object on which the Event initially occurred.
-   *
-   * @return The object on which the Event initially occurred.
-   */
-  @SuppressWarnings("unchecked")
-  public final Class<T> getClazz(){
-    return (Class<T>) getSource();
-  }
+    public final int getPage() {
+        return page;
+    }
+
+    public final int getTotalPages() {
+        return totalPages;
+    }
+
+    public final int getPageSize() {
+        return pageSize;
+    }
+
+    /**
+     * The object on which the Event initially occurred.
+     *
+     * @return The object on which the Event initially occurred.
+     */
+    @SuppressWarnings("unchecked")
+    public final Class<T> getClazz() {
+        return (Class<T>) getSource();
+    }
 
 }
