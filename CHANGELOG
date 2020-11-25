@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Truncating service-assigned times to milliseconds for compatibility reasons
+
 ## [0.1.1] - 2020-08-18
 ### Fixed
 - Fix of wrong HATEOS links in pagination
