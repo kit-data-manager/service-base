@@ -40,8 +40,8 @@ public class RabbitMQConfiguration{
   private String hostname;
   @Value("${repo.messaging.port:5672}")
   private int port;
-  @Value("${repo.messaging.topic:repository_events}")
-  private String topic;
+  @Value("${repo.messaging.sender.exchange:repository_events}")
+  private String exchange;
 
   @Value("${repo.messaging.enabled:FALSE}")
   private boolean messagingEnabled;
@@ -59,6 +59,6 @@ public class RabbitMQConfiguration{
 
   @Bean
   public TopicExchange rabbitMQExchange(){
-    return new TopicExchange(topic);
+    return new TopicExchange(exchange);
   }
 }
