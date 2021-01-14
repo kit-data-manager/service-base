@@ -39,7 +39,6 @@ import org.springframework.util.ReflectionUtils;
 /**
  * Helper to create find by example query.
  */
-@Component
 public class ByExampleSpecification{
 
   private final EntityManager entityManager;
