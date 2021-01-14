@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2021-01-14
+### Fixed
+- Removed @Component annotation in edu.kit.datamanager.dao.ByExampleSpecification to allow using service-base without database
+
 ## [0.2.0] - 2020-12-15
 ### Changed
 - Renaming of RabbitMQ configuration property repo.messaging.exchange to repo.messaging.sender.exchange
