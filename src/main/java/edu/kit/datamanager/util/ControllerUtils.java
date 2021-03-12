@@ -38,7 +38,7 @@ import org.springframework.web.context.request.WebRequest;
  *
  * @author jejkal
  */
-public class ControllerUtils{
+public class ControllerUtils {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ControllerUtils.class);
   private static final Pattern CONTENT_RANGE_PATTERN = Pattern.compile("([\\d]+)[-]([\\d]+)[/]([\\d]+)");
@@ -46,7 +46,7 @@ public class ControllerUtils{
   /**
    * Hidden constructor.
    */
-  private ControllerUtils(){
+  private ControllerUtils() {
   }
 
   /**
@@ -57,7 +57,7 @@ public class ControllerUtils{
    *
    * @return The validated (and fixed) page request.
    */
-  public static PageRequest checkPaginationInformation(Pageable pgbl){
+  public static PageRequest checkPaginationInformation(Pageable pgbl) {
     return checkPaginationInformation(pgbl, pgbl.getSort());
   }
 
@@ -73,12 +73,12 @@ public class ControllerUtils{
    * @return The validated (and fixed) page request. If pgbl is null, a page
    * request of page 0 with a size of 20 elements is returned.
    */
-  public static PageRequest checkPaginationInformation(Pageable pgbl, Sort sort){
-    if(pgbl == null){
+  public static PageRequest checkPaginationInformation(Pageable pgbl, Sort sort) {
+    if (pgbl == null) {
       return PageRequest.of(0, 20);
     }
     int pageSize = pgbl.getPageSize();
-    if(pageSize > 100){
+    if (pageSize > 100) {
       LOGGER.debug("Restricting user-provided page size {} to max. page size 100.", pageSize);
       pageSize = 100;
     }
@@ -93,9 +93,11 @@ public class ControllerUtils{
    *
    * @throws UnauthorizedAccessException if anonyous access was detected.
    */
-  public static void checkAnonymousAccess() throws UnauthorizedAccessException{
-    if(AuthenticationHelper.isAnonymous()){
-      throw new UnauthorizedAccessException("Please login in order to be able to perform this operation.");
+  public static void checkAnonymousAccess() throws UnauthorizedAccessException {
+    if (AuthenticationHelper.isAnonymous()) {
+      String message = "Please login in order to be able to perform this operation.";
+      LOGGER.info(message);
+      throw new UnauthorizedAccessException(message);
     }
   }
 
@@ -107,8 +109,8 @@ public class ControllerUtils{
    * @throws AccessForbiddenException if the caller does not own
    * ROLE_ADMINISTRATOR.
    */
-  public static void checkAdministratorAccess(){
-    if(!AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.getValue())){
+  public static void checkAdministratorAccess() {
+    if (!AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.getValue())) {
       LOGGER.warn("Caller is not allowed to perform the requested operation, ROLE_ADMINISTRATOR is required. Throwing AccessForbiddenException.");
       throw new AccessForbiddenException("Insufficient role. ROLE_ADMINISTRATOR required.");
     }
@@ -125,18 +127,50 @@ public class ControllerUtils{
    * @throws EtagMismatchException if the provided ETag is not matching the
    * current ETag.
    */
-  public static void checkEtag(WebRequest request, EtagSupport resource) throws EtagMismatchException{
-    String etag = resource.getEtag();
-    LOGGER.trace("Checking ETag for resource with ETag {}.", etag);
-    String etagValue = request.getHeader("If-Match");
+  public static void checkEtag(WebRequest request, EtagSupport resource) throws EtagMismatchException {
+    String etagValue = getEtagFromHeader(request);
+
+    checkEtag(etagValue, resource);
+  }
+
+  /**
+   * Get the ETag from request header.
+   *
+   * @param request The WebRequest containing all headers, e.g. the ETag.
+   *
+   * return current ETag.
+   */
+  public static String getEtagFromHeader(WebRequest request) {
+   String etagValue = request.getHeader("If-Match");
     LOGGER.trace("Received ETag: {}", etagValue);
 
-    if(etagValue == null){
-      throw new EtagMissingException("If-Match header with valid etag is missing.");
+    if (etagValue == null) {
+      String message = "If-Match header with valid etag is missing.";
+      LOGGER.trace(message);
+      throw new EtagMissingException(message);
     }
+    return etagValue;
+  }
 
-    if(!etagValue.equals("\"" + etag + "\"")){
-      throw new EtagMismatchException("ETag not matching or not provided.");
+  /**
+   * Check the ETag provided by the caller against the current ETag provided by
+   * a resource. If both ETags are not matching, an EtagMismatchException is
+   * thrown.
+   *
+   * @param etagValue eTag.
+   * @param resource A resource capable of providing its own ETag.
+   *
+   * @throws EtagMismatchException if the provided ETag is not matching the
+   * current ETag.
+   */
+  public static void checkEtag(String etagValue, EtagSupport resource) throws EtagMismatchException {
+    String etag = resource.getEtag();
+    LOGGER.trace("Checking ETag for resource with ETag {}.", etag);
+ 
+    if (!etagValue.equals("\"" + etag + "\"")) {
+      String message = String.format("ETag not matching or not provided. (provided: '%s' <-> resource: '%s')", etagValue, etag);
+      LOGGER.trace(message);
+      throw new EtagMismatchException(message);
     }
   }
 
@@ -146,13 +180,13 @@ public class ControllerUtils{
    *
    * @return The fully qualified local hostname or localhost as default.
    */
-  public static String getLocalHostname(){
+  public static String getLocalHostname() {
     String hostname = "localhost";
-    try{
+    try {
       InetAddress inetAddress = InetAddress.getLocalHost();
-      System.out.println("IN " + inetAddress);
       hostname = inetAddress.getHostName();
-    } catch(UnknownHostException ex){
+      LOGGER.trace("get local hostname: {} -> {}", inetAddress, hostname);
+    } catch (UnknownHostException ex) {
       LOGGER.warn("Unable to determine local host address. Returning default hostname 'localhost'.", ex);
     }
     return hostname;
@@ -166,25 +200,27 @@ public class ControllerUtils{
    *
    * @return The Long representation of 'id'.
    */
-  public static Long parseIdToLong(String id){
-    try{
+  public static Long parseIdToLong(String id) {
+    try {
       return Long.parseLong(id);
-    } catch(NumberFormatException ex){
-      throw new BadArgumentException("Provided id must be numeric.");
+    } catch (NumberFormatException ex) {
+     String message = "Provided id must be numeric.";
+      LOGGER.trace(message);
+      throw new BadArgumentException(message);
     }
   }
 
-  public static String getContentRangeHeader(int currentPage, int pageSize, long totalElements){
+  public static String getContentRangeHeader(int currentPage, int pageSize, long totalElements) {
     int indexStart = currentPage * pageSize;
     int indexEnd = indexStart + pageSize - 1;
     return indexStart + "-" + indexEnd + "/" + totalElements;
   }
 
-  public static ContentRange parseContentRangeHeader(String headerValue){
+  public static ContentRange parseContentRangeHeader(String headerValue) {
     Matcher m = CONTENT_RANGE_PATTERN.matcher(headerValue);
     ContentRange range = new ContentRange();
 
-    if(m.find()){
+    if (m.find()) {
       range.indexStart = Integer.parseInt(m.group(1));
       range.indexEnd = Integer.parseInt(m.group(2));
       range.totalElements = Long.parseLong(m.group(3));
@@ -194,9 +230,9 @@ public class ControllerUtils{
   }
 
   @Data
-  public static class ContentRange{
+  public static class ContentRange {
 
-    public static ContentRange empty(){
+    public static ContentRange empty() {
       return new ContentRange();
     }
 
@@ -204,12 +240,12 @@ public class ControllerUtils{
     private int indexEnd = 0;
     private long totalElements = 0l;
 
-    public int getPages(){
+    public int getPages() {
       int recordsPerPage = indexEnd - indexStart;
       return (int) (totalElements + recordsPerPage - 1) / recordsPerPage;
     }
 
-    public int getPage(){
+    public int getPage() {
       int recordsPerPage = indexEnd - indexStart;
       return (indexStart / recordsPerPage) + 1;
     }

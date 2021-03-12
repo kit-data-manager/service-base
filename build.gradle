@@ -31,11 +31,11 @@ description = """Base service module containing entities, interfaces and helpers
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+group = "edu.kit.datamanager"
+
 jar {
     baseName = 'service-base'
 }
-
-group = "edu.kit.datamanager"
 
 repositories {
     mavenLocal()   
@@ -121,25 +121,25 @@ jacocoTestReport {
     afterEvaluate {
         //exclude some classes/package from code coverage report
         classDirectories.setFrom(files(classDirectories.files.collect {
-                    fileTree(dir: it, exclude: [\
-                                //pure entity package currently not needed
-            'org/datacite/**', \
-                   'org/purl/**', \
-                            //performance tests
-            'edu/kit/datamanager/perf/**', \
-                            //remove AuthenticationHelper tests due to mocking -> code coverage cannot be determined
-                            //'edu/kit/datamanager/util/AuthenticationHelper*',
-                            //deprecated stuff
-            'edu/kit/datamanager/util/DCTransformationHelper*',
-                  'edu/kit/datamanager/dao/ByExampleSpecification*',
-                  'edu/kit/datamanager/controller/hateoas/**',
-                            //exceptions 
-            'edu/kit/datamanager/exceptions/**',
-                  'edu/kit/datamanager/service/impl/RabbitMQMessagingService*',
-                  'edu/kit/datamanager/configuration/**',
-                  'edu/kit/datamanager/service/IGenericService*'
-                        ])
-                }))
+            fileTree(dir: it, exclude: [\
+                //pure entity package currently not needed
+                'org/datacite/**', \
+                'org/purl/**', \
+                //performance tests
+                'edu/kit/datamanager/perf/**', \
+                //remove AuthenticationHelper tests due to mocking -> code coverage cannot be determined
+                //'edu/kit/datamanager/util/AuthenticationHelper*',
+                //deprecated stuff
+                'edu/kit/datamanager/util/DCTransformationHelper*',
+                'edu/kit/datamanager/dao/ByExampleSpecification*',
+                'edu/kit/datamanager/controller/hateoas/**',
+                //exceptions 
+                'edu/kit/datamanager/exceptions/**',
+                'edu/kit/datamanager/service/impl/RabbitMQMessagingService*',
+                'edu/kit/datamanager/configuration/**',
+                'edu/kit/datamanager/service/IGenericService*'
+            ])
+        }))
     }
 }
 

@@ -91,18 +91,23 @@ public final class ZipUtils{
    * problems with reading the input files or writing into the output file
    */
   public static void zip(File[] pFiles, String pBasePath, File pZipOut) throws IOException{
-
+    StringBuilder errorMessage = new StringBuilder();
     if(pFiles == null){
-      throw new IllegalArgumentException("Argument pFiles must not be null.");
+      errorMessage.append("Argument pFiles must not be null.\n");
     }
 
     if(pBasePath == null){
-      throw new IllegalArgumentException("Argument pBasePath must not be null.");
+      errorMessage.append("Argument pBasePath must not be null.\n");
     }
 
     if(pZipOut == null){
-      throw new IllegalArgumentException("Argument pZipOut must not be null.");
+      errorMessage.append("Argument pZipOut must not be null.\n");
     }
+    if (errorMessage.length() > 0) {
+      LOGGER.warn(errorMessage.toString());
+      throw new IllegalArgumentException(errorMessage.toString());
+    }
+
     ZipOutputStream zipOut = null;
     try{
       zipOut = new ZipOutputStream(new FileOutputStream(pZipOut));
