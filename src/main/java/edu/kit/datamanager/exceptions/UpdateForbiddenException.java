@@ -16,17 +16,16 @@
 package edu.kit.datamanager.exceptions;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
  * @author jejkal
  */
-@ResponseStatus(value = HttpStatus.FORBIDDEN)
-public class UpdateForbiddenException extends RuntimeException{
+public class UpdateForbiddenException extends ResponseStatusException{
 
   public UpdateForbiddenException(String message){
-    super(message);
+    super(HttpStatus.FORBIDDEN, message);
   }
 
 }

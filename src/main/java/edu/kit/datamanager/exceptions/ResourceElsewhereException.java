@@ -16,16 +16,15 @@
 package edu.kit.datamanager.exceptions;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
  * @author jejkal
  */
-@ResponseStatus(value = HttpStatus.SEE_OTHER)
-public class ResourceElsewhereException extends RuntimeException{
+public class ResourceElsewhereException extends ResponseStatusException{
 
   public ResourceElsewhereException(String resourceLocation){
-    super(resourceLocation);
+    super(HttpStatus.SEE_OTHER, resourceLocation);
   }
 }

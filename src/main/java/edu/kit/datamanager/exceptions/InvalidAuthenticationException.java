@@ -16,21 +16,19 @@
 package edu.kit.datamanager.exceptions;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
  * @author jejkal
  */
-@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-public class InvalidAuthenticationException extends AuthenticationException{
+public class InvalidAuthenticationException extends ResponseStatusException{
 
   public InvalidAuthenticationException(String msg){
-    super(msg);
+    super(HttpStatus.UNAUTHORIZED, msg);
   }
 
   public InvalidAuthenticationException(String msg, Throwable t){
-    super(msg, t);
+    super(HttpStatus.UNAUTHORIZED, msg, t);
   }
 }

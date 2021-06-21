@@ -16,14 +16,13 @@
 package edu.kit.datamanager.exceptions;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  */
-@ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
-public class ServiceUnavailableException extends RuntimeException{
+public class ServiceUnavailableException extends ResponseStatusException{
 
   public ServiceUnavailableException(String message){
-    super(message);
+    super(HttpStatus.SERVICE_UNAVAILABLE, message);
   }
 }
