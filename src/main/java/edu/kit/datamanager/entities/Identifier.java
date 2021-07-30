@@ -42,9 +42,9 @@ import lombok.Data;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Identifier{
+public class Identifier {
 
-  public enum IDENTIFIER_TYPE implements BaseEnum{
+  public enum IDENTIFIER_TYPE implements BaseEnum {
     ARK("ARK"),
     AR_XIV("arXiv"),
     BIBCODE("bibcode"),
@@ -63,17 +63,18 @@ public class Identifier{
     UPC("UPC"),
     URL("URL"),
     URN("URN"),
+    W_3_ID("w3id"),
     INTERNAL("INTERNAL"),
     OTHER("OTHER");
 
     private final String value;
 
-    private IDENTIFIER_TYPE(String value){
+    private IDENTIFIER_TYPE(String value) {
       this.value = value;
     }
 
     @Override
-    public String getValue(){
+    public String getValue() {
       return value;
     }
   }
@@ -85,51 +86,51 @@ public class Identifier{
   private Long id;
   @NotBlank
   private String value;
- // @NotBlank
+  // @NotBlank
   @Enumerated(EnumType.STRING)
   private IDENTIFIER_TYPE identifierType;
 
-  public static Identifier factoryIdentifier(String value, IDENTIFIER_TYPE type){
+  public static Identifier factoryIdentifier(String value, IDENTIFIER_TYPE type) {
     Identifier result = new Identifier();
     result.value = value;
     result.identifierType = type;
     return result;
   }
 
-  public static Identifier factoryInternalIdentifier(String identifier){
+  public static Identifier factoryInternalIdentifier(String identifier) {
     Identifier result = new Identifier();
     result.setIdentifierType(IDENTIFIER_TYPE.INTERNAL);
     result.setValue(identifier);
     return result;
   }
 
-  public static Identifier factoryInternalIdentifier(){
+  public static Identifier factoryInternalIdentifier() {
     return factoryInternalIdentifier(UUID.randomUUID().toString());
   }
 
   @Override
-  public boolean equals(Object obj){
-    if(this == obj){
+  public boolean equals(Object obj) {
+    if (this == obj) {
       return true;
     }
-    if(obj == null){
+    if (obj == null) {
       return false;
     }
-    if(getClass() != obj.getClass()){
+    if (getClass() != obj.getClass()) {
       return false;
     }
     final Identifier other = (Identifier) obj;
-    if(!Objects.equals(this.value, other.value)){
+    if (!Objects.equals(this.value, other.value)) {
       return false;
     }
-    if(!Objects.equals(this.id, other.id)){
+    if (!Objects.equals(this.id, other.id)) {
       return false;
     }
     return EnumUtils.equals(this.identifierType, other.identifierType);
   }
 
   @Override
-  public int hashCode(){
+  public int hashCode() {
     int hash = 7;
     hash = 79 * hash + Objects.hashCode(this.id);
     hash = 79 * hash + Objects.hashCode(this.value);
