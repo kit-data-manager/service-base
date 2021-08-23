@@ -76,15 +76,15 @@ dependencies {
      
     api("org.apache.commons:commons-collections4:4.4")
    
-    api("org.slf4j:slf4j-api:1.7.25")
-    api("ch.qos.logback:logback-classic:1.2.3")
+    api("org.slf4j:slf4j-api:1.7.32")
+    api("ch.qos.logback:logback-classic:1.2.5")
 
     //Java 11 Support 
     compile('javax.xml.bind:jaxb-api:2.3.1')
     compile('com.sun.xml.bind:jaxb-core:2.3.0.1')
     compile('com.sun.xml.bind:jaxb-impl:2.3.0.1')
     api('javax.activation:activation:1.1.1')
-    api('org.javassist:javassist:3.23.1-GA')
+    api('org.javassist:javassist:3.28.0-GA')
    
     //test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
