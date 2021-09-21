@@ -52,6 +52,7 @@ public class LocalFileValidatorTest {
 
   @AfterClass
   public static void tearDownClass() {
+    FileUtils.deleteQuietly(TMP_FILE);
   }
 
   @Before

@@ -41,23 +41,25 @@ public class ExecutableFileValidatorTest {
   
   private static File TMP_FILE;
 
-  private static File TMP_DIR;
+  private static File TMP_FILE2;
 
   public ExecutableFileValidatorTest() {
   }
 
   @BeforeClass
   public static void setUpClass() throws IOException {
-    TMP_FILE = Files.createTempFile("localFileValidator", "test").toFile();
+    TMP_FILE = Files.createTempFile("executableFileValidator", "test").toFile();
     TMP_FILE.setExecutable(true);
     EXECUTABLE_FILE = TMP_FILE.toURI().toURL();
-    TMP_FILE = Files.createTempFile("localFileValidator", "test").toFile();
-    TMP_FILE.setExecutable(false);
-    NOT_EXECUTABLE_FILE = TMP_FILE.toURI().toURL();
+    TMP_FILE2 = Files.createTempFile("executableFileValidator", "test").toFile();
+    TMP_FILE2.setExecutable(false);
+    NOT_EXECUTABLE_FILE = TMP_FILE2.toURI().toURL();
   }
   
   @AfterClass
   public static void tearDownClass() {
+    FileUtils.deleteQuietly(TMP_FILE);
+    FileUtils.deleteQuietly(TMP_FILE2);
   }
   
   @Before
