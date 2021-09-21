@@ -50,7 +50,7 @@ public class LocalFileValidator implements ConstraintValidator<LocalFileURL, jav
           if (!localFile.canRead()) {
             LOGGER.error("File at {} is not readable!", pathToLocalFile);
           } else {
-            LOGGER.trace("File at {} exists and is executable.", pathToLocalFile);
+            LOGGER.trace("File at {} exists and is readable.", pathToLocalFile);
             validLocalFile = true;
           }
         }

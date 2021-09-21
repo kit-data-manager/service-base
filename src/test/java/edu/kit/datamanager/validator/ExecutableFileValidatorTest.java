@@ -19,7 +19,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import javax.validation.ConstraintValidatorContext;
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -33,14 +35,25 @@ import static org.junit.Assert.*;
  */
 public class ExecutableFileValidatorTest {
   
-  private static URL BASH_EXECUTABLE;
+  private static URL EXECUTABLE_FILE;
   
+  private static URL NOT_EXECUTABLE_FILE;
+  
+  private static File TMP_FILE;
+
+  private static File TMP_DIR;
+
   public ExecutableFileValidatorTest() {
   }
 
   @BeforeClass
   public static void setUpClass() throws IOException {
-     BASH_EXECUTABLE = new File("/bin/sh").toURI().toURL();
+    TMP_FILE = Files.createTempFile("localFileValidator", "test").toFile();
+    TMP_FILE.setExecutable(true);
+    EXECUTABLE_FILE = TMP_FILE.toURI().toURL();
+    TMP_FILE = Files.createTempFile("localFileValidator", "test").toFile();
+    TMP_FILE.setExecutable(false);
+    NOT_EXECUTABLE_FILE = TMP_FILE.toURI().toURL();
   }
   
   @AfterClass
@@ -61,7 +74,7 @@ public class ExecutableFileValidatorTest {
   @Test
   public void testIsValid() throws MalformedURLException {
     System.out.println("isValid");
-    URL value = BASH_EXECUTABLE;
+    URL value = EXECUTABLE_FILE;
     ConstraintValidatorContext context = null;
     ExecutableFileValidator instance = new ExecutableFileValidator();
     boolean expResult = true;
@@ -91,7 +104,7 @@ public class ExecutableFileValidatorTest {
   @Test
   public void testIsPath() throws MalformedURLException {
     System.out.println("testIsPath");
-    URL value = new URL("file:///tmp");
+    URL value = FileUtils.getTempDirectory().toURI().toURL();
     ConstraintValidatorContext context = null;
     ExecutableFileValidator instance = new ExecutableFileValidator();
     boolean expResult = false;
@@ -101,7 +114,7 @@ public class ExecutableFileValidatorTest {
   @Test
   public void testIsNotExecutable() throws MalformedURLException {
     System.out.println("testIsNotExecutable");
-    URL value = new URL("file:src/test/resources/examples/gemma/simple.json");
+    URL value = NOT_EXECUTABLE_FILE;
     ConstraintValidatorContext context = null;
     ExecutableFileValidator instance = new ExecutableFileValidator();
     boolean expResult = false;

@@ -19,7 +19,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import javax.validation.ConstraintValidatorContext;
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -32,25 +34,30 @@ import static org.junit.Assert.*;
  * @author hartmann-v
  */
 public class LocalFileValidatorTest {
-  
+
   private static URL BASH_EXECUTABLE;
-  
+
+  private static File TMP_FILE;
+
+  private static File TMP_DIR;
+
   public LocalFileValidatorTest() {
   }
 
   @BeforeClass
   public static void setUpClass() throws IOException {
-     BASH_EXECUTABLE = new File("/bin/sh").toURI().toURL();
+    TMP_FILE = Files.createTempFile("localFileValidator", "test").toFile();
+    BASH_EXECUTABLE = TMP_FILE.toURI().toURL();
   }
-  
+
   @AfterClass
   public static void tearDownClass() {
   }
-  
+
   @Before
   public void setUp() {
   }
-  
+
   @After
   public void tearDown() {
   }
@@ -68,6 +75,7 @@ public class LocalFileValidatorTest {
     boolean result = instance.isValid(value, context);
     assertEquals(expResult, result);
   }
+
   @Test
   public void testIsInvalidFile() throws MalformedURLException {
     System.out.println("testIsInvalidFile");
@@ -89,16 +97,18 @@ public class LocalFileValidatorTest {
     boolean result = instance.isValid(value, context);
     assertEquals(expResult, result);
   }
+
   @Test
   public void testIsPath() throws MalformedURLException {
     System.out.println("testIsPath");
-    URL value = new URL("file:///tmp");
+    URL value = FileUtils.getTempDirectory().toURI().toURL();
     ConstraintValidatorContext context = null;
     LocalFileValidator instance = new LocalFileValidator();
     boolean expResult = false;
     boolean result = instance.isValid(value, context);
     assertEquals(expResult, result);
   }
+
   @Test
   public void testIsNotURL() throws MalformedURLException {
     System.out.println("testIsNotURL");
@@ -109,5 +119,5 @@ public class LocalFileValidatorTest {
     boolean result = instance.isValid(value, context);
     assertEquals(expResult, result);
   }
-  
+
 }
