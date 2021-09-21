@@ -87,7 +87,7 @@ if (project.hasProperty('deploy')) {
 }
 
 jacoco {
-    toolVersion = "0.8.70"
+    toolVersion = "0.8.7"
 }
 
 tasks.withType(Test) {
