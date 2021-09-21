@@ -22,8 +22,10 @@ import java.net.URL;
 import java.nio.file.Files;
 import javax.validation.ConstraintValidatorContext;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -116,6 +118,7 @@ public class ExecutableFileValidatorTest {
   @Test
   public void testIsNotExecutable() throws MalformedURLException {
     System.out.println("testIsNotExecutable");
+    Assume.assumeFalse("Skip test on windows systems", SystemUtils.IS_OS_WINDOWS);
     URL value = NOT_EXECUTABLE_FILE;
     ConstraintValidatorContext context = null;
     ExecutableFileValidator instance = new ExecutableFileValidator();
