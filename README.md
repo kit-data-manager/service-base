@@ -10,12 +10,12 @@ Helper module for KIT DM 2.0 services providing commonly used dependencies and g
 
 In order to build this module you'll need:
 
-* Java SE Development Kit 8 or higher
+* Java SE Development Kit 11 or higher
 
 After obtaining the sources change to the folder where the sources are located and call:
 
 ```
-user@localhost:/home/user/service-base$ ./gradlew install
+user@localhost:/home/user/service-base$ ./gradlew publishToMavenLocal
 BUILD SUCCESSFUL in 1s
 3 actionable tasks: 3 executed
 user@localhost:/home/user/service-base$
@@ -34,14 +34,14 @@ Instead of using a local build you may also use the most recent version from the
 <dependency>
     <groupId>edu.kit.datamanager</groupId>
     <artifactId>service-base</artifactId>
-    <version>0.1</version>
+    <version>0.3.0</version>
 </dependency>
 ~~~~
 
 ### Gradle
 
 ~~~~
-compile group: 'edu.kit.datamanager', name: 'service-base', version: '0.1'
+compile group: 'edu.kit.datamanager', name: 'service-base', version: '0.3.0'
 ~~~~
 
 
