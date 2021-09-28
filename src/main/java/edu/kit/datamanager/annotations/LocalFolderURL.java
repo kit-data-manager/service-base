@@ -25,6 +25,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
+ * Test for local folder.
  *
  * @author jejkal
  */
@@ -34,10 +35,22 @@ import javax.validation.Payload;
 @Documented
 public @interface LocalFolderURL{
 
+  /**
+   * Get info message.
+   * @return Human readable message.
+   */
   String message() default "Provided folder URL invalid. A valid URL to a writable local folder is required.";
 
+  /**
+   * Restrict the set of constraints to groups.
+   * @return Allowed groups.
+   */
   Class<?>[] groups() default {};
 
+  /**
+   * Assign custom payload objects to a constraint
+   * @return Custom payload.
+   */
   Class<? extends Payload>[] payload() default {};
 
 }

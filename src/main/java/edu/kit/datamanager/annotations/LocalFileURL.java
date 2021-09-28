@@ -25,6 +25,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
+ * Test if file is locally available.
  *
  * @author jejkal
  */
@@ -34,10 +35,22 @@ import javax.validation.Payload;
 @Documented
 public @interface LocalFileURL{
 
+  /**
+   * Get info message.
+   * @return Human readable message.
+   */
   String message() default "Provided file URL invalid. A valid URL to a local file is required.";
 
+  /**
+   * Restrict the set of constraints to groups.
+   * @return Allowed groups.
+   */
   Class<?>[] groups() default {};
 
+  /**
+   * Assign custom payload objects to a constraint
+   * @return Custom payload.
+   */
   Class<? extends Payload>[] payload() default {};
 
 }
