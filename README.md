@@ -10,7 +10,7 @@ Helper module for KIT DM 2.0 services providing commonly used dependencies and g
 
 In order to build this module you'll need:
 
-* Java SE Development Kit 11 or higher
+* Java SE Development Kit 8 or higher
 
 After obtaining the sources change to the folder where the sources are located and call:
 

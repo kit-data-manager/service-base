@@ -9,8 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add GitHub actions
 ### Changed
 - Upgrade to Spring Boot 2.4.10
-### Deprecated
-- Compatibilty with Java 8
 
 ## [0.2.1] - 2021-01-14
 ### Fixed
