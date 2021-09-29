@@ -38,10 +38,10 @@ Instead of using a local build you may also use the most recent version from the
 </dependency>
 ~~~~
 
-### Gradle
+### Gradle (short)
 
 ~~~~
-compile group: 'edu.kit.datamanager', name: 'service-base', version: '0.3.0'
+    implementation "edu.kit.datamanager:service-base:0.3.0"
 ~~~~
 
 
