@@ -16,17 +16,16 @@
 package edu.kit.datamanager.exceptions;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
  * @author jejkal
  */
-@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-public class CustomInternalServerError extends RuntimeException{
+public class CustomInternalServerError extends ResponseStatusException{
 
   public CustomInternalServerError(String message){
-    super(message);
+    super(HttpStatus.INTERNAL_SERVER_ERROR, message);
   }
 
 }

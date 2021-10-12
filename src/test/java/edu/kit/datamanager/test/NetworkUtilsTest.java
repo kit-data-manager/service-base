@@ -17,6 +17,7 @@ package edu.kit.datamanager.test;
 
 import edu.kit.datamanager.util.NetworkUtils;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -96,6 +97,7 @@ public class NetworkUtilsTest{
   }
 
   @Test
+  @Ignore
   public void testMatches(){
 //skip matching test as this may fail often due to DynDNS issues or resolution issues
 //    Assert.assertTrue(NetworkUtils.matches(HOSTNAME_KIT, IPV4_KIT));

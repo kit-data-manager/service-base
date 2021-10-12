@@ -29,6 +29,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RUNTIME)
 public @interface SecureUpdate{
-
+  /**
+   * Get all values.
+   * @return Array of values.
+   */
   String[] value();
 }

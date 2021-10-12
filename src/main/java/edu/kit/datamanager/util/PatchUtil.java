@@ -61,7 +61,9 @@ public class PatchUtil{
     }
 
     if(!PatchUtil.canUpdate(resource, updated, authorities)){
-      throw new UpdateForbiddenException("Patch not applicable.");
+      String message = "Patch not applicable.";
+      LOGGER.warn(message);
+      throw new UpdateForbiddenException(message);
     }
 
     return updated;

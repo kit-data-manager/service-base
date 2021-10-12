@@ -16,17 +16,16 @@
 package edu.kit.datamanager.exceptions;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
  * @author jejkal
  */
-@ResponseStatus(value = HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-public class UnsupportedMediaTypeException extends RuntimeException{
+public class UnsupportedMediaTypeException extends ResponseStatusException{
 
   public UnsupportedMediaTypeException(String message){
-    super(message);
+    super(HttpStatus.UNSUPPORTED_MEDIA_TYPE, message);
   }
 
 }

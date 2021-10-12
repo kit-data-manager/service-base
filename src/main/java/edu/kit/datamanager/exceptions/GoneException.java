@@ -22,9 +22,10 @@ import org.springframework.web.server.ResponseStatusException;
  *
  * @author jejkal
  */
-public class ResourceElsewhereException extends ResponseStatusException{
+public class GoneException extends ResponseStatusException{
 
-  public ResourceElsewhereException(String resourceLocation){
-    super(HttpStatus.SEE_OTHER, resourceLocation);
+  public GoneException(String message){
+    super(HttpStatus.GONE, message);
   }
+
 }

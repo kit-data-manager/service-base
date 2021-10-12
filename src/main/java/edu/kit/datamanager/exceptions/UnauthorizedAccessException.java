@@ -16,17 +16,16 @@
 package edu.kit.datamanager.exceptions;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
  * @author jejkal
  */
-@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-public class UnauthorizedAccessException extends RuntimeException{
+public class UnauthorizedAccessException extends ResponseStatusException{
 
   public UnauthorizedAccessException(String message){
-    super(message);
+    super(HttpStatus.UNAUTHORIZED, message);
   }
 
 }

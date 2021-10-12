@@ -16,16 +16,15 @@
 package edu.kit.datamanager.exceptions;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
  * @author jejkal
  */
-@ResponseStatus(value = HttpStatus.CONFLICT)
-public class ResourceAlreadyExistException extends RuntimeException{
+public class ResourceAlreadyExistException extends ResponseStatusException{
 
   public ResourceAlreadyExistException(String message){
-    super(message);
+    super(HttpStatus.CONFLICT, message);
   }
 }

@@ -15,7 +15,7 @@
  */
 package edu.kit.datamanager.annotations;
 
-import edu.kit.datamanager.validator.LocalFolderValidator;
+import edu.kit.datamanager.validator.LocalFileValidator;
 import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.FIELD;
 import java.lang.annotation.Retention;
@@ -25,21 +25,21 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
- * Test for local folder.
+ * Test if file is locally available.
  *
  * @author jejkal
  */
 @Target({FIELD})
 @Retention(RUNTIME)
-@Constraint(validatedBy = LocalFolderValidator.class)
+@Constraint(validatedBy = LocalFileValidator.class)
 @Documented
-public @interface LocalFolderURL{
+public @interface LocalFileURL{
 
   /**
    * Get info message.
    * @return Human readable message.
    */
-  String message() default "Provided folder URL invalid. A valid URL to a writable local folder is required.";
+  String message() default "Provided file URL invalid. A valid URL to a local file is required.";
 
   /**
    * Restrict the set of constraints to groups.

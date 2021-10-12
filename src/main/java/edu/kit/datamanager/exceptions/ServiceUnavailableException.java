@@ -13,24 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package edu.kit.datamanager.service;
+package edu.kit.datamanager.exceptions;
 
-import edu.kit.datamanager.entities.messaging.IAMQPSubmittable;
-import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
- *
- * @author jejkal
  */
-public interface IMessagingService extends HealthIndicator{
+public class ServiceUnavailableException extends ResponseStatusException{
 
-  /**
-   * Send a message via the underlaying messaging system. The message itself
-   * provides routing information as well as the possibility to be serialized
-   * into JSON.
-   *
-   * @param msg The message to send.
-   */
-  void send(IAMQPSubmittable msg);
-
+  public ServiceUnavailableException(String message){
+    super(HttpStatus.SERVICE_UNAVAILABLE, message);
+  }
 }

@@ -1,7 +1,7 @@
 # KIT Data Manager - Service Base Module
 
-![Build Status](https://img.shields.io/travis/kit-data-manager/service-base.svg)
-![Code Coverage](https://img.shields.io/coveralls/github/kit-data-manager/service-base.svg)
+[![build with gradle](https://github.com/kit-data-manager/service-base/actions/workflows/gradle.yml/badge.svg)](https://github.com/kit-data-manager/service-base/actions/workflows/gradle.yml)
+[![codecov](https://codecov.io/gh/kit-data-manager/service-base/branch/master/graph/badge.svg)](https://codecov.io/gh/kit-data-manager/service-base)
 ![License](https://img.shields.io/github/license/kit-data-manager/service-base.svg)
 
 Helper module for KIT DM 2.0 services providing commonly used dependencies and general purpose implementations, e.g. helpers and exception.
@@ -15,7 +15,7 @@ In order to build this module you'll need:
 After obtaining the sources change to the folder where the sources are located and call:
 
 ```
-user@localhost:/home/user/service-base$ ./gradlew install
+user@localhost:/home/user/service-base$ ./gradlew publishToMavenLocal
 BUILD SUCCESSFUL in 1s
 3 actionable tasks: 3 executed
 user@localhost:/home/user/service-base$
@@ -34,14 +34,14 @@ Instead of using a local build you may also use the most recent version from the
 <dependency>
     <groupId>edu.kit.datamanager</groupId>
     <artifactId>service-base</artifactId>
-    <version>0.1</version>
+    <version>0.3.0</version>
 </dependency>
 ~~~~
 
-### Gradle
+### Gradle (short)
 
 ~~~~
-compile group: 'edu.kit.datamanager', name: 'service-base', version: '0.1'
+    implementation "edu.kit.datamanager:service-base:0.3.0"
 ~~~~
 
 

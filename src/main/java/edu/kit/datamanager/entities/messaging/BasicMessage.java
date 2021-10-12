@@ -29,6 +29,8 @@ import java.util.Set;
 import lombok.Data;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Instant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -37,6 +39,8 @@ import org.joda.time.Instant;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BasicMessage implements IAMQPSubmittable{
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(BasicMessage.class);
 
   private String principal;
   private String sender;
@@ -68,16 +72,26 @@ public class BasicMessage implements IAMQPSubmittable{
 
   @Override
   public void validate(){
+    boolean valid = true;
+    StringBuilder message = new StringBuilder();
+    String mustNotBeNull = " must not be null!\n";
     if(getEntityName() == null){
-      throw new MessageValidationException("Entity name must not be null.");
+      valid = false;
+      message.append("Entity name").append(mustNotBeNull);
     }
 
     if(getAction() == null){
-      throw new MessageValidationException("Action must not be null.");
+      valid = false;
+      message.append("Action").append(mustNotBeNull);
     }
 
     if(getEntityId() == null){
-      throw new MessageValidationException("Entity id must not be null.");
+      valid = false;
+      message.append("Entity id").append(mustNotBeNull);
+    }
+    if (!valid) {
+      LOGGER.trace(message.toString());
+      throw new MessageValidationException(message.toString());
     }
   }
 
