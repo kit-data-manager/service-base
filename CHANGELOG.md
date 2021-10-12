@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add GitHub actions
 ### Changed
 - Upgrade to Spring Boot 2.4.10
+- Upgrade Gradle to 7.2
 
 ## [0.2.1] - 2021-01-14
 ### Fixed
