@@ -97,7 +97,7 @@ dependencies {
     testImplementation "org.powermock:powermock-api-mockito2:2.0.9"
 }
 
-if (project.hasProperty('deploy')) {
+if (project.hasProperty('release')) {
     println 'Using deploy profile for building ' + project.getName()
     apply from: 'gradle/profile-deploy.gradle'
 }
