@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-apply plugin: 'signing'
-apply plugin: 'maven-publish'
-apply plugin: 'net.researchgate.release'
-
 ////////////////////////////////////////////////////////////////////////////////
 //for java plugin
 //see https://docs.gradle.org/current/userguide/java_plugin.html
@@ -54,7 +50,7 @@ javadoc {
     if(JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption('html5', true)
     }
-
+}
 ////////////////////////////////////////////////////////////////////////////////
 //for plugin io.github.gradle-nexus.publish-plugin
 //see https://github.com/gradle-nexus/publish-plugin
