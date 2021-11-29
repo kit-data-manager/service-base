@@ -35,54 +35,78 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @author jejkal
  */
 @RunWith(MockitoJUnitRunner.class)
-public class CustomInstantSerializationTest{
+public class CustomInstantSerializationTest {
 
-  @Mock
-  private JsonGenerator gen;
+    @Mock
+    private JsonGenerator gen;
 
-  @Mock
-  private JsonParser pars;
+    @Mock
+    private JsonParser pars;
 
-  @Test
-  public void testSerializeInstant() throws Exception{
-    Instant instant = Instant.ofEpochMilli(0);
-    new CustomInstantSerializer().serialize(instant, gen, null);
-    String expectedOutput = "1970-01-01T00:00:00Z";
-    verify(gen, times(1)).writeString(expectedOutput);
-  }
+    @Test
+    public void testSerializeInstant() throws Exception {
+        Instant instant = Instant.ofEpochMilli(0);
+        new CustomInstantSerializer().serialize(instant, gen, null);
+        String expectedOutput = "1970-01-01T00:00:00Z";
+        verify(gen, times(1)).writeString(expectedOutput);
+    }
 
-  @Test
-  public void testDeserializeInstant() throws Exception{
-    Instant start = Instant.ofEpochMilli(0);
-    when(pars.getText()).thenReturn("1970-01-01T00:00:00Z");
-    Instant inst = new CustomInstantDeserializer().deserialize(pars, null);
-    Assert.assertEquals(inst, start);
-  }
+    @Test
+    public void testDeserializeInstant() throws Exception {
+        Instant start = Instant.ofEpochMilli(0);
+        when(pars.getText()).thenReturn("1970-01-01T00:00:00Z");
+        Instant inst = new CustomInstantDeserializer().deserialize(pars, null);
+        Assert.assertEquals(inst, start);
+    }
 
-  @Test
-  public void testNullSerialization() throws Exception{
-    new CustomInstantSerializer().serialize(null, gen, null);
-    verify(gen, times(1)).writeString("");
-  }
+    @Test
+    public void testDeserializeYear() throws Exception {
+        Instant start = Instant.ofEpochMilli(0);
+        when(pars.getText()).thenReturn("1970");
+        Instant inst = new CustomInstantDeserializer().deserialize(pars, null);
+        Assert.assertEquals(inst, start);
+    }
 
-  @Test
-  public void testNullDeserialization() throws Exception{
-    when(pars.getText()).thenReturn(null);
-    Instant inst = new CustomInstantDeserializer().deserialize(pars, null);
-    Assert.assertNull(inst);
-  }
+    @Test
+    public void testDeserializeYearMonth() throws Exception {
+        Instant start = Instant.ofEpochMilli(0);
+        when(pars.getText()).thenReturn("1970-01");
+        Instant inst = new CustomInstantDeserializer().deserialize(pars, null);
+        Assert.assertEquals(inst, start);
+    }
+    
+    @Test
+    public void testDeserializeYearMonthDay() throws Exception {
+        Instant start = Instant.ofEpochMilli(0);
+        when(pars.getText()).thenReturn("1970-01-01");
+        Instant inst = new CustomInstantDeserializer().deserialize(pars, null);
+        Assert.assertEquals(inst, start);
+    }
 
-  @Test
-  public void testEmptyDeserialization() throws Exception{
-    when(pars.getText()).thenReturn("");
-    Instant inst = new CustomInstantDeserializer().deserialize(pars, null);
-    Assert.assertNull(inst);
-  }
+    @Test
+    public void testNullSerialization() throws Exception {
+        new CustomInstantSerializer().serialize(null, gen, null);
+        verify(gen, times(1)).writeString("");
+    }
 
-  @Test(expected = DateTimeParseException.class)
-  public void testInvalidDeserializationInput() throws Exception{
-    when(pars.getText()).thenReturn("no-instant");
-    Instant inst = new CustomInstantDeserializer().deserialize(pars, null);
-  }
+    @Test
+    public void testNullDeserialization() throws Exception {
+        when(pars.getText()).thenReturn(null);
+        Instant inst = new CustomInstantDeserializer().deserialize(pars, null);
+        Assert.assertNull(inst);
+    }
+
+    @Test
+    public void testEmptyDeserialization() throws Exception {
+        when(pars.getText()).thenReturn("");
+        Instant inst = new CustomInstantDeserializer().deserialize(pars, null);
+        Assert.assertNull(inst);
+    }
+
+    @Test(expected = DateTimeParseException.class)
+    public void testInvalidDeserializationInput() throws Exception {
+        when(pars.getText()).thenReturn("no-instant");
+        Instant inst = new CustomInstantDeserializer().deserialize(pars, null);
+    }
 
 }
