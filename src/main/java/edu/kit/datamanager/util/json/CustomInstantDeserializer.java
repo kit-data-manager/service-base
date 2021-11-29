@@ -20,9 +20,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 
 /**
@@ -31,13 +36,42 @@ import java.time.temporal.ChronoUnit;
  */
 public class CustomInstantDeserializer extends JsonDeserializer<Instant> {
 
-    private final DateTimeFormatter fmt = DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC);//DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").withZone(ZoneOffset.UTC);
+    private final DateTimeFormatter isoFormat = DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC);
+    //additional date patterns according to DataCite JSON spec ordered by probability of use
+    private final DateTimeFormatter[] additionalFormats = new DateTimeFormatter[]{
+        new DateTimeFormatterBuilder()
+        .appendPattern("yyyy")
+        .parseDefaulting(ChronoField.MONTH_OF_YEAR, 1)
+        .parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
+        .toFormatter(),
+        DateTimeFormatter.ofPattern("yyyy-MM-dd"),
+        new DateTimeFormatterBuilder()
+        .appendPattern("yyyy-MM")
+        .parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
+        .toFormatter()
+    };
 
     @Override
     public Instant deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         if (p.getText() == null || p.getText().length() == 0) {
             return null;
         }
-        return Instant.from(fmt.parse(p.getText())).truncatedTo(ChronoUnit.MILLIS);
+
+        try {
+            return Instant.from(isoFormat.parse(p.getText())).truncatedTo(ChronoUnit.MILLIS);
+        } catch (DateTimeParseException ex) {
+            //no iso format...continue with other formats
+        }
+        for (DateTimeFormatter formatter : additionalFormats) {
+            try {
+                LocalDate date = LocalDate.from(formatter.parse(p.getText()));
+                return Instant.from(date.atStartOfDay(ZoneOffset.UTC).toInstant());
+            } catch (DateTimeParseException ex) {
+                //no valid date according to the current format, continue if possible
+            } catch (DateTimeException ex) {
+                ex.printStackTrace();
+            }
+        }
+        throw new DateTimeParseException("Invalid date string. Supported format patterns are: yyyy-MM-dd'T'HH:mm:ss'Z', yyyy, yyyy-MM-dd and yyyy-MM", p.getText(), 0);
     }
 }
