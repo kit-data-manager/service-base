@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Support for additional date patterns (yyyy, yyyy-MM, and yyyy-MM-dd) in CustomInstantDeserializer
+
 ## [0.3.0] - 2021-10-13
 ### Added
 - Add GitHub actions
