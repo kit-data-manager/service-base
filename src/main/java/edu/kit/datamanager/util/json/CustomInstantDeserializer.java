@@ -29,12 +29,16 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author jejkal
  */
 public class CustomInstantDeserializer extends JsonDeserializer<Instant> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomInstantDeserializer.class);
 
     private final DateTimeFormatter isoFormat = DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC);
     //additional date patterns according to DataCite JSON spec ordered by probability of use
@@ -53,23 +57,26 @@ public class CustomInstantDeserializer extends JsonDeserializer<Instant> {
 
     @Override
     public Instant deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        if (p.getText() == null || p.getText().length() == 0) {
+        String text = p.getText();
+        if (text == null || text.length() == 0) {
             return null;
         }
 
         try {
-            return Instant.from(isoFormat.parse(p.getText())).truncatedTo(ChronoUnit.MILLIS);
+            LOGGER.trace("Trying to parse date {} using ISO_DATE_TIME.", text);
+            return Instant.from(isoFormat.parse(text)).truncatedTo(ChronoUnit.MILLIS);
         } catch (DateTimeParseException ex) {
             //no iso format...continue with other formats
+            LOGGER.trace("Date {} is no ISO_DATE_TIME, trying alternatives.", text);
         }
         for (DateTimeFormatter formatter : additionalFormats) {
             try {
-                LocalDate date = LocalDate.from(formatter.parse(p.getText()));
+                LOGGER.trace("Parsing date {} using formatter {}.", text, formatter);
+                LocalDate date = LocalDate.from(formatter.parse(text));
                 return Instant.from(date.atStartOfDay(ZoneOffset.UTC).toInstant());
-            } catch (DateTimeParseException ex) {
-                //no valid date according to the current format, continue if possible
             } catch (DateTimeException ex) {
-                ex.printStackTrace();
+                //no valid date according to the current format, continue if possible
+                LOGGER.trace("Date {} cannot be parsed using formatter {}.", text, formatter);
             }
         }
         throw new DateTimeParseException("Invalid date string. Supported format patterns are: yyyy-MM-dd'T'HH:mm:ss'Z', yyyy, yyyy-MM-dd and yyyy-MM", p.getText(), 0);
