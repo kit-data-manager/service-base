@@ -15,13 +15,13 @@
  */
 package edu.kit.datamanager.util.xml.converters;
 
+import com.github.dozermapper.core.DozerConverter;
+import com.github.dozermapper.core.Mapper;
+import com.github.dozermapper.core.MapperAware;
 import edu.kit.datamanager.entities.repo.Description;
 import java.util.HashSet;
 import org.datacite.schema.kernel_4.DescriptionType;
 import org.datacite.schema.kernel_4.Resource;
-import org.dozer.DozerConverter;
-import org.dozer.Mapper;
-import org.dozer.MapperAware;
 
 /**
  *

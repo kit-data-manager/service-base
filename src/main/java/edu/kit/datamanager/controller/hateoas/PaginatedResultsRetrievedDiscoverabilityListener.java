@@ -15,9 +15,9 @@
  */
 package edu.kit.datamanager.controller.hateoas;
 
-import com.google.common.base.Preconditions;
 import edu.kit.datamanager.controller.hateoas.event.PaginatedResultsRetrievedEvent;
 import edu.kit.datamanager.util.LinkUtil;
+import java.util.Objects;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.ApplicationListener;
 import org.springframework.http.HttpHeaders;
@@ -41,7 +41,7 @@ class PaginatedResultsRetrievedDiscoverabilityListener implements ApplicationLis
     // API
     @Override
     public final void onApplicationEvent(final PaginatedResultsRetrievedEvent ev) {
-        Preconditions.checkNotNull(ev);
+        Objects.nonNull(ev);
         addLinkHeaderOnPagedResourceRetrieval(ev.getUriBuilder(), ev.getResponse(), ev.getClazz(), ev.getSuffix(), ev.getPage(), ev.getTotalPages(), ev.getPageSize());
     }
 
