@@ -6,8 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2021-11-30
 ### Fixed
 - Support for additional date patterns (yyyy, yyyy-MM, and yyyy-MM-dd) in CustomInstantDeserializer
+
+### Changed
+- Removed (unused) coveralls and grgit plugins to sustain JDK8 compatibility
 
 ## [0.3.0] - 2021-10-13
 ### Added
