@@ -2,6 +2,7 @@
 
 [![build with gradle](https://github.com/kit-data-manager/service-base/actions/workflows/gradle.yml/badge.svg)](https://github.com/kit-data-manager/service-base/actions/workflows/gradle.yml)
 [![codecov](https://codecov.io/gh/kit-data-manager/service-base/branch/master/graph/badge.svg)](https://codecov.io/gh/kit-data-manager/service-base)
+[![CodeQL](https://github.com/kit-data-manager/service-base/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/kit-data-manager/service-base/actions/workflows/codeql-analysis.yml)
 ![License](https://img.shields.io/github/license/kit-data-manager/service-base.svg)
 
 Helper module for KIT DM 2.0 services providing commonly used dependencies and general purpose implementations, e.g. helpers and exception.
