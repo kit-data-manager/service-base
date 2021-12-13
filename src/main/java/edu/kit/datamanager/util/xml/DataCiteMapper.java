@@ -15,6 +15,10 @@
  */
 package edu.kit.datamanager.util.xml;
 
+import com.github.dozermapper.core.DozerBeanMapper;
+import com.github.dozermapper.core.DozerBeanMapperBuilder;
+import com.github.dozermapper.core.loader.api.BeanMappingBuilder;
+import com.github.dozermapper.core.loader.api.FieldsMappingOptions;
 import edu.kit.datamanager.entities.repo.DataResource;
 import edu.kit.datamanager.util.xml.converters.AlternateIdentifierConverter;
 import edu.kit.datamanager.util.xml.converters.ContributorsConverter;
@@ -31,50 +35,46 @@ import edu.kit.datamanager.util.xml.converters.SizesConverter;
 import edu.kit.datamanager.util.xml.converters.SubjectsConverter;
 import edu.kit.datamanager.util.xml.converters.TitlesConverter;
 import org.datacite.schema.kernel_4.Resource;
-import org.dozer.DozerBeanMapper;
-import org.dozer.loader.api.BeanMappingBuilder;
-import org.dozer.loader.api.FieldsMappingOptions;
 
 /**
  *
  * @author jejkal
  */
-public class DataCiteMapper{
+public class DataCiteMapper {
 
-  private static DozerBeanMapper mapper;
-  private static boolean INITIALIZED = false;
+    private static DozerBeanMapper mapper;
+    private static boolean INITIALIZED = false;
 
-  public static Resource dataResourceToDataciteResource(DataResource resource){
-    if(!INITIALIZED){
-      mapper = new DozerBeanMapper();
-      BeanMappingBuilder builder = new BeanMappingBuilder(){
-        protected void configure(){
-          mapping(DataResource.class, Resource.class).
-                  fields("alternateIdentifiers", "alternateIdentifiers", FieldsMappingOptions.customConverter(AlternateIdentifierConverter.class)).
-                  fields("relatedIdentifiers", "relatedIdentifiers", FieldsMappingOptions.customConverter(RelatedIdentifierConverter.class)).
-                  fields("creators", "creators", FieldsMappingOptions.customConverter(CreatorsConverter.class)).
-                  fields("titles", "titles", FieldsMappingOptions.customConverter(TitlesConverter.class)).
-                  fields("resourceType", "resourceType", FieldsMappingOptions.customConverter(ResourceTypeConverter.class)).
-                  fields("contributors", "contributors", FieldsMappingOptions.customConverter(ContributorsConverter.class)).
-                  fields("subjects", "subjects", FieldsMappingOptions.customConverter(SubjectsConverter.class)).
-                  fields("dates", "dates", FieldsMappingOptions.customConverter(DatesConverter.class)).
-                  fields("formats", "formats", FieldsMappingOptions.customConverter(FormatsConverter.class)).
-                  fields("sizes", "sizes", FieldsMappingOptions.customConverter(SizesConverter.class)).
-                  fields("descriptions", "descriptions", FieldsMappingOptions.customConverter(DescriptionsConverter.class)).
-                  fields("rights", "rightsList", FieldsMappingOptions.customConverter(RightsConverter.class)).
-                  fields("fundingReferences", "fundingReferences", FieldsMappingOptions.customConverter(FundingReferencesConverter.class)).
-                  fields("geoLocations", "geoLocations", FieldsMappingOptions.customConverter(GeoLocationsConverter.class));
-          
-          
-          
+    public static Resource dataResourceToDataciteResource(DataResource resource) {
+        if (!INITIALIZED) {
+            BeanMappingBuilder builder = new BeanMappingBuilder() {
+                @Override
+                protected void configure() {
+                    mapping(DataResource.class, Resource.class).
+                            fields("alternateIdentifiers", "alternateIdentifiers", FieldsMappingOptions.customConverter(AlternateIdentifierConverter.class)).
+                            fields("relatedIdentifiers", "relatedIdentifiers", FieldsMappingOptions.customConverter(RelatedIdentifierConverter.class)).
+                            fields("creators", "creators", FieldsMappingOptions.customConverter(CreatorsConverter.class)).
+                            fields("titles", "titles", FieldsMappingOptions.customConverter(TitlesConverter.class)).
+                            fields("resourceType", "resourceType", FieldsMappingOptions.customConverter(ResourceTypeConverter.class)).
+                            fields("contributors", "contributors", FieldsMappingOptions.customConverter(ContributorsConverter.class)).
+                            fields("subjects", "subjects", FieldsMappingOptions.customConverter(SubjectsConverter.class)).
+                            fields("dates", "dates", FieldsMappingOptions.customConverter(DatesConverter.class)).
+                            fields("formats", "formats", FieldsMappingOptions.customConverter(FormatsConverter.class)).
+                            fields("sizes", "sizes", FieldsMappingOptions.customConverter(SizesConverter.class)).
+                            fields("descriptions", "descriptions", FieldsMappingOptions.customConverter(DescriptionsConverter.class)).
+                            fields("rights", "rightsList", FieldsMappingOptions.customConverter(RightsConverter.class)).
+                            fields("fundingReferences", "fundingReferences", FieldsMappingOptions.customConverter(FundingReferencesConverter.class)).
+                            fields("geoLocations", "geoLocations", FieldsMappingOptions.customConverter(GeoLocationsConverter.class));
+
+                }
+            };
+            mapper = (DozerBeanMapper) DozerBeanMapperBuilder.create().withMappingBuilder(builder).build();
+
+            INITIALIZED = true;
         }
-      };
-      mapper.addMapping(builder);
-      INITIALIZED = true;
-    }
 
-    return mapper.map(resource, Resource.class);
-  }
+        return mapper.map(resource, Resource.class);
+    }
 
 //  public static void main(String[] args) throws Exception{
 //    DataResource res = new DataResource();

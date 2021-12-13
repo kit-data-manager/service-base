@@ -15,52 +15,52 @@
  */
 package edu.kit.datamanager.util.xml.converters;
 
+import com.github.dozermapper.core.DozerConverter;
+import com.github.dozermapper.core.Mapper;
+import com.github.dozermapper.core.MapperAware;
 import edu.kit.datamanager.entities.repo.Title;
 import java.util.HashSet;
 import org.datacite.schema.kernel_4.Resource;
 import org.datacite.schema.kernel_4.TitleType;
-import org.dozer.DozerConverter;
-import org.dozer.Mapper;
-import org.dozer.MapperAware;
 
 /**
  *
  * @author jejkal
  */
-public class TitlesConverter extends DozerConverter<HashSet, Resource.Titles> implements MapperAware{
+public class TitlesConverter extends DozerConverter<HashSet, Resource.Titles> implements MapperAware {
 
-  private Mapper mapper;
+    private Mapper mapper;
 
-  public TitlesConverter(){
-    super(HashSet.class, Resource.Titles.class);
-  }
-
-  @Override
-  public Resource.Titles convertTo(HashSet a, Resource.Titles b){
-    Resource.Titles result = new Resource.Titles();
-    for(Object o : a){
-      Title t = (Title) o;
-      Resource.Titles.Title title = new Resource.Titles.Title();
-      title.setLang(t.getLang());
-      if(t.getTitleType() != null){
-        title.setTitleType(TitleType.fromValue(t.getTitleType().getValue()));
-      } else{
-        title.setTitleType(TitleType.OTHER);
-      }
-      title.setValue(t.getValue());
-      result.getTitle().add(title);
+    public TitlesConverter() {
+        super(HashSet.class, Resource.Titles.class);
     }
-    return result;
-  }
 
-  @Override
-  public HashSet convertFrom(Resource.Titles b, HashSet a){
-    return null;
-  }
+    @Override
+    public Resource.Titles convertTo(HashSet a, Resource.Titles b) {
+        Resource.Titles result = new Resource.Titles();
+        for (Object o : a) {
+            Title t = (Title) o;
+            Resource.Titles.Title title = new Resource.Titles.Title();
+            title.setLang(t.getLang());
+            if (t.getTitleType() != null) {
+                title.setTitleType(TitleType.fromValue(t.getTitleType().getValue()));
+            } else {
+                title.setTitleType(TitleType.OTHER);
+            }
+            title.setValue(t.getValue());
+            result.getTitle().add(title);
+        }
+        return result;
+    }
 
-  @Override
-  public void setMapper(Mapper mapper){
-    this.mapper = mapper;
-  }
+    @Override
+    public HashSet convertFrom(Resource.Titles b, HashSet a) {
+        return null;
+    }
+
+    @Override
+    public void setMapper(Mapper mapper) {
+        this.mapper = mapper;
+    }
 
 }
