@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+
+### Fixed
+
+### Changed
+ - Update to Spring-Boot 2.4.13
+ - Update to dozer-core 6.5.2
+ - Update to json-patch 1.13
+ - Update to jackson-jaxrs-json-provider 2.13.0
+ - Update to jackson-module-afterburner 2.13.0
+ - Update to jackson-datatype-jsr310 2.13.0
+ - Update to jackson-datatype-joda 2.13.0
 
 ## [0.3.1] - 2021-11-30
 ### Fixed
