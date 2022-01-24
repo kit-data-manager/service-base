@@ -18,13 +18,13 @@ package edu.kit.datamanager.test;
 import edu.kit.datamanager.entities.RepoServiceRole;
 import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
-import edu.kit.datamanager.exceptions.NoJwtTokenException;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
-import edu.kit.datamanager.security.filter.JwtServiceToken;
 import edu.kit.datamanager.security.filter.JwtUserToken;
 import edu.kit.datamanager.security.filter.KeycloakTokenFilter;
 import edu.kit.datamanager.security.filter.KeycloakTokenValidator;
 import edu.kit.datamanager.util.JwtBuilder;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.impl.DefaultClaims;
 import java.util.Date;
@@ -113,8 +113,8 @@ public class JwtAuthenticationFilterTest {
                 Assert.assertEquals("user", ((JwtUserToken) answer).getPrincipal());
                 Assert.assertTrue(((JwtUserToken) answer).getAuthorities().contains(new SimpleGrantedAuthority(RepoUserRole.ADMINISTRATOR.getValue())));
 
-                DefaultClaims claims = (DefaultClaims) Jwts.parserBuilder().setSigningKey(key).build().parse(((JwtUserToken) answer).getToken()).getBody();
-
+                Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(((JwtUserToken) answer).getToken());
+                DefaultClaims claims = (DefaultClaims)jws.getBody();
                 Assert.assertTrue(claims.containsKey("tokenType"));
                 Assert.assertTrue(claims.containsKey("groupid"));
                 Assert.assertTrue(claims.containsKey("username"));

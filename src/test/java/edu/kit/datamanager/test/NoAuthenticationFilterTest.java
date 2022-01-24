@@ -18,7 +18,10 @@ package edu.kit.datamanager.test;
 import edu.kit.datamanager.entities.RepoServiceRole;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import edu.kit.datamanager.security.filter.JwtServiceToken;
+import edu.kit.datamanager.security.filter.JwtUserToken;
 import edu.kit.datamanager.security.filter.NoAuthenticationFilter;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.impl.DefaultClaims;
 import java.util.Date;
@@ -45,46 +48,48 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * @author jejkal
  */
 @RunWith(MockitoJUnitRunner.class)
-public class NoAuthenticationFilterTest{
+public class NoAuthenticationFilterTest {
+
     private String key = "vkfvoswsohwrxgjaxipuiyyjgubggzdaqrcuupbugxtnalhiegkppdgjgwxsmvdb";
 
-  @Test
-  public void test() throws Exception{
-    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-    doAnswer((Answer) new Answer(){
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable{
-        Authentication answer = (Authentication) invocation.getArguments()[0];
-        Assert.assertTrue(answer instanceof JwtAuthenticationToken);
-        Assert.assertTrue(answer instanceof JwtServiceToken);
-        Assert.assertEquals("USERS", ((JwtAuthenticationToken) answer).getGroupId());
-        Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.SERVICE, ((JwtServiceToken) answer).getTokenType());
-        Assert.assertEquals(JwtServiceToken.SELF_SERVICE_NAME, ((JwtServiceToken) answer).getPrincipal());
-        Assert.assertTrue(((JwtServiceToken) answer).getAuthorities().contains(new SimpleGrantedAuthority(RepoServiceRole.SERVICE_WRITE.getValue())));
+    @Test
+    public void test() throws Exception {
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        doAnswer((Answer) new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Authentication answer = (Authentication) invocation.getArguments()[0];
+                Assert.assertTrue(answer instanceof JwtAuthenticationToken);
+                Assert.assertTrue(answer instanceof JwtServiceToken);
+                Assert.assertEquals("USERS", ((JwtAuthenticationToken) answer).getGroupId());
+                Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.SERVICE, ((JwtServiceToken) answer).getTokenType());
+                Assert.assertEquals(JwtServiceToken.SELF_SERVICE_NAME, ((JwtServiceToken) answer).getPrincipal());
+                Assert.assertTrue(((JwtServiceToken) answer).getAuthorities().contains(new SimpleGrantedAuthority(RepoServiceRole.SERVICE_WRITE.getValue())));
 
-        DefaultClaims claims = (DefaultClaims) Jwts.parserBuilder().setSigningKey(key).build().parse(((JwtServiceToken) answer).getToken()).getBody();
+                Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(((JwtServiceToken) answer).getToken());
+                DefaultClaims claims = (DefaultClaims) jws.getBody();
 
-        Assert.assertTrue(claims.containsKey("groupid"));
-        Assert.assertTrue(claims.containsKey("tokenType"));
-        Assert.assertTrue(claims.containsKey("servicename"));
-        Assert.assertTrue(claims.containsKey("roles"));
-        Assert.assertTrue(claims.containsKey("exp"));
-        Assert.assertTrue(claims.get("exp", Date.class).before(DateUtils.addHours(new Date(), 1)));
+                Assert.assertTrue(claims.containsKey("groupid"));
+                Assert.assertTrue(claims.containsKey("tokenType"));
+                Assert.assertTrue(claims.containsKey("servicename"));
+                Assert.assertTrue(claims.containsKey("roles"));
+                Assert.assertTrue(claims.containsKey("exp"));
+                Assert.assertTrue(claims.get("exp", Date.class).before(DateUtils.addHours(new Date(), 1)));
 
-        return null;
-      }
-    }).when(securityContext).setAuthentication(any(Authentication.class));
+                return null;
+            }
+        }).when(securityContext).setAuthentication(any(Authentication.class));
 
-    //Not needed? Re-used from elsewhere?
-    // Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-    SecurityContextHolder.setContext(securityContext);
+        //Not needed? Re-used from elsewhere?
+        // Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
 
-    FilterChain filterChain = Mockito.mock(FilterChain.class);
-    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+        FilterChain filterChain = Mockito.mock(FilterChain.class);
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
-    NoAuthenticationFilter filter = new NoAuthenticationFilter(key, null);
+        NoAuthenticationFilter filter = new NoAuthenticationFilter(key, null);
 
-    filter.doFilter(request, response, filterChain);
-  }
+        filter.doFilter(request, response, filterChain);
+    }
 }
