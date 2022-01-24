@@ -155,10 +155,10 @@ public class JwtBuilder{
 
   public String getCompactToken(String secret, Date expiresAt){
     if(expiresAt != null){
-      return Jwts.builder().setClaims(getClaims()).setExpiration(expiresAt).signWith(SignatureAlgorithm.HS512, secret).compact();
+      return Jwts.builder().setClaims(getClaims()).setExpiration(expiresAt).signWith(SignatureAlgorithm.HS256, secret).compact();
     } else{
       LOGGER.debug("Warn: Creating JWT token without expiration time.");
-      return Jwts.builder().setClaims(getClaims()).signWith(SignatureAlgorithm.HS512, secret).compact();
+      return Jwts.builder().setClaims(getClaims()).signWith(SignatureAlgorithm.HS256, secret).compact();
     }
   }
 

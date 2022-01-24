@@ -18,16 +18,15 @@ package edu.kit.datamanager.test;
 import edu.kit.datamanager.entities.RepoServiceRole;
 import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
-import edu.kit.datamanager.exceptions.UnauthorizedAccessException;
-import edu.kit.datamanager.security.filter.JwtAuthenticationFilter;
-import edu.kit.datamanager.security.filter.JwtAuthenticationProvider;
+import edu.kit.datamanager.exceptions.NoJwtTokenException;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
-import edu.kit.datamanager.security.filter.JwtEmptyToken;
+import edu.kit.datamanager.security.filter.JwtServiceToken;
 import edu.kit.datamanager.security.filter.JwtUserToken;
+import edu.kit.datamanager.security.filter.KeycloakTokenFilter;
+import edu.kit.datamanager.security.filter.KeycloakTokenValidator;
 import edu.kit.datamanager.util.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.impl.DefaultClaims;
-import java.io.PrintWriter;
 import java.util.Date;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -39,149 +38,131 @@ import static org.mockito.ArgumentMatchers.any;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  *
  * @author jejkal
  */
-public class JwtAuthenticationFilterTest{
+public class JwtAuthenticationFilterTest {
 
-  private final AuthenticationManager authenticationManager = PowerMockito.mock(AuthenticationManager.class);
-  private final HttpServletRequest request = PowerMockito.mock(HttpServletRequest.class);
-  private final HttpServletResponse response = PowerMockito.mock(HttpServletResponse.class);
-  private final FilterChain filterChain = PowerMockito.mock(FilterChain.class);
-  private final SecurityContext context = PowerMockito.mock(SecurityContext.class);
+    private final AuthenticationManager authenticationManager = PowerMockito.mock(AuthenticationManager.class);
+    private final HttpServletRequest request = PowerMockito.mock(HttpServletRequest.class);
+    private final HttpServletResponse response = PowerMockito.mock(HttpServletResponse.class);
+    private final FilterChain filterChain = PowerMockito.mock(FilterChain.class);
+    private final SecurityContext context = PowerMockito.mock(SecurityContext.class);
+    private final String key = "vkfvoswsohwrxgjaxipuiyyjgubggzdaqrcuupbugxtnalhiegkppdgjgwxsmvdb";
 
-  @Test
-  public void testNoAuthenticationHeader() throws Exception{
-    Mockito.when(request.getHeader(JwtAuthenticationFilter.AUTHORIZATION_HEADER)).thenReturn(null);
-    JwtAuthenticationFilter filter = new JwtAuthenticationFilter(authenticationManager);
-    filter.doFilter(request, response, filterChain);
-    //expecting filterChain to be invoked
-    Mockito.verify(filterChain, times(1)).doFilter(request, response);
-  }
+    private KeycloakTokenFilter keycloaktokenFilterBean() throws Exception {
+        return new KeycloakTokenFilter(KeycloakTokenValidator.builder()
+                .jwtLocalSecret(key)
+                .build(null, null, null));
+    }
 
-  @Test
-  public void testNoBearerToken() throws Exception{
-    Mockito.when(request.getHeader(JwtAuthenticationFilter.AUTHORIZATION_HEADER)).thenReturn("test123");
+    @Test
+    public void testNoAuthenticationHeader() throws Exception {
+        Mockito.when(request.getHeader(KeycloakTokenFilter.AUTHORIZATION_HEADER)).thenReturn(null);
+        keycloaktokenFilterBean().doFilter(request, response, filterChain);
+        //expecting filterChain to be invoked
+        Mockito.verify(filterChain, times(1)).doFilter(request, response);
+    }
 
-    JwtAuthenticationFilter filter = new JwtAuthenticationFilter(authenticationManager);
-    filter.doFilter(request, response, filterChain);
-    //expecting filterChain to be invoked
-    Mockito.verify(filterChain, times(1)).doFilter(request, response);
-  }
+    @Test
+    public void testNoBearerToken() throws Exception {
+        Mockito.when(request.getHeader(KeycloakTokenFilter.AUTHORIZATION_HEADER)).thenReturn("test123");
 
-  @Test
-  public void testInvalidBearerToken() throws Exception{
-    Mockito.when(request.getHeader(JwtAuthenticationFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer test123");
+        keycloaktokenFilterBean().doFilter(request, response, filterChain);
+        //expecting filterChain to be invoked
+        Mockito.verify(filterChain, times(1)).doFilter(request, response);
+        //nothing should happen...token is just skipped
+    }
 
-    doAnswer((Answer) new Answer(){
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable{
-        return new JwtAuthenticationProvider("test123", LoggerFactory.getLogger(JwtAuthenticationFilterTest.class)).authenticate(new JwtEmptyToken("test123"));
-      }
-    }).when(authenticationManager).authenticate(any(Authentication.class));
+    @Test
+    public void testInvalidBearerToken() throws Exception {
+        Mockito.when(request.getHeader(KeycloakTokenFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer test123");
 
-    JwtAuthenticationFilter filter = new JwtAuthenticationFilter(authenticationManager);
-    filter.doFilter(request, response, filterChain);
-    //expecting filterChain to be invoked
-    Mockito.verify(filterChain, times(1)).doFilter(request, response);
-  }
+        keycloaktokenFilterBean().doFilter(request, response, filterChain);
+        //expecting filterChain to be invoked
+        Mockito.verify(filterChain, times(1)).doFilter(request, response);
+        //nothing should happen...token is just skipped
+    }
 
-  @Test
-  public void testValidJwtToken() throws Exception{
-//create new token for user 'test123' with ADMINISTRATOR role in group USERS which expires in one hour
-    final String token = JwtBuilder.createUserToken("test123", RepoUserRole.ADMINISTRATOR).addSimpleClaim("groupid", "USERS").getCompactToken("test123", DateUtils.addHours(new Date(), 1));
+    @Test
+    public void testValidJwtToken() throws Exception {
+        //create new token for user 'user' with ADMINISTRATOR role in group USERS which expires in one hour
+        final String token = JwtBuilder.createUserToken("user", RepoUserRole.ADMINISTRATOR).addSimpleClaim("groupid", "USERS").getCompactToken(key, DateUtils.addHours(new Date(), 1));
 
-    doAnswer((Answer) new Answer(){
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable{
-        return new JwtAuthenticationProvider("test123", null).authenticate(new JwtEmptyToken(token));
-      }
-    }).when(authenticationManager).authenticate(any(Authentication.class));
+        //add checks to check for user token
+        doAnswer((Answer) new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                //validate token elements
+                Authentication answer = (Authentication) invocation.getArguments()[0];
 
-    doAnswer((Answer) new Answer(){
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable{
-        //validate token elements
-        Authentication answer = (Authentication) invocation.getArguments()[0];
+                Assert.assertTrue(answer instanceof JwtAuthenticationToken);
+                Assert.assertTrue(answer instanceof JwtUserToken);
+                Assert.assertEquals("USERS", ((JwtAuthenticationToken) answer).getGroupId());
+                Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.USER, ((JwtUserToken) answer).getTokenType());
+                Assert.assertEquals("user", ((JwtUserToken) answer).getPrincipal());
+                Assert.assertTrue(((JwtUserToken) answer).getAuthorities().contains(new SimpleGrantedAuthority(RepoUserRole.ADMINISTRATOR.getValue())));
 
-        Assert.assertTrue(answer instanceof JwtAuthenticationToken);
-        Assert.assertTrue(answer instanceof JwtUserToken);
-        Assert.assertEquals("USERS", ((JwtAuthenticationToken) answer).getGroupId());
-        Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.USER, ((JwtUserToken) answer).getTokenType());
-        Assert.assertEquals("test123", ((JwtUserToken) answer).getPrincipal());
-        Assert.assertTrue(((JwtUserToken) answer).getAuthorities().contains(new SimpleGrantedAuthority(RepoUserRole.ADMINISTRATOR.getValue())));
+                DefaultClaims claims = (DefaultClaims) Jwts.parserBuilder().setSigningKey(key).build().parse(((JwtUserToken) answer).getToken()).getBody();
 
-        DefaultClaims claims = (DefaultClaims) Jwts.parser().setSigningKey("test123").parse(((JwtUserToken) answer).getToken()).getBody();
+                Assert.assertTrue(claims.containsKey("tokenType"));
+                Assert.assertTrue(claims.containsKey("groupid"));
+                Assert.assertTrue(claims.containsKey("username"));
+                Assert.assertTrue(claims.containsKey("roles"));
+                Assert.assertTrue(claims.containsKey("exp"));
+                Assert.assertTrue(claims.get("exp", Date.class).before(DateUtils.addHours(new Date(), 1)));
+                return null;
+            }
+        }).when(context).setAuthentication(any(Authentication.class));
+        SecurityContextHolder.setContext(context);
 
-        Assert.assertTrue(claims.containsKey("tokenType"));
-        Assert.assertTrue(claims.containsKey("groupid"));
-        Assert.assertTrue(claims.containsKey("username"));
-        Assert.assertTrue(claims.containsKey("roles"));
-        Assert.assertTrue(claims.containsKey("exp"));
-        Assert.assertTrue(claims.get("exp", Date.class).before(DateUtils.addHours(new Date(), 1)));
-        return null;
-      }
-    }).when(context).setAuthentication(any(Authentication.class));
-    SecurityContextHolder.setContext(context);
+        Mockito.when(request.getHeader(KeycloakTokenFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer " + token);
 
-    Mockito.when(request.getHeader(JwtAuthenticationFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer " + token);
-    JwtAuthenticationFilter filter = new JwtAuthenticationFilter(authenticationManager);
-    filter.doFilter(request, response, filterChain);
-  }
+        keycloaktokenFilterBean().doFilter(request, response, filterChain);
 
-  @Test
-  public void testUnauthorizedAccessDetected() throws Exception{
-    //create new token for user 'test123' with ADMINISTRATOR role in group USERS which expires in one hour
-    final String token = JwtBuilder.createUserToken("test123", RepoUserRole.ADMINISTRATOR).addSimpleClaim("groupid", "USERS").getCompactToken("test123", DateUtils.addHours(new Date(), 1));
+        //disable checks again in order to allow to set service token
+        doAnswer((Answer) new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return null;
+            }
+        }).when(context).setAuthentication(any(Authentication.class));
 
-    doAnswer((Answer) new Answer(){
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable{
-        //throw exception just for fun
-        throw new UnauthorizedAccessException("Exception for testing purposes.");
-      }
-    }).when(authenticationManager).authenticate(any(Authentication.class));
+    }
 
-    when(response.getWriter()).thenReturn(new PrintWriter(System.out));
+    @Test(expected = InvalidAuthenticationException.class)
+    public void testUnauthorizedAccessDetected() throws Exception {
+        //create new token for user 'test123' with ADMINISTRATOR role in group USERS which expires in one hour
+        final String token = JwtBuilder.createUserToken("test123", RepoUserRole.ADMINISTRATOR).addSimpleClaim("groupid", "USERS").getCompactToken(key, DateUtils.addHours(new Date(), -1));
 
-    Mockito.when(request.getHeader(JwtAuthenticationFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer " + token);
-    JwtAuthenticationFilter filter = new JwtAuthenticationFilter(authenticationManager);
-    filter.doFilter(request, response, filterChain);
+        Mockito.when(request.getHeader(KeycloakTokenFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer " + token);
+        keycloaktokenFilterBean().doFilter(request, response, filterChain);
+    }
 
-    //we assume that response status is set to UNAUTHORIZED
-    Mockito.verify(response, times(1)).setStatus(HttpStatus.UNAUTHORIZED.value());
-  }
+    @Test
+    public void testAllowedServiceToken() throws Exception {
+        final String token = JwtBuilder.createServiceToken("MyService", RepoServiceRole.SERVICE_READ).addSimpleClaim("sources", "[\"localhost\"]").getCompactToken(key);
 
-  @Test
-  public void testAllowedServiceToken(){
-    final String token = JwtBuilder.createServiceToken("MyService", RepoServiceRole.SERVICE_READ).addSimpleClaim("sources", "[\"localhost\"]").getCompactToken("test123");
-    MockHttpServletRequest servletRequest = new MockHttpServletRequest();
-    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(servletRequest));
-    new JwtAuthenticationProvider("test123", LoggerFactory.getLogger(JwtAuthenticationFilterTest.class)).getJwtAuthentication(token);
-  }
+        Mockito.when(request.getHeader(KeycloakTokenFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer " + token);
 
-  @Test(expected = InvalidAuthenticationException.class)
-  public void testUnallowedServiceToken(){
-    final String token = JwtBuilder.createServiceToken("MyService", RepoServiceRole.SERVICE_READ).addSimpleClaim("sources", "[\"google.com\"]").getCompactToken("test123");
-    MockHttpServletRequest servletRequest = new MockHttpServletRequest();
-    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(servletRequest));
-    new JwtAuthenticationProvider("test123", LoggerFactory.getLogger(JwtAuthenticationFilterTest.class)).getJwtAuthentication(token);
-  }
+        keycloaktokenFilterBean().doFilter(request, response, filterChain);
+    }
 
+    @Test(expected = InvalidAuthenticationException.class)
+    public void testUnallowedServiceToken() throws Exception {
+        final String token = JwtBuilder.createServiceToken("MyService", RepoServiceRole.SERVICE_READ).addSimpleClaim("sources", "[\"google.com\"]").getCompactToken(key);
+        Mockito.when(request.getHeader(KeycloakTokenFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer " + token);
+
+        keycloaktokenFilterBean().doFilter(request, response, filterChain);
+    }
 }

@@ -46,6 +46,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class NoAuthenticationFilterTest{
+    private String key = "vkfvoswsohwrxgjaxipuiyyjgubggzdaqrcuupbugxtnalhiegkppdgjgwxsmvdb";
 
   @Test
   public void test() throws Exception{
@@ -61,7 +62,7 @@ public class NoAuthenticationFilterTest{
         Assert.assertEquals(JwtServiceToken.SELF_SERVICE_NAME, ((JwtServiceToken) answer).getPrincipal());
         Assert.assertTrue(((JwtServiceToken) answer).getAuthorities().contains(new SimpleGrantedAuthority(RepoServiceRole.SERVICE_WRITE.getValue())));
 
-        DefaultClaims claims = (DefaultClaims) Jwts.parser().setSigningKey("test123").parse(((JwtServiceToken) answer).getToken()).getBody();
+        DefaultClaims claims = (DefaultClaims) Jwts.parserBuilder().setSigningKey(key).build().parse(((JwtServiceToken) answer).getToken()).getBody();
 
         Assert.assertTrue(claims.containsKey("groupid"));
         Assert.assertTrue(claims.containsKey("tokenType"));
@@ -82,7 +83,7 @@ public class NoAuthenticationFilterTest{
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
-    NoAuthenticationFilter filter = new NoAuthenticationFilter("test123", null);
+    NoAuthenticationFilter filter = new NoAuthenticationFilter(key, null);
 
     filter.doFilter(request, response, filterChain);
   }
