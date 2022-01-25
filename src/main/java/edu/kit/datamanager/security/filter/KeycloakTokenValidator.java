@@ -71,25 +71,27 @@ public class KeycloakTokenValidator {
     private String resource;
 
     /**
-     * @param jwtClaim: defined in keycloak mapper for client id:
-     * preferred_username or username
+     * defined in keycloak mapper for client id: preferred_username or username
      */
     private String jwtClaim;
 
     /**
-     * Creates a new resource retriever.
-     *
-     * @param connectTimeoutms The HTTP connects timeout, in milliseconds, zero
-     * for infinite. Must not be negative.
-     * @param readTimeoutms The HTTP read timeout, in milliseconds, zero for
-     * infinite. Must not be negative.
-     * @param sizeLimit The HTTP entity size limit, in bytes, zero for infinite.
-     * Must not be negative.
+     * The HTTP connects timeout, in milliseconds, zero for infinite. Must not
+     * be negative.
      */
     private int connectTimeoutms = 0;
+    /**
+     * The HTTP read timeout, in milliseconds, zero for infinite. Must not be
+     * negative.
+     */
     private int readTimeoutms = 0;
+    /**
+     * The HTTP entity size limit, in bytes, zero for infinite. Must not be
+     * negative.
+     */
     private int sizeLimit = 0;
     private boolean initialized = false;
+
     private String jwtLocalSecret = null;
 
     public void setJwtProcessor(ConfigurableJWTProcessor jwtProcessor) {
