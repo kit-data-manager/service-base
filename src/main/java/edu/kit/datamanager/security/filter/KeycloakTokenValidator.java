@@ -139,7 +139,7 @@ public class KeycloakTokenValidator {
                 //build auth token
                 JSONArray aRoles = null;
 
-                JSONObject o = claimsSet.getJSONObjectClaim("realm_access");
+                Map<String, Object> o = claimsSet.getJSONObjectClaim("realm_access");
                 if (o != null) {
                     aRoles = (JSONArray) o.get("roles");
 
