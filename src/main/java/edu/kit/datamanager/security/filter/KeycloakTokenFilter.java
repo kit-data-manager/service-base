@@ -44,6 +44,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Filter implementation for keycloak bearer tokens.
+ *
  * @author akoserwa@redhat.com
  */
 public class KeycloakTokenFilter extends OncePerRequestFilter {
@@ -75,36 +77,37 @@ public class KeycloakTokenFilter extends OncePerRequestFilter {
                     token = token.substring(BEARER.length());
                 }
 
+                boolean localAuthenticationSucceeded = false;
                 if (tokenValidator.supportsLocalJwt()) {
                     if (attemptLocalAuthentication(request, response, token)) {
-                        LOG.debug("Authenticated using local JWT secret.");
-                        filterChain.doFilter(request, response);
-                        return;
+                        LOG.trace("Authenticated using local JWT secret.");
+                        localAuthenticationSucceeded = true;
                     }
                 }
 
-                //validate and return token
-                LOG.trace("Validating received JWT.");
-                jwToken = tokenValidator.validate(token);
+                if (!localAuthenticationSucceeded) {
+                    //validate and return token
+                    LOG.trace("Validating received JWT.");
+                    jwToken = tokenValidator.validate(token);
 
-                LOG.trace("JWT validation finished. Checking result.");
-                if (jwToken != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    LOG.info("Authenticated username: {}", jwToken.getPrincipal());
-                    setContext(request, jwToken);
-                } else {
-                    LOG.info("Invalid Request: Token is expired or tampered");
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: Token is expired or tampered");
+                    LOG.trace("JWT validation finished. Checking result.");
+                    if (jwToken != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                        LOG.info("Authenticated username: {}", jwToken.getPrincipal());
+                        setContext(request, jwToken);
+                    } else {
+                        LOG.info("Invalid Request: Token is expired or tampered");
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: Token is expired or tampered");
+                    }
                 }
             } catch (BadJOSEException | IOException | MalformedJwtException e) {
                 LOG.error("Failed to validate JWT.", e);
             }
 
         } else {
-            LOG.info("Authorization Token not being sent in Headers: " + token);
+            LOG.info("Bearer token not being sent in Headers.");
         }
 
-        LOG.trace("Trying alternate authentication via JWT.");
-
+        LOG.trace("Continue with filterChain as no valid JWT authentication was found.");
         filterChain.doFilter(request, response);
     }
 

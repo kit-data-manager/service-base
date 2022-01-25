@@ -52,6 +52,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Validator implementation for keycloak bearer tokens.
+ *
  * @author akoserwa@redhat.com
  */
 public class KeycloakTokenValidator {
@@ -104,7 +106,7 @@ public class KeycloakTokenValidator {
         return new JWSVerificationKeySelector(JWSAlgorithm.RS256, keySource);
     }
 
-    private void init(String jwkUrl) {
+    private void init() {
         if (jwkUrl != null) {
             LOG.info("Initializing JWK set from {}.", jwkUrl);
             try {
@@ -231,7 +233,7 @@ public class KeycloakTokenValidator {
 
             if (accessTokenValidator.jwtProcessor == null && jwksetUrl != null) {
                 accessTokenValidator.jwtProcessor = new DefaultJWTProcessor();
-                accessTokenValidator.init(jwksetUrl);
+                accessTokenValidator.init();
             }
 
             return accessTokenValidator;
