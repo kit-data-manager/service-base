@@ -27,33 +27,35 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class KeycloakJwtProperties {
 
     /**
-     * @param jwkUrl: keycloak certs jwkUrl
+     * keycloak certs jwkUrl
      */
     private String jwkUrl;
 
     /**
-     * @param:resource: Client ID configured in keycloak
+     * Client ID configured in keycloak
      */
     private String resource;
 
     /**
-     * @param jwtClaim: defined in keycloak mapper for client id:
-     * preferred_username or username
+     * defined in keycloak mapper for client id: preferred_username or username
      */
     private String jwtClaim;
 
     /**
-     * Creates a new resource retriever.
-     *
-     * @param connectTimeoutms The HTTP connects timeout, in milliseconds, zero
-     * for infinite. Must not be negative.
-     * @param readTimeoutms The HTTP read timeout, in milliseconds, zero for
-     * infinite. Must not be negative.
-     * @param sizeLimit The HTTP entity size limit, in bytes, zero for infinite.
-     * Must not be negative.
+     * The HTTP connects timeout, in milliseconds, zero for infinite. Must not
+     * be negative. The HTTP read timeout, in milliseconds, zero for infinite.
      */
     private int connectTimeoutms = 0;
+
+    /**
+     * The HTTP read timeout, in milliseconds, zero for infinite. Must not be
+     * negative.
+     */
     private int readTimeoutms = 0;
+    /**
+     * The HTTP entity size limit, in bytes, zero for infinite. Must not be
+     * negative.
+     */
     private int sizeLimit = 0;
 
     public String getJwkUrl() {

@@ -154,7 +154,9 @@ public class KeycloakTokenValidator {
                 claims.put("lastname", claimsSet.getStringClaim("family_name"));
                 claims.put("email", claimsSet.getStringClaim("email"));
                 claims.put("roles", roles);
-                return JwtAuthenticationToken.factoryToken(accessToken, claims);
+                JwtAuthenticationToken returnValue = null;
+                returnValue = JwtAuthenticationToken.factoryToken(accessToken, claims);
+                return returnValue;
             }
         } catch (RemoteKeySourceException e) {
             LOG.error("Failed to obtain remote key for JWT validation.", e);
