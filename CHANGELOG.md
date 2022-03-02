@@ -11,13 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Changed
- - Update to Spring-Boot 2.4.13
- - Update to dozer-core 6.5.2
- - Update to json-patch 1.13
- - Update to jackson-jaxrs-json-provider 2.13.0
- - Update to jackson-module-afterburner 2.13.0
- - Update to jackson-datatype-jsr310 2.13.0
- - Update to jackson-datatype-joda 2.13.0
  - Update to jjwt 0.11.2
 
 ## [0.3.1] - 2021-11-30
