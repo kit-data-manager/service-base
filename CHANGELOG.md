@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+ - Keycloak support added to JWT security filters
 
 ### Fixed
 
@@ -17,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Update to jackson-module-afterburner 2.13.0
  - Update to jackson-datatype-jsr310 2.13.0
  - Update to jackson-datatype-joda 2.13.0
+ - Update to jjwt 0.11.2
 
 ## [0.3.1] - 2021-11-30
 ### Fixed
