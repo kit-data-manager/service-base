@@ -18,7 +18,6 @@ package edu.kit.datamanager.controller;
 import com.github.fge.jsonpatch.JsonPatch;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterStyle;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.Instant;
 import java.util.List;
@@ -43,7 +42,8 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 public interface IGenericResourceController<C>{
 
-  @Operation(summary = "Create a new resource.",
+  @Operation(operationId = "createResource",
+          summary = "Create a new resource.",
           description = "Create a new resource and return it to the caller in case of success. "
           + "Creating new resources may or may not be restricted to users possessing specific roles.", security = {
             @SecurityRequirement(name = "bearer-jwt")})
@@ -53,17 +53,19 @@ public interface IGenericResourceController<C>{
           final WebRequest request,
           final HttpServletResponse response);
 
-  @Operation(description = "Get a resource by id.",
+  @Operation(operationId = "getResourceById",
+          description = "Get a resource by id.",
           summary = "Obtain is single resource by its identifier. Depending on a user's role, accessing a specific resource may be allowed or forbidden.", security = {
             @SecurityRequirement(name = "bearer-jwt")})
-  @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+  @RequestMapping(value = "/{id}", method = RequestMethod.GET,  produces = "application/json")
   @ResponseBody
   public ResponseEntity<C> getById(@Parameter(description = "The resource identifier.", required = true) @PathVariable("id") final String id,
           @Parameter(description = "The version of the resource, if supported.", required = false) @RequestParam("version") final Long version,
           final WebRequest request,
           final HttpServletResponse response);
 
-  @Operation(summary = "List all resources.",
+  @Operation(operationId = "listResources",
+          summary = "List all resources.",
           description = "List all resources in a paginated and/or sorted form. Possible queries are: listing with default values (X elements on first page sorted by database), "
           + "listing page wise, sorted query page wise, and combinations of the options above. "
           + "The total number of resources may differ between callers if single resources have access restrictions. "
@@ -80,7 +82,8 @@ public interface IGenericResourceController<C>{
           final HttpServletResponse response,
           final UriComponentsBuilder uriBuilder);
 
-  @Operation(summary = "List resources by example.",
+  @Operation(operationId = "findResources",
+          summary = "List resources by example.",
           description = "List all resources in a paginated and/or sorted form by example using an example document provided in the request body. "
           + "The example is a normal instance of the resource. However, search-relevant top level primitives are marked as 'Searchable' within the implementation. "
           + "For string values, '%' can be used as wildcard character. "
@@ -99,7 +102,8 @@ public interface IGenericResourceController<C>{
           final HttpServletResponse response,
           final UriComponentsBuilder uriBuilder);
 
-  @Operation(summary = "Patch a resource by id.",
+  @Operation(operationId = "patchResource",
+          summary = "Patch a resource by id.",
           description = "Patch a single or multiple fields of a resource. Patching information are provided in JSON Patch format using Content-Type 'application/json-patch+json'. "
           + "Patching a resource requires privileged access to the resource to patch or ADMIN permissions of the caller. "
           + "Depending on the resource, single fields might be protected and cannot be changed, e.g. the unique identifier. "
@@ -113,7 +117,8 @@ public interface IGenericResourceController<C>{
           final WebRequest request,
           final HttpServletResponse response);
 
-  @Operation(summary = "Replace a resource.",
+  @Operation(operationId = "updateResource",
+          summary = "Replace a resource.",
           description = "Replace a resource by a new resource provided by the user."
           + "Putting a resource requires privileged access to the resource to patch or ADMIN permissions of the caller. "
           + "Some resource fields might be protected and cannot be changed, e.g. the unique identifier. "
@@ -128,7 +133,8 @@ public interface IGenericResourceController<C>{
           final WebRequest request,
           final HttpServletResponse response);
 
-  @Operation(summary = "Delete a resource by id.",
+  @Operation(operationId = "deleteResource",
+          summary = "Delete a resource by id.",
           description = "Delete a single resource. Deleting a resource typically requires the caller to have ADMIN permissions. "
           + "In some cases, deleting a resource can also be available for the owner or other privileged users or can be forbidden. "
           + "For resources whose deletion may affect other resources or internal workflows, physical deletion might not be possible at all. "

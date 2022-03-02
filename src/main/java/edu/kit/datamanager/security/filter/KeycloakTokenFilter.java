@@ -174,7 +174,7 @@ public class KeycloakTokenFilter extends OncePerRequestFilter {
         LOG.trace("Setting authentication context.");
         token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(token);
-        LOG.trace("Setting request attritute 'username' to {}.", token.getPrincipal());
+        LOG.trace("Setting request attribute 'username' to {}.", token.getPrincipal());
         request.setAttribute("username", token.getPrincipal());
     }
 

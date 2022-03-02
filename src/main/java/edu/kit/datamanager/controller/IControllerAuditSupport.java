@@ -34,7 +34,8 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 public interface IControllerAuditSupport{
 
-  @Operation(summary = "Access audit information for a single resource.",
+  @Operation(operationId = "getAuditInformation",
+          summary = "Get audit information for a single resource.",
           description = "List audit information for a resource in a paginated form. Sorting can be supported but is optional. If no sorting is supported it is recommended to return audit "
           + "information sorted by version number in descending order. This endpoint is addressed if the caller provides content type "
           + "'application/vnd.datamanager.audit+json' within the 'Accept' header. If no audit support is enabled or no audit information are available for a certain resource, "
