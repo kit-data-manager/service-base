@@ -36,6 +36,7 @@ import org.junit.Test;
  * @author jejkal
  */
 public class JwtBuilderTest{
+    private final String key = "vkfvoswsohwrxgjaxipuiyyjgubggzdaqrcuupbugxtnalhiegkppdgjgwxsmvdb";
 
   @Test
   public void testServiceToken() throws IOException{
@@ -51,9 +52,9 @@ public class JwtBuilderTest{
     String[] roles = new ObjectMapper().readValue((String) claimMap.get("roles"), String[].class);
     Assert.assertArrayEquals(new String[]{RepoServiceRole.SERVICE_ADMINISTRATOR.getValue()}, roles);
 
-    JwtAuthenticationToken jwtAuthToken = builder.getJwtAuthenticationToken("test123");
+    JwtAuthenticationToken jwtAuthToken = builder.getJwtAuthenticationToken(key);
     Assert.assertTrue(jwtAuthToken instanceof JwtServiceToken);
-    String compactToken = builder.getCompactToken("test123");
+    String compactToken = builder.getCompactToken(key);
     Assert.assertEquals(compactToken, jwtAuthToken.getToken());
 
     Claims claims = builder.getClaims();
@@ -83,9 +84,9 @@ public class JwtBuilderTest{
     String[] roles = new ObjectMapper().readValue((String) claimMap.get("roles"), String[].class);
     Assert.assertArrayEquals(new String[]{RepoUserRole.USER.getValue()}, roles);
 
-    JwtAuthenticationToken jwtAuthToken = builder.getJwtAuthenticationToken("test123");
+    JwtAuthenticationToken jwtAuthToken = builder.getJwtAuthenticationToken(key);
     Assert.assertTrue(jwtAuthToken instanceof JwtUserToken);
-    String compactToken = builder.getCompactToken("test123");
+    String compactToken = builder.getCompactToken(key);
     Assert.assertEquals(compactToken, jwtAuthToken.getToken());
 
     Claims claims = builder.getClaims();
@@ -116,9 +117,9 @@ public class JwtBuilderTest{
     ScopedPermission[] permissions = new ObjectMapper().readValue((String) claimMap.get("permissions"), ScopedPermission[].class);
     Assert.assertArrayEquals(new ScopedPermission[]{ScopedPermission.factoryScopedPermission("DataResource", "1", PERMISSION.WRITE)}, permissions);
 
-    JwtAuthenticationToken jwtAuthToken = builder.getJwtAuthenticationToken("test123");
+    JwtAuthenticationToken jwtAuthToken = builder.getJwtAuthenticationToken(key);
     Assert.assertTrue(jwtAuthToken instanceof JwtTemporaryToken);
-    String compactToken = builder.getCompactToken("test123");
+    String compactToken = builder.getCompactToken(key);
     Assert.assertEquals(compactToken, jwtAuthToken.getToken());
 
     Claims claims = builder.getClaims();

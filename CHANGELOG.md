@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+ - Keycloak support added to JWT security filters
+
+### Changed
+- Update to jjwt 0.11.2
+
 ## [0.3.2] - 2021-12-13
 ### Changed
  - Update to Spring-Boot 2.4.13

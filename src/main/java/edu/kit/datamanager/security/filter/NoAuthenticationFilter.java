@@ -73,7 +73,7 @@ public class NoAuthenticationFilter extends OncePerRequestFilter{
       claimMap.put(entry.getKey(), entry.getValue());
     });
 
-    String token = Jwts.builder().setClaims(claims).setExpiration(DateUtils.addHours(new Date(), 1)).signWith(SignatureAlgorithm.HS512, secretKey).compact();
+    String token = Jwts.builder().setClaims(claims).setExpiration(DateUtils.addHours(new Date(), 1)).signWith(SignatureAlgorithm.HS256, secretKey).compact();
     JwtAuthenticationToken res = JwtAuthenticationToken.factoryToken(token, claimMap);
     SecurityContextHolder.getContext().setAuthentication(res);
     //continue filtering

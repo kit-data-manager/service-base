@@ -38,85 +38,86 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * @author jejkal
  */
 @RunWith(MockitoJUnitRunner.class)
-public class AuthenticationHelperTest{
+public class AuthenticationHelperTest {
 
-  SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    private String key = "vkfvoswsohwrxgjaxipuiyyjgubggzdaqrcuupbugxtnalhiegkppdgjgwxsmvdb";
 
-  @Test
-  public void testJwtUserToken() throws JsonProcessingException{
-    mockJwtUserAuthentication();
+    @Test
+    public void testJwtUserToken() throws JsonProcessingException {
+        mockJwtUserAuthentication();
 
-    Assert.assertTrue(AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.getValue()));
-    Assert.assertEquals("test", AuthenticationHelper.getFirstname());
-    Assert.assertEquals("user", AuthenticationHelper.getLastname());
-    Assert.assertEquals("tester", AuthenticationHelper.getAuthorizationIdentities().get(0));
-    Assert.assertEquals("USERS", AuthenticationHelper.getAuthorizationIdentities().get(1));
-    Assert.assertFalse(AuthenticationHelper.isAuthenticatedAsService());
-    Assert.assertEquals(PERMISSION.NONE, AuthenticationHelper.getScopedPermission(String.class.getSimpleName(), "1"));
-  }
+        Assert.assertTrue(AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.getValue()));
+        Assert.assertEquals("test", AuthenticationHelper.getFirstname());
+        Assert.assertEquals("user", AuthenticationHelper.getLastname());
+        Assert.assertEquals("tester", AuthenticationHelper.getAuthorizationIdentities().get(0));
+        Assert.assertEquals("USERS", AuthenticationHelper.getAuthorizationIdentities().get(1));
+        Assert.assertFalse(AuthenticationHelper.isAuthenticatedAsService());
+        Assert.assertEquals(PERMISSION.NONE, AuthenticationHelper.getScopedPermission(String.class.getSimpleName(), "1"));
+    }
 
-  @Test
-  public void testOtherAuthentication(){
-    mockNoAuthentication();
+    @Test
+    public void testOtherAuthentication() {
+        mockNoAuthentication();
 
-    Assert.assertNull(AuthenticationHelper.getFirstname());
-    Assert.assertNull(AuthenticationHelper.getLastname());
-    Assert.assertEquals("anonymous", AuthenticationHelper.getPrincipal());
-  }
+        Assert.assertNull(AuthenticationHelper.getFirstname());
+        Assert.assertNull(AuthenticationHelper.getLastname());
+        Assert.assertEquals("anonymous", AuthenticationHelper.getPrincipal());
+    }
 
-  @Test
-  public void testJwtServiceToken() throws JsonProcessingException{
-    mockJwtServiceAuthentication();
+    @Test
+    public void testJwtServiceToken() throws JsonProcessingException {
+        mockJwtServiceAuthentication();
 
-    Assert.assertEquals("metadata_extractor", AuthenticationHelper.getPrincipal());
-    Assert.assertTrue(AuthenticationHelper.hasIdentity("metadata_extractor"));
-    Assert.assertTrue(AuthenticationHelper.hasAuthority(RepoServiceRole.SERVICE_READ.getValue()));
-    Assert.assertTrue(AuthenticationHelper.isAuthenticatedAsService());
+        Assert.assertEquals("metadata_extractor", AuthenticationHelper.getPrincipal());
+        Assert.assertTrue(AuthenticationHelper.hasIdentity("metadata_extractor"));
+        Assert.assertTrue(AuthenticationHelper.hasAuthority(RepoServiceRole.SERVICE_READ.getValue()));
+        Assert.assertTrue(AuthenticationHelper.isAuthenticatedAsService());
 
-  }
+    }
 
-  @Test
-  public void testJwtTemporaryToken() throws JsonProcessingException{
-    mockJwtTemporaryAuthentication();
+    @Test
+    public void testJwtTemporaryToken() throws JsonProcessingException {
+        mockJwtTemporaryAuthentication();
 
-    Assert.assertEquals("test@mail.org", AuthenticationHelper.getPrincipal());
-    Assert.assertTrue(AuthenticationHelper.hasIdentity("test@mail.org"));
-    Assert.assertEquals(PERMISSION.READ, AuthenticationHelper.getScopedPermission(String.class.getSimpleName(), "1"));
-  }
+        Assert.assertEquals("test@mail.org", AuthenticationHelper.getPrincipal());
+        Assert.assertTrue(AuthenticationHelper.hasIdentity("test@mail.org"));
+        Assert.assertEquals(PERMISSION.READ, AuthenticationHelper.getScopedPermission(String.class.getSimpleName(), "1"));
+    }
 
-  private void mockNoAuthentication(){
-    Mockito.when(securityContext.getAuthentication()).thenReturn(new AnonymousAuthenticationToken("test", "anonymous", Arrays.asList(new SimpleGrantedAuthority("anonymous"))));
-    SecurityContextHolder.setContext(securityContext);
-  }
+    private void mockNoAuthentication() {
+        Mockito.when(securityContext.getAuthentication()).thenReturn(new AnonymousAuthenticationToken("test", "anonymous", Arrays.asList(new SimpleGrantedAuthority("anonymous"))));
+        SecurityContextHolder.setContext(securityContext);
+    }
 
-  private void mockJwtUserAuthentication() throws JsonProcessingException{
-    JwtAuthenticationToken userToken = edu.kit.datamanager.util.JwtBuilder.
-            createUserToken("tester", RepoUserRole.ADMINISTRATOR).
-            addSimpleClaim("firstname", "test").
-            addSimpleClaim("lastname", "user").
-            addSimpleClaim("email", "test@mail.org").
-            addSimpleClaim("groupid", "USERS").
-            getJwtAuthenticationToken("test123");
+    private void mockJwtUserAuthentication() throws JsonProcessingException {
+        JwtAuthenticationToken userToken = edu.kit.datamanager.util.JwtBuilder.
+                createUserToken("tester", RepoUserRole.ADMINISTRATOR).
+                addSimpleClaim("firstname", "test").
+                addSimpleClaim("lastname", "user").
+                addSimpleClaim("email", "test@mail.org").
+                addSimpleClaim("groupid", "USERS").
+                getJwtAuthenticationToken(key);
 
-    Mockito.when(securityContext.getAuthentication()).thenReturn(userToken);
-    SecurityContextHolder.setContext(securityContext);
-  }
+        Mockito.when(securityContext.getAuthentication()).thenReturn(userToken);
+        SecurityContextHolder.setContext(securityContext);
+    }
 
-  private void mockJwtServiceAuthentication() throws JsonProcessingException{
-    JwtAuthenticationToken serviceToken = edu.kit.datamanager.util.JwtBuilder.
-            createServiceToken("metadata_extractor", RepoServiceRole.SERVICE_READ).
-            addSimpleClaim("groupid", "USERS").
-            getJwtAuthenticationToken("test123");
-    Mockito.when(securityContext.getAuthentication()).thenReturn(serviceToken);
-    SecurityContextHolder.setContext(securityContext);
-  }
+    private void mockJwtServiceAuthentication() throws JsonProcessingException {
+        JwtAuthenticationToken serviceToken = edu.kit.datamanager.util.JwtBuilder.
+                createServiceToken("metadata_extractor", RepoServiceRole.SERVICE_READ).
+                addSimpleClaim("groupid", "USERS").
+                getJwtAuthenticationToken(key);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(serviceToken);
+        SecurityContextHolder.setContext(securityContext);
+    }
 
-  private void mockJwtTemporaryAuthentication() throws JsonProcessingException{
-    ScopedPermission[] perms = new ScopedPermission[]{ScopedPermission.factoryScopedPermission("String", "1", PERMISSION.READ)};
+    private void mockJwtTemporaryAuthentication() throws JsonProcessingException {
+        ScopedPermission[] perms = new ScopedPermission[]{ScopedPermission.factoryScopedPermission("String", "1", PERMISSION.READ)};
 
-    JwtAuthenticationToken temporaryToken = edu.kit.datamanager.util.JwtBuilder.createTemporaryToken("test@mail.org", perms).
-            getJwtAuthenticationToken("test123");
-    Mockito.when(securityContext.getAuthentication()).thenReturn(temporaryToken);
-    SecurityContextHolder.setContext(securityContext);
-  }
+        JwtAuthenticationToken temporaryToken = edu.kit.datamanager.util.JwtBuilder.createTemporaryToken("test@mail.org", perms).
+                getJwtAuthenticationToken(key);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(temporaryToken);
+        SecurityContextHolder.setContext(securityContext);
+    }
 }
