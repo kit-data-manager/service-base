@@ -117,6 +117,7 @@ public class AuthenticationHelper{
    */
   public static List<String> getAuthorizationIdentities(){
     List<String> identities = new ArrayList<>();
+    identities.add(ANONYMOUS_USER_PRINCIPAL);
     identities.add(getPrincipal());
     if(getAuthentication() instanceof JwtAuthenticationToken){
       //obtain groupId ... this is only available for user tokens
