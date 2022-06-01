@@ -97,6 +97,8 @@ public class KeycloakTokenFilter extends OncePerRequestFilter {
                     } else {
                         LOG.info("Invalid Request: Token is expired or tampered");
                         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: Token is expired or tampered");
+                        //stop filter chain, return now in order to stop handling of following requests
+                        return;
                     }
                 }
             } catch (BadJOSEException | IOException | MalformedJwtException e) {
@@ -107,6 +109,7 @@ public class KeycloakTokenFilter extends OncePerRequestFilter {
             LOG.info("Bearer token not being sent in Headers.");
         }
 
+        //continue, either with another authentication method or without authentication
         LOG.trace("Continue with filterChain as no valid JWT authentication was found.");
         filterChain.doFilter(request, response);
     }
