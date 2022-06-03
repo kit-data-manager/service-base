@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
-## [1.0.2] - date not fixed yet
+## [1.0.2] - 2022-06-03
 ### Changed
 - Anonymous user is now added to the authorities by default. 
 
