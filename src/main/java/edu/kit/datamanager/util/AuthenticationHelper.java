@@ -126,6 +126,7 @@ public class AuthenticationHelper{
         identities.add(groupId);
       }
     }
+    identities.add(ANONYMOUS_USER_PRINCIPAL);
     return identities;
   }
 
