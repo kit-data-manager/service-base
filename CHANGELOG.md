@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Anonymous user is now added to the authorities by default. 
 
+### Fixed
+- Request handling is now properly stopped if expired/invalid JWT was provided
+
 ## [1.0.1] - 2022-03-23
 ### Changed
 - RabbitMQ no longer started by default.
