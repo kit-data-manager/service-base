@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## [1.0.2] - 2022-06-03
+### Changed
+- Anonymous user is now added to the authorities by default. 
+
 ## [1.0.1] - 2022-03-23
 ### Changed
 - RabbitMQ no longer started by default.
@@ -94,7 +98,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.0.1..HEAD
+[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.0.2..HEAD
+[1.0.2]: https://github.com/kit-data-manager/service-base/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/kit-data-manager/service-base/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/kit-data-manager/service-base/compare/v0.3.2...v1.0.0
 [0.3.2]: https://github.com/kit-data-manager/service-base/compare/v0.3.1...v0.3.2
