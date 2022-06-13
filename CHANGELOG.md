@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [1.0.3] - 2022-06-13
+### Fixed
+- Request handling is now properly stopped if expired/invalid JWT was provided
+
 ### Security
 
 ## [1.0.2] - 2022-06-03
