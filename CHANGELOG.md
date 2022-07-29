@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update to net.researchgate.release 3.0.0
+- Update to spring-boot 2.7.2
+- Update to spring-doc 1.6.9
+
 ### Removed
 
 ### Deprecated
