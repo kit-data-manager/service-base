@@ -35,36 +35,44 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class RabbitMQConfiguration {
 
-  private final Logger logger = LoggerFactory.getLogger(RabbitMQConfiguration.class);
+    private final Logger logger = LoggerFactory.getLogger(RabbitMQConfiguration.class);
 
-  @Value("${repo.messaging.hostname:localhost}")
-  private String hostname;
-  @Value("${repo.messaging.port:5672}")
-  private int port;
-  @Value("${repo.messaging.sender.exchange:repository_events}")
-  private String exchange;
+    @Value("${repo.messaging.username:guest}")
+    private String username;
+    @Value("${repo.messaging.password:guest}")
+    private String password;
 
-  @Value("${repo.messaging.enabled:FALSE}")
-  private boolean messagingEnabled;
+    @Value("${repo.messaging.hostname:localhost}")
+    private String hostname;
+    @Value("${repo.messaging.port:5672}")
+    private int port;
+    @Value("${repo.messaging.sender.exchange:repository_events}")
+    private String exchange;
 
-  @Bean
-  @ConditionalOnProperty(prefix = "repo.messaging", name = "enabled", havingValue = "true")
-  public ConnectionFactory rabbitMQConnectionFactory() {
-    logger.trace("Connecting to RabbitMQ service at host {} and port {}.", hostname, port);
-    return new CachingConnectionFactory(hostname, port);
-  }
+    @Value("${repo.messaging.enabled:FALSE}")
+    private boolean messagingEnabled;
 
-  @Bean
-  @ConditionalOnProperty(prefix = "repo.messaging", name = "enabled", havingValue = "true")
-  public RabbitTemplate rabbitMQTemplate() {
-    logger.trace("Get RabbitMQ template");
-    return new RabbitTemplate(rabbitMQConnectionFactory());
-  }
+    @Bean
+    @ConditionalOnProperty(prefix = "repo.messaging", name = "enabled", havingValue = "true")
+    public ConnectionFactory rabbitMQConnectionFactory() {
+        logger.trace("Connecting to RabbitMQ service at host {} and port {}.", hostname, port);
+        CachingConnectionFactory factory = new CachingConnectionFactory(hostname, port);
+        factory.setUsername(username);
+        factory.setPassword(password);
+        return factory;
+    }
 
-  @Bean
-  @ConditionalOnProperty(prefix = "repo.messaging", name = "enabled", havingValue = "true")
-  public TopicExchange rabbitMQExchange() {
-    logger.trace("Get Topic Exchange '{}'", exchange);
-    return new TopicExchange(exchange);
-  }
+    @Bean
+    @ConditionalOnProperty(prefix = "repo.messaging", name = "enabled", havingValue = "true")
+    public RabbitTemplate rabbitMQTemplate() {
+        logger.trace("Get RabbitMQ template");
+        return new RabbitTemplate(rabbitMQConnectionFactory());
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "repo.messaging", name = "enabled", havingValue = "true")
+    public TopicExchange rabbitMQExchange() {
+        logger.trace("Get Topic Exchange '{}'", exchange);
+        return new TopicExchange(exchange);
+    }
 }

@@ -28,6 +28,7 @@ import java.security.Principal;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -139,6 +140,31 @@ public class ControllerUtilsTest {
             @Override
             public boolean hasPrevious() {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public boolean isPaged() {
+                return Pageable.super.isPaged(); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public boolean isUnpaged() {
+                return Pageable.super.isUnpaged(); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public Sort getSortOr(Sort sort) {
+                return Pageable.super.getSortOr(sort); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public Pageable withPage(int pageNumber) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public Optional<Pageable> toOptional() {
+                return Pageable.super.toOptional(); //To change body of generated methods, choose Tools | Templates.
             }
         });
 
