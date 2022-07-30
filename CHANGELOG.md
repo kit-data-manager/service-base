@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 
+### Changed
+
+### Removed
+
+### Deprecated
+
+### Fixed
+
+## [1.0.4] - 2022-07-30
+### Added
+
 - RabbitMQ-based messaging credentials are now configurable in application.properties via properties repo.messaging.username and repo.messaging.password
 
 ### Changed
@@ -14,12 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update to net.researchgate.release 3.0.0
 - Update to spring-boot 2.7.2
 - Update to spring-doc 1.6.9
-
-### Removed
-
-### Deprecated
-
-### Fixed
 
 ## [1.0.3] - 2022-06-13
 ### Fixed
@@ -111,7 +116,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.0.3...HEAD
+[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.0.4...HEAD
+[1.0.4]: https://github.com/kit-data-manager/service-base/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/kit-data-manager/service-base/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/kit-data-manager/service-base/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/kit-data-manager/service-base/compare/v1.0.0...v1.0.1
