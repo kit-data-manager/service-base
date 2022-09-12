@@ -41,12 +41,13 @@ import org.springframework.web.context.request.WebRequest;
 public class ControllerUtils {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ControllerUtils.class);
+
   private static final Pattern CONTENT_RANGE_PATTERN = Pattern.compile("([\\d]+)[-]([\\d]+)[/]([\\d]+)");
 
   /**
    * Hidden constructor.
    */
-  private ControllerUtils() {
+  ControllerUtils() {
   }
 
   /**
