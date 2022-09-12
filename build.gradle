@@ -26,14 +26,14 @@ plugins {
     id "jacoco"
     // plugins for release and publishing to maven repo
     id "signing"
-    id "net.researchgate.release" version "3.0.0"
+    id "net.researchgate.release" version "3.0.2"
     id "io.github.gradle-nexus.publish-plugin" version "1.1.0"
     id 'maven-publish'
 }
 
 ext { 
     springBootVersion = '2.7.3' 
-    springDocVersion  = '1.6.10'
+    springDocVersion  = '1.6.11'
 }
 
 description = "Base service module containing entities, interfaces and helpers."
@@ -91,7 +91,7 @@ dependencies {
     implementation "org.apache.commons:commons-collections4:4.4"
    
     implementation "org.slf4j:slf4j-api:2.0.0"
-    implementation "ch.qos.logback:logback-classic:1.2.11"
+    implementation "ch.qos.logback:logback-classic:1.4.0"
 
     //Java 11 Support 
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
