@@ -19,7 +19,7 @@ plugins {
     id "io.freefair.maven-publish-java" version "6.5.1"
     id "io.spring.dependency-management" version "1.0.14.RELEASE" 
     //id "com.github.kt3k.coveralls" version "2.8.1" 
-    id "org.owasp.dependencycheck" version "7.1.2"
+    id "org.owasp.dependencycheck" version "7.2.1"
     //id "org.ajoberstar.grgit" version "2.0.1"
     id "com.jfrog.bintray" version "1.8.5"
     id "java"
@@ -32,7 +32,7 @@ plugins {
 }
 
 ext { 
-    springBootVersion = '2.7.3' 
+    springBootVersion = '2.7.4' 
     springDocVersion  = '1.6.11'
 }
 
@@ -95,6 +95,7 @@ dependencies {
 
     //Java 11 Support 
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    
     implementation 'com.sun.xml.bind:jaxb-core:4.0.1'
     implementation 'com.sun.xml.bind:jaxb-impl:4.0.1'
 
