@@ -31,7 +31,7 @@ import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jose.proc.JWSKeySelector;
 import com.nimbusds.jose.proc.JWSVerificationKeySelector;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.nimbusds.jose.shaded.json.JSONArray;
+import com.nimbusds.jose.shaded.gson.JsonArray;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.BadJWTException;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,22 +137,22 @@ public class KeycloakTokenValidator {
                 }
 
                 //build auth token
-                JSONArray aRoles = null;
+                JsonArray aRoles = null;
 
                 Map<String, Object> o = claimsSet.getJSONObjectClaim("realm_access");
                 if (o != null) {
-                    aRoles = (JSONArray) o.get("roles");
+                    aRoles = (JsonArray) o.get("roles");
 
                 }
 
                 if (aRoles == null) {
-                    aRoles = new JSONArray();
+                    aRoles = new JsonArray();
                     aRoles.add("GUEST");
                 }
 
                 //token type? Service, Temp, User?
                 Map<String, Object> claims = new HashMap<>();
-                String roles = aRoles.toJSONString();
+                String roles = aRoles.getAsString();
                 claims.put("username", claimsSet.getStringClaim((jwtClaim == null) ? "preferred_user" : jwtClaim));
                 claims.put("firstname", claimsSet.getStringClaim("given_name"));
                 claims.put("lastname", claimsSet.getStringClaim("family_name"));
