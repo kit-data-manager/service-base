@@ -11,22 +11,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update to io.freefair.lombok 6.5.1
 - Update to io.freefair.maven-publish-java 6.5.1
-- Update to io.spring.dependency-management 1.0.13.RELEASE
-- Update to org.owasp.dependencycheck 7.1.2
+- Update to io.spring.dependency-management 1.0.14.RELEASE
+- Update to org.owasp.dependencycheck 7.2.1
 - Update to com.jfrog.bintray 1.8.5
 - Update to net.researchgate.release 3.0.2
-- Update to spring-boot 2.7.3
+- Update to spring-boot 2.7.4
 - Update to spring-doc 1.6.11
-- Update to com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider 2.13.4
-- Update to com.fasterxml.jackson.datatype:jackson-datatype-joda 2.13.4
-- Update to com.nimbusds:nimbus-jose-jwt 9.24.4
+- Update tojackson-jaxrs-json-provider 2.13.4
+- Update to jackson-datatype-joda 2.13.4
+- Update jackson-datatype-jsr310 2.13.4
+- Update to com.nimbusds:nimbus-jose-jwt 9.25.4
 - Update to io.jsonwebtoken:jjwt-api 0.11.5
 - Update to io.jsonwebtoken:jjwt-impl 0.11.5
 - Update to io.jsonwebtoken:jjwt-jackson 0.11.5
 - Update to org.slf4j:slf4j-api 1.7.36
-- Update to com.sun.xml.bind:jaxb-core 4.0.0
-- Update to com.sun.xml.bind:jaxb-impl 4.0.0
-- Update to org.javassist:javassist 3.29.1-GA
+- Update to com.sun.xml.bind:jaxb-core 4.0.1
+- Update to com.sun.xml.bind:jaxb-impl 4.0.1
+- Update to org.javassist:javassist 3.29.2-GA
 
 ### Removed
 
