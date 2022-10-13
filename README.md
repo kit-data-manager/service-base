@@ -35,7 +35,7 @@ Instead of using a local build you may also use the most recent version from the
 <dependency>
     <groupId>edu.kit.datamanager</groupId>
     <artifactId>service-base</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 </dependency>
 ~~~~
 
