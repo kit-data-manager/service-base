@@ -42,7 +42,7 @@ Instead of using a local build you may also use the most recent version from the
 ### Gradle (short)
 
 ~~~~
-    implementation "edu.kit.datamanager:service-base:1.0.4"
+    implementation "edu.kit.datamanager:service-base:1.0.5"
 ~~~~
 
 
