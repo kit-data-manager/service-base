@@ -43,11 +43,11 @@ import io.jsonwebtoken.Jwts;
 import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,22 +137,24 @@ public class KeycloakTokenValidator {
                 }
 
                 //build auth token
-                JsonArray aRoles = null;
+                ArrayList aRoles = null;
 
                 Map<String, Object> o = claimsSet.getJSONObjectClaim("realm_access");
                 if (o != null) {
-                    aRoles = (JsonArray) o.get("roles");
-
+                    aRoles = (ArrayList) o.get("roles");
+                    LOG.trace("Obtained roles {} from JWT.", aRoles);
                 }
 
                 if (aRoles == null) {
-                    aRoles = new JsonArray();
+                    aRoles = new ArrayList();
                     aRoles.add("GUEST");
+                    LOG.trace("No roles found in JWT. Using default roles {}.", aRoles);
                 }
 
                 //token type? Service, Temp, User?
                 Map<String, Object> claims = new HashMap<>();
-                String roles = aRoles.getAsString();
+                String roles = aRoles.toString();
+                LOG.trace("Adding roles string {} to claims.", roles);
                 claims.put("username", claimsSet.getStringClaim((jwtClaim == null) ? "preferred_user" : jwtClaim));
                 claims.put("firstname", claimsSet.getStringClaim("given_name"));
                 claims.put("lastname", claimsSet.getStringClaim("family_name"));
