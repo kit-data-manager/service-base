@@ -21,6 +21,8 @@
  */
 package edu.kit.datamanager.security.filter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.RemoteKeySourceException;
@@ -31,7 +33,6 @@ import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jose.proc.JWSKeySelector;
 import com.nimbusds.jose.proc.JWSVerificationKeySelector;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.nimbusds.jose.shaded.gson.JsonArray;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.BadJWTException;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
@@ -153,7 +154,7 @@ public class KeycloakTokenValidator {
 
                 //token type? Service, Temp, User?
                 Map<String, Object> claims = new HashMap<>();
-                String roles = aRoles.toString();
+                String roles = new ObjectMapper().writeValueAsString(aRoles);
                 LOG.trace("Adding roles string {} to claims.", roles);
                 claims.put("username", claimsSet.getStringClaim((jwtClaim == null) ? "preferred_user" : jwtClaim));
                 claims.put("firstname", claimsSet.getStringClaim("given_name"));
@@ -168,7 +169,7 @@ public class KeycloakTokenValidator {
             LOG.error("Failed to obtain remote key for JWT validation.", e);
         } catch (BadJWTException e) {
             LOG.warn("Invalid JWT received.", e);
-        } catch (ParseException | JOSEException e) {
+        } catch (ParseException | JOSEException | JsonProcessingException e) {
             LOG.error("Failed to parse JWT.", e);
         }
         return null;
