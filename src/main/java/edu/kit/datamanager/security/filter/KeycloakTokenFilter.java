@@ -22,7 +22,9 @@
 package edu.kit.datamanager.security.filter;
 
 import com.nimbusds.jose.proc.BadJOSEException;
+import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
+import static edu.kit.datamanager.util.AuthenticationHelper.getAuthentication;
 import edu.kit.datamanager.util.NetworkUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -92,8 +94,15 @@ public class KeycloakTokenFilter extends OncePerRequestFilter {
 
                     LOG.trace("JWT validation finished. Checking result.");
                     if (jwToken != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                        LOG.info("Authenticated username: {}", jwToken.getPrincipal());
-                        setContext(request, jwToken);
+                        LOG.trace("Authenticated username: {}", jwToken.getPrincipal());
+
+                        if (jwToken.getAuthorities().stream().filter(a -> a.getAuthority().equals(RepoUserRole.INACTIVE.toString())).count() > 0) {
+                            LOG.debug("User roles contain ROLE_INACTIVE. Access denied for user.");
+                            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Unauthorized: User is marked inactive.");
+                            return;
+                        } else {
+                            setContext(request, jwToken);
+                        }
                     } else {
                         LOG.info("Invalid Request: Token is expired or tampered");
                         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: Token is expired or tampered");
