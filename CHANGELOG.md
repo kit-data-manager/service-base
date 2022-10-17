@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 
 ### Fixed
+- User role INACTIVE is now properly checked. If a user is marked inactive, all access attempts will be answered with HTTP 403 (FORBIDDEN)
 
 ## [1.0.7] - 2022-10-14
 
