@@ -33,7 +33,7 @@ plugins {
 
 ext { 
     springBootVersion = '2.7.4' 
-    springDocVersion  = '1.6.11'
+    springDocVersion  = '1.6.12'
 }
 
 description = "Base service module containing entities, interfaces and helpers."
