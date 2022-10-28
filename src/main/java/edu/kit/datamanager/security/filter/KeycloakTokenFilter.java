@@ -71,6 +71,7 @@ public class KeycloakTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader(AUTHORIZATION_HEADER);
+        boolean contextSet = false;
         if (token != null && !token.toUpperCase().startsWith("BASIC") && token.startsWith(BEARER)) {
             LOG.trace("Starting JWT filtering.");
             try {
@@ -84,6 +85,7 @@ public class KeycloakTokenFilter extends OncePerRequestFilter {
                     if (attemptLocalAuthentication(request, response, token)) {
                         LOG.trace("Authenticated using local JWT secret.");
                         localAuthenticationSucceeded = true;
+                        contextSet = true;
                     }
                 }
 
@@ -102,6 +104,7 @@ public class KeycloakTokenFilter extends OncePerRequestFilter {
                             return;
                         } else {
                             setContext(request, jwToken);
+                            contextSet = true;
                         }
                     } else {
                         LOG.info("Invalid Request: Token is expired or tampered");
@@ -119,7 +122,11 @@ public class KeycloakTokenFilter extends OncePerRequestFilter {
         }
 
         //continue, either with another authentication method or without authentication
-        LOG.trace("Continue with filterChain as no valid JWT authentication was found.");
+        if (!contextSet) {
+            LOG.trace("Continue with filterChain as no valid JWT authentication was found.");
+        }else{
+            LOG.trace("Valid authentication context set from JWT. Continue with filterChain.");
+        }
         filterChain.doFilter(request, response);
     }
 
