@@ -29,12 +29,12 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
-public class PrimaryIdentifier{
+public class PrimaryIdentifier {
 
-  private long id;
-  @XmlValue
-  private String value;
-  @XmlAttribute(name = "identifierType", required = true)
-  private String identifierType;
+    private long id;
+    @XmlValue
+    private String value;
+    @XmlAttribute(name = "identifierType", required = true)
+    private String identifierType;
 
 }

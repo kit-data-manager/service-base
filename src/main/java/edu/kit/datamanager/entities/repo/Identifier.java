@@ -18,8 +18,6 @@ package edu.kit.datamanager.entities.repo;
 import edu.kit.datamanager.entities.BaseEnum;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 import lombok.Data;
 
 /**
@@ -28,42 +26,42 @@ import lombok.Data;
  */
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Identifier{
+public class Identifier {
 
-  public enum IDENTIFIER_TYPE implements BaseEnum{
-    ARK("ARK"),
-    AR_XIV("arXiv"),
-    BIBCODE("bibcode"),
-    DOI("DOI"),
-    EAN_13("EAN13"),
-    EISSN("EISSN"),
-    HANDLE("Handle"),
-    IGSN("IGSN"),
-    ISBN("ISBN"),
-    ISSN("ISSN"),
-    ISTC("ISTC"),
-    LISSN("LISSN"),
-    LSID("LSID"),
-    PMID("PMID"),
-    PURL("PURL"),
-    UPC("UPC"),
-    URL("URL"),
-    URN("URN"),
-    INTERNAL("INTERNAL"),
-    OTHER("OTHER");
+    public enum IDENTIFIER_TYPE implements BaseEnum {
+        ARK("ARK"),
+        AR_XIV("arXiv"),
+        BIBCODE("bibcode"),
+        DOI("DOI"),
+        EAN_13("EAN13"),
+        EISSN("EISSN"),
+        HANDLE("Handle"),
+        IGSN("IGSN"),
+        ISBN("ISBN"),
+        ISSN("ISSN"),
+        ISTC("ISTC"),
+        LISSN("LISSN"),
+        LSID("LSID"),
+        PMID("PMID"),
+        PURL("PURL"),
+        UPC("UPC"),
+        URL("URL"),
+        URN("URN"),
+        INTERNAL("INTERNAL"),
+        OTHER("OTHER");
 
-    private final String value;
+        private final String value;
 
-    private IDENTIFIER_TYPE(String value){
-      this.value = value;
+        private IDENTIFIER_TYPE(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String getValue() {
+            return value;
+        }
     }
-
-    @Override
-    public String getValue(){
-      return value;
-    }
-  }
-  private long id;
-  private String value;
-  private IDENTIFIER_TYPE identifierType;
+    private long id;
+    private String value;
+    private IDENTIFIER_TYPE identifierType;
 }

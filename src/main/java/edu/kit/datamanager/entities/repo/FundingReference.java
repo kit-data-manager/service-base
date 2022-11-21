@@ -27,13 +27,13 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
-public class FundingReference{
+public class FundingReference {
 
-  private long id;
-  private String funderName;
-  //use identifier?
-  private FunderIdentifier funderIdentifier;
-  private Scheme awardNumber;
-  private String awardUri;
-  private String awardTitle;
+    private long id;
+    private String funderName;
+    //use identifier?
+    private FunderIdentifier funderIdentifier;
+    private Scheme awardNumber;
+    private String awardUri;
+    private String awardTitle;
 }

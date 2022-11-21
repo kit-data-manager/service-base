@@ -28,47 +28,46 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Contributor{
+public class Contributor {
 
-  public enum CONTRIBUTOR_TYPE implements BaseEnum{
-    CONTACT_PERSON("ContactPerson"),
-    DATA_COLLECTOR("DataCollector"),
-    DATA_CURATOR("DataCurator"),
-    DATA_MANAGER("DataManager"),
-    DISTRIBUTOR("Distributor"),
-    EDITOR("Editor"),
-    HOSTING_INSTITUTION("HostingInstitution"),
-    OTHER("Other"),
-    PRODUCER("Producer"),
-    PROJECT_LEADER("ProjectLeader"),
-    PROJECT_MANAGER("ProjectManager"),
-    PROJECT_MEMBER("ProjectMember"),
-    REGISTRATION_AGENCY("RegistrationAgency"),
-    REGISTRATION_AUTHORITY("RegistrationAuthority"),
-    RELATED_PERSON("RelatedPerson"),
-    RESEARCH_GROUP("ResearchGroup"),
-    RIGHTS_HOLDER("RightsHolder"),
-    RESEARCHER("Researcher"),
-    SPONSOR("Sponsor"),
-    SUPERVISOR("Supervisor"),
-    WORK_PACKAGE_LEADER("WorkPackageLeader");
+    public enum CONTRIBUTOR_TYPE implements BaseEnum {
+        CONTACT_PERSON("ContactPerson"),
+        DATA_COLLECTOR("DataCollector"),
+        DATA_CURATOR("DataCurator"),
+        DATA_MANAGER("DataManager"),
+        DISTRIBUTOR("Distributor"),
+        EDITOR("Editor"),
+        HOSTING_INSTITUTION("HostingInstitution"),
+        OTHER("Other"),
+        PRODUCER("Producer"),
+        PROJECT_LEADER("ProjectLeader"),
+        PROJECT_MANAGER("ProjectManager"),
+        PROJECT_MEMBER("ProjectMember"),
+        REGISTRATION_AGENCY("RegistrationAgency"),
+        REGISTRATION_AUTHORITY("RegistrationAuthority"),
+        RELATED_PERSON("RelatedPerson"),
+        RESEARCH_GROUP("ResearchGroup"),
+        RIGHTS_HOLDER("RightsHolder"),
+        RESEARCHER("Researcher"),
+        SPONSOR("Sponsor"),
+        SUPERVISOR("Supervisor"),
+        WORK_PACKAGE_LEADER("WorkPackageLeader");
 
-    private long id;
-    private final String value;
+        private long id;
+        private final String value;
 
-    CONTRIBUTOR_TYPE(String value){
-      this.value = value;
+        CONTRIBUTOR_TYPE(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String getValue() {
+            return value;
+        }
     }
 
-    @Override
-    public String getValue(){
-      return value;
-    }
-  }
-
-  private Agent user;
-
-  //vocab, e.g. Producer, Editor...
-  private CONTRIBUTOR_TYPE contributionType;
+    private Agent user;
+    //vocab, e.g. Producer, Editor...
+    private CONTRIBUTOR_TYPE contributionType;
 
 }

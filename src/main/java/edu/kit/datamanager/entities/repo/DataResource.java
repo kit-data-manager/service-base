@@ -44,87 +44,103 @@ import lombok.Data;
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "resource", namespace = "http://datacite.org/schema/kernel-4")
-public class DataResource implements Serializable{
+public class DataResource implements Serializable {
 
-  public enum State implements BaseEnum{
-    VOLATILE,
-    FIXED,
-    REVOKED,
-    GONE;
+    public enum State implements BaseEnum {
+        VOLATILE,
+        FIXED,
+        REVOKED,
+        GONE;
 
-    @Override
-    public String getValue(){
-      return toString();
+        @Override
+        public String getValue() {
+            return toString();
+        }
     }
-  }
 
-  //The internal resource identifier assigned once during creation
-  //mandatory
-  private PrimaryIdentifier identifier;
+    //The internal resource identifier assigned once during creation
+    //mandatory
+    private PrimaryIdentifier identifier;
 
-  @XmlTransient
-  private String id = null;
-  //vocab
-  @XmlElementWrapper(name = "creators")
-  @XmlElement(name = "creator")
-  private Set<Agent> creators = new HashSet<>();
-  @XmlElementWrapper(name = "titles")
-  @XmlElement(name = "title")
-  private Set<Title> titles = new HashSet<>();
-  private String publisher;
+    @XmlTransient
+    private String id = null;
+    //vocab
+    @XmlElementWrapper(name = "creators")
+    @XmlElement(name = "creator")
+    private Set<Agent> creators = new HashSet<>();
 
-  //format: YYYY
-  private String publicationYear;
-  @XmlElement(name = "resourceType")
-  private ResourceType resourceType;
+    @XmlElementWrapper(name = "titles")
+    @XmlElement(name = "title")
+    private Set<Title> titles = new HashSet<>();
 
-  //recommended
-  @XmlElementWrapper(name = "subjects")
-  @XmlElement(name = "subject")
-  private Set<Subject> subjects = new HashSet<>();
-  @XmlElementWrapper(name = "contributors")
-  @XmlElement(name = "contributor")
-  private Set<Contributor> contributors = new HashSet<>();
-  @XmlElementWrapper(name = "dates")
-  @XmlElement(name = "date")
-  private Set<Date> dates = new HashSet<>();
-  @XmlElementWrapper(name = "relatedIdentifiers")
-  @XmlElement(name = "relatedIdentifier")
-  private Set<RelatedIdentifier> relatedIdentifiers = new HashSet<>();
-  @XmlElementWrapper(name = "descriptions")
-  @XmlElement(name = "description")
-  private Set<Description> descriptions = new HashSet<>();
-  private State state;
-  @XmlElementWrapper(name = "geoLocations")
-  @XmlElement(name = "geoLocation")
-  private Set<GeoLocation> geoLocations = new HashSet<>();
-  private String language;
-  @XmlElementWrapper(name = "alternateIdentifiers")
-  @XmlElement(name = "alternateIdentifier")
-  private Set<Identifier> alternateIdentifiers = new HashSet<>();
-  @XmlElementWrapper(name = "sizes")
-  @XmlElement(name = "size")
-  private Set<String> sizes = new HashSet<>();
-  @XmlElementWrapper(name = "formats")
-  @XmlElement(name = "format")
-  private Set<String> formats = new HashSet<>();
-  private String version;
-  @XmlElementWrapper(name = "rightsList")
-  @XmlElement(name = "rights")
-  private Set<Scheme> rights = new HashSet<>();
-  private Set<FundingReference> fundingReferences = new HashSet<>();
+    private String publisher;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
-  @JsonDeserialize(using = CustomInstantDeserializer.class)
-  @JsonSerialize(using = CustomInstantSerializer.class)
-  private Instant lastUpdate;
+    //format: YYYY
+    private String publicationYear;
 
-  @XmlElementWrapper(name = "aclEntries")
-  @XmlElement(name = "aclEntry")
-  private Set<AclEntry> acls = new HashSet<>();
+    @XmlElement(name = "resourceType")
+    private ResourceType resourceType;
 
-  @XmlTransient
-  @JsonIgnore
-  private List<ContentInformation> associatedContentInformation;
+    //recommended
+    @XmlElementWrapper(name = "subjects")
+    @XmlElement(name = "subject")
+    private Set<Subject> subjects = new HashSet<>();
+
+    @XmlElementWrapper(name = "contributors")
+    @XmlElement(name = "contributor")
+    private Set<Contributor> contributors = new HashSet<>();
+
+    @XmlElementWrapper(name = "dates")
+    @XmlElement(name = "date")
+    private Set<Date> dates = new HashSet<>();
+
+    @XmlElementWrapper(name = "relatedIdentifiers")
+    @XmlElement(name = "relatedIdentifier")
+    private Set<RelatedIdentifier> relatedIdentifiers = new HashSet<>();
+
+    @XmlElementWrapper(name = "descriptions")
+    @XmlElement(name = "description")
+    private Set<Description> descriptions = new HashSet<>();
+
+    private State state;
+
+    @XmlElementWrapper(name = "geoLocations")
+    @XmlElement(name = "geoLocation")
+    private Set<GeoLocation> geoLocations = new HashSet<>();
+
+    private String language;
+
+    @XmlElementWrapper(name = "alternateIdentifiers")
+    @XmlElement(name = "alternateIdentifier")
+    private Set<Identifier> alternateIdentifiers = new HashSet<>();
+
+    @XmlElementWrapper(name = "sizes")
+    @XmlElement(name = "size")
+    private Set<String> sizes = new HashSet<>();
+
+    @XmlElementWrapper(name = "formats")
+    @XmlElement(name = "format")
+    private Set<String> formats = new HashSet<>();
+
+    private String version;
+
+    @XmlElementWrapper(name = "rightsList")
+    @XmlElement(name = "rights")
+    private Set<Scheme> rights = new HashSet<>();
+
+    private Set<FundingReference> fundingReferences = new HashSet<>();
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    @JsonDeserialize(using = CustomInstantDeserializer.class)
+    @JsonSerialize(using = CustomInstantSerializer.class)
+    private Instant lastUpdate;
+
+    @XmlElementWrapper(name = "aclEntries")
+    @XmlElement(name = "aclEntry")
+    private Set<AclEntry> acls = new HashSet<>();
+
+    @XmlTransient
+    @JsonIgnore
+    private List<ContentInformation> associatedContentInformation;
 
 }

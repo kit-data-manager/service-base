@@ -19,7 +19,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import edu.kit.datamanager.entities.BaseEnum;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import lombok.Data;
 
 /**
@@ -29,50 +28,51 @@ import lombok.Data;
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ResourceType{
+public class ResourceType {
 
-  public enum TYPE_GENERAL implements BaseEnum{
+    public enum TYPE_GENERAL implements BaseEnum {
 
-    AUDIOVISUAL("Audiovisual"),
-    COLLECTION("Collection"),
-    DATASET("Dataset"),
-    EVENT("Event"),
-    IMAGE("Image"),
-    INTERACTIVE_RESOURCE("InteractiveResource"),
-    MODEL("Model"),
-    PHYSICAL_OBJECT("PhysicalObject"),
-    SERVICE("Service"),
-    SOFTWARE("Software"),
-    SOUND("Sound"),
-    TEXT("Text"),
-    WORKFLOW("Workflow"),
-    OTHER("Other");
+        AUDIOVISUAL("Audiovisual"),
+        COLLECTION("Collection"),
+        DATASET("Dataset"),
+        EVENT("Event"),
+        IMAGE("Image"),
+        INTERACTIVE_RESOURCE("InteractiveResource"),
+        MODEL("Model"),
+        PHYSICAL_OBJECT("PhysicalObject"),
+        SERVICE("Service"),
+        SOFTWARE("Software"),
+        SOUND("Sound"),
+        TEXT("Text"),
+        WORKFLOW("Workflow"),
+        OTHER("Other");
 
-    private final String value;
+        private final String value;
 
-    private TYPE_GENERAL(String value){
-      this.value = value;
+        private TYPE_GENERAL(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String getValue() {
+            return value;
+        }
+
     }
 
-    @Override
-    public String getValue(){
-      return value;
+    private long id;
+    private String value;
+    //vocab, e.g. Dataset, Image....
+    private TYPE_GENERAL typeGeneral;
+
+    public static ResourceType createResourceType(String value) {
+        return createResourceType(value, TYPE_GENERAL.DATASET);
     }
 
-  }
-  private long id;
-  private String value;
-  //vocab, e.g. Dataset, Image....
-  private TYPE_GENERAL typeGeneral;
-
-  public static ResourceType createResourceType(String value){
-    return createResourceType(value, TYPE_GENERAL.DATASET);
-  }
-
-  public static ResourceType createResourceType(String value, TYPE_GENERAL typeGeneral){
-    ResourceType type = new ResourceType();
-    type.value = value;
-    type.typeGeneral = typeGeneral;
-    return type;
-  }
+    public static ResourceType createResourceType(String value, TYPE_GENERAL typeGeneral) {
+        ResourceType type = new ResourceType();
+        type.value = value;
+        type.typeGeneral = typeGeneral;
+        return type;
+    }
 }

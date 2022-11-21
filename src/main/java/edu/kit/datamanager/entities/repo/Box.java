@@ -27,11 +27,11 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Box{
+public class Box {
 
-  private float westLongitude;
-  private float eastLongitude;
-  private float southLatitude;
-  private float northLatitude;
+    private float westLongitude;
+    private float eastLongitude;
+    private float southLatitude;
+    private float northLatitude;
 
 }

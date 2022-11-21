@@ -18,7 +18,6 @@ package edu.kit.datamanager.entities;
 import edu.kit.datamanager.annotations.Searchable;
 import edu.kit.datamanager.annotations.SecureUpdate;
 import edu.kit.datamanager.util.EnumUtils;
-import io.swagger.v3.oas.annotations.Parameter;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.Entity;

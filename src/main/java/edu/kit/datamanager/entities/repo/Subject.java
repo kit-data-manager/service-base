@@ -27,12 +27,12 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Subject{
+public class Subject {
 
-  private long id;
-  private String value;
-  private Scheme scheme;
-  private String valueUri;
-  private String lang;
+    private long id;
+    private String value;
+    private Scheme scheme;
+    private String valueUri;
+    private String lang;
 
 }

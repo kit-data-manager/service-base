@@ -29,10 +29,10 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Agent{
+public class Agent {
 
-  private long id;
-  private String familyName;
-  private String givenName;
-  private Set<String> affiliations = new HashSet<>();
+    private long id;
+    private String familyName;
+    private String givenName;
+    private Set<String> affiliations = new HashSet<>();
 }

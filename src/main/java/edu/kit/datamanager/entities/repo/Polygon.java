@@ -29,7 +29,7 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Polygon{
+public class Polygon {
 
-  private Set<Point> points = new HashSet<>();
+    private Set<Point> points = new HashSet<>();
 }

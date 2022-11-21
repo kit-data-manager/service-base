@@ -19,7 +19,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import edu.kit.datamanager.entities.BaseEnum;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import lombok.Data;
 
 /**
@@ -29,41 +28,40 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Title{
+public class Title {
 
-  public enum TITLE_TYPE implements BaseEnum{
-    ALTERNATIVE_TITLE("AlternativeTitle"),
-    SUBTITLE("Subtitle"),
-    TRANSLATED_TITLE("TranslatedTitle"),
-    OTHER("Other");
-    private final String value;
+    public enum TITLE_TYPE implements BaseEnum {
+        ALTERNATIVE_TITLE("AlternativeTitle"),
+        SUBTITLE("Subtitle"),
+        TRANSLATED_TITLE("TranslatedTitle"),
+        OTHER("Other");
+        private final String value;
 
-    TITLE_TYPE(String value){
-      this.value = value;
+        TITLE_TYPE(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String getValue() {
+            return value;
+        }
+
+    }
+    private long id;
+    private String value;
+    //vocab, e.g. Subtitle, AlternativeTitle
+    private TITLE_TYPE titleType;
+    private String lang;
+
+    public static Title createTitle(String value) {
+        return createTitle(value, null);
     }
 
-    @Override
-    public String getValue(){
-      return value;
+    public static Title createTitle(String value, TITLE_TYPE type) {
+        Title t = new Title();
+        t.titleType = type;
+        t.value = value;
+        return t;
     }
-
-  }
-  
-  private long id;
-  private String value;
-  //vocab, e.g. Subtitle, AlternativeTitle
-  private TITLE_TYPE titleType;
-  private String lang;
-
-  public static Title createTitle(String value){
-    return createTitle(value, null);
-  }
-
-  public static Title createTitle(String value, TITLE_TYPE type){
-    Title t = new Title();
-    t.titleType = type;
-    t.value = value;
-    return t;
-  }
 
 }

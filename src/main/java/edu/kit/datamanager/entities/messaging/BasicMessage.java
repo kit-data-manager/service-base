@@ -19,11 +19,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kit.datamanager.exceptions.MessageValidationException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.Data;
@@ -38,68 +41,97 @@ import org.slf4j.LoggerFactory;
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BasicMessage implements IAMQPSubmittable{
+public class BasicMessage implements IAMQPSubmittable {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(BasicMessage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BasicMessage.class);
 
-  private String principal;
-  private String sender;
-  private long timestamp;
+    private String principal;
+    private String sender;
+    private long timestamp;
 
-  private String entityId;
-  //list of addressees for internal use, e.g. if triggering a dedicated handler 
-  private Set<String> addressees = new HashSet<>();
-  private String action;
-  @JsonInclude(Include.NON_NULL)
-  private String subCategory;
-  @JsonInclude(Include.NON_NULL)
-  private Map<String, String> metadata = new HashMap<>();
+    private String entityId;
+    //list of addressees for internal use, e.g. if triggering a dedicated handler 
+    private Set<String> addressees = new HashSet<>();
+    private String action;
+    @JsonInclude(Include.NON_NULL)
+    private String subCategory;
+    @JsonInclude(Include.NON_NULL)
+    private Map<String, String> metadata = new HashMap<>();
+    @JsonInclude(Include.NON_NULL)
+    private MessagePayload[] payload = new MessagePayload[]{};
+    @JsonIgnore
+    private List<MessagePayload> tmpPayload = new ArrayList<>();
 
-  @JsonIgnore
-  public String getEntityName(){
-    return "generic";
-  }
-
-  @JsonIgnore
-  @Override
-  public final String getRoutingKey(){
-    String routingKey = getEntityName().toLowerCase() + "." + getAction().toLowerCase();
-    if(getSubCategory() != null){
-      routingKey += "." + getSubCategory().toLowerCase();
-    }
-    return routingKey;
-  }
-
-  @Override
-  public void validate(){
-    boolean valid = true;
-    StringBuilder message = new StringBuilder();
-    String mustNotBeNull = " must not be null!\n";
-    if(getEntityName() == null){
-      valid = false;
-      message.append("Entity name").append(mustNotBeNull);
+    @JsonIgnore
+    public String getEntityName() {
+        return "generic";
     }
 
-    if(getAction() == null){
-      valid = false;
-      message.append("Action").append(mustNotBeNull);
+    @JsonIgnore
+    @Override
+    public final String getRoutingKey() {
+        String routingKey = getEntityName().toLowerCase() + "." + getAction().toLowerCase();
+        if (getSubCategory() != null) {
+            routingKey += "." + getSubCategory().toLowerCase();
+        }
+        return routingKey;
     }
 
-    if(getEntityId() == null){
-      valid = false;
-      message.append("Entity id").append(mustNotBeNull);
-    }
-    if (!valid) {
-      LOGGER.trace(message.toString());
-      throw new MessageValidationException(message.toString());
-    }
-  }
+    @Override
+    public void validate() {
+        boolean valid = true;
+        StringBuilder message = new StringBuilder();
+        String mustNotBeNull = " must not be null!\n";
+        if (getEntityName() == null) {
+            valid = false;
+            message.append("Entity name").append(mustNotBeNull);
+        }
 
-  public final void setCurrentTimestamp(){
-    setTimestamp(Instant.now().toDateTime(DateTimeZone.UTC).getMillis());
-  }
+        if (getAction() == null) {
+            valid = false;
+            message.append("Action").append(mustNotBeNull);
+        }
 
-  public static BasicMessage fromJson(String jsonString) throws IOException{
-    return new ObjectMapper().readValue(jsonString, BasicMessage.class);
-  }
+        if (getEntityId() == null) {
+            valid = false;
+            message.append("Entity id").append(mustNotBeNull);
+        }
+        if (!valid) {
+            LOGGER.trace(message.toString());
+            throw new MessageValidationException(message.toString());
+        }
+    }
+
+    public void addPayload(String payloadId, String mimeType, byte[] payload) {
+        tmpPayload.add(new MessagePayload(payloadId, mimeType, payload));
+    }
+
+    public final void setCurrentTimestamp() {
+        setTimestamp(Instant.now().toDateTime(DateTimeZone.UTC).getMillis());
+    }
+
+    @Override
+    public String toJson() throws JsonProcessingException {
+        payload = tmpPayload.toArray(new MessagePayload[]{});
+        return IAMQPSubmittable.super.toJson();
+    }
+
+    public static BasicMessage fromJson(String jsonString) throws IOException {
+        return new ObjectMapper().readValue(jsonString, BasicMessage.class);
+    }
+    
+    public static void main(String[] args) throws Exception{
+        BasicMessage msg = new BasicMessage();
+        msg.setAction("read");
+        msg.setEntityId("1234");
+        msg.setSubCategory("data");
+        msg.setPrincipal("thomas");
+        msg.addPayload("contentInformation", "application/json", "{\"test\":\"Success\"}".getBytes());
+        String json = msg.toJson();
+        System.out.println(json);
+        
+        BasicMessage m2 = BasicMessage.fromJson(msg.toJson());
+        System.out.println(new String(m2.getPayload()[0].getPayload()));
+        
+    }
 }

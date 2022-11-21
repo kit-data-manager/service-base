@@ -28,28 +28,28 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
-public class GeoLocation{
+public class GeoLocation {
 
-  private long id;
-  @XmlElement(name = "geoLocationPoint")
-  private Point point;
-  @XmlElement(name = "geoLocationBox")
-  private Box box;
-  @XmlElement(name = "geoLocationPolygon")
-  private Polygon polygon;
-  @XmlElement(name = "geoLocationPlace")
-  private String place;
+    private long id;
+    @XmlElement(name = "geoLocationPoint")
+    private Point point;
+    @XmlElement(name = "geoLocationBox")
+    private Box box;
+    @XmlElement(name = "geoLocationPolygon")
+    private Polygon polygon;
+    @XmlElement(name = "geoLocationPlace")
+    private String place;
 
-  /**
-   * Basic factory method.
-   *
-   * @param place A place location
-   *
-   * @return A new instance of GeoLocation
-   */
-  public static GeoLocation factoryGeoLocation(String place){
-    GeoLocation result = new GeoLocation();
-    result.setPlace(place);
-    return result;
-  }
+    /**
+     * Basic factory method.
+     *
+     * @param place A place location
+     *
+     * @return A new instance of GeoLocation
+     */
+    public static GeoLocation factoryGeoLocation(String place) {
+        GeoLocation result = new GeoLocation();
+        result.setPlace(place);
+        return result;
+    }
 }

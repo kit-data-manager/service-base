@@ -17,8 +17,6 @@ package edu.kit.datamanager.entities.repo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import edu.kit.datamanager.entities.BaseEnum;
-import edu.kit.datamanager.util.EnumUtils;
-import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import lombok.Data;
@@ -30,32 +28,32 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Description{
+public class Description {
 
-  public enum TYPE implements BaseEnum{
-    ABSTRACT("Abstract"),
-    METHODS("Methods"),
-    SERIES_INFORMATION("SeriesInformation"),
-    TABLE_OF_CONTENTS("TableOfContents"),
-    TECHNICAL_INFO("TechnicalInfo"),
-    OTHER("Other");
+    public enum TYPE implements BaseEnum {
+        ABSTRACT("Abstract"),
+        METHODS("Methods"),
+        SERIES_INFORMATION("SeriesInformation"),
+        TABLE_OF_CONTENTS("TableOfContents"),
+        TECHNICAL_INFO("TechnicalInfo"),
+        OTHER("Other");
 
-    private final String value;
+        private final String value;
 
-    private TYPE(String value){
-      this.value = value;
+        private TYPE(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String getValue() {
+            return value;
+        }
     }
 
-    @Override
-    public String getValue(){
-      return value;
-    }
-  }
-
-  private long id;
-  private String description;
-  //vocab, e.g. Abstract
-  private TYPE type;
-  private String lang;
+    private long id;
+    private String description;
+    //vocab, e.g. Abstract
+    private TYPE type;
+    private String lang;
 
 }

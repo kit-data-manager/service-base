@@ -28,11 +28,11 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Point{
+public class Point {
 
-  @XmlElement(name = "pointLongitude")
-  private float longitude;
-  @XmlElement(name = "pointLatitude")
-  private float latitude;
+    @XmlElement(name = "pointLongitude")
+    private float longitude;
+    @XmlElement(name = "pointLatitude")
+    private float latitude;
 
 }

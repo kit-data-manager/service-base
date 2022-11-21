@@ -25,7 +25,6 @@ import edu.kit.datamanager.util.json.CustomInstantSerializer;
 import java.time.Instant;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import lombok.Data;
 
 /**
@@ -35,40 +34,40 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Date{
+public class Date {
 
-  //Date types
-  public enum DATE_TYPE implements BaseEnum{
-    ACCEPTED("Accepted"),
-    AVAILABLE("Available"),
-    COLLECTED("Collected"),
-    COPYRIGHTED("Copyrighted"),
-    CREATED("Created"),
-    ISSUED("Issued"),
-    SUBMITTED("Submitted"),
-    UPDATED("Updated"),
-    VALID("Valid"),
-    REVOKED("Revoked");
+    //Date types
+    public enum DATE_TYPE implements BaseEnum {
+        ACCEPTED("Accepted"),
+        AVAILABLE("Available"),
+        COLLECTED("Collected"),
+        COPYRIGHTED("Copyrighted"),
+        CREATED("Created"),
+        ISSUED("Issued"),
+        SUBMITTED("Submitted"),
+        UPDATED("Updated"),
+        VALID("Valid"),
+        REVOKED("Revoked");
 
-    private final String value;
+        private final String value;
 
-    DATE_TYPE(String value){
-      this.value = value;
+        DATE_TYPE(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String getValue() {
+            return value;
+        }
     }
 
-    @Override
-    public String getValue(){
-      return value;
-    }
-  }
-  
-  private long id;
-  //ISO format
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
-  @JsonDeserialize(using = CustomInstantDeserializer.class)
-  @JsonSerialize(using = CustomInstantSerializer.class)
-  Instant value;
+    private long id;
 
-  DATE_TYPE type;
+    //ISO format
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    @JsonDeserialize(using = CustomInstantDeserializer.class)
+    @JsonSerialize(using = CustomInstantSerializer.class)
+    Instant value;
+    DATE_TYPE type;
 
 }
