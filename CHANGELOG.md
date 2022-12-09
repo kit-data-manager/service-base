@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Search endpoint (proxy) for elasticsearch
 
 ### Changed
+- Update to gradle version 7.6
 
 ### Removed
 
