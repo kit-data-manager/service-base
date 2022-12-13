@@ -15,9 +15,11 @@
  */
 package edu.kit.datamanager.configuration;
 
+import edu.kit.datamanager.annotations.SearchIndex;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import edu.kit.datamanager.annotations.SearchIndexUrl;
 
 /**
  * Search configuration used by SearchController.
@@ -45,6 +47,7 @@ public class SearchConfiguration {
      * is adressed.
      */
     @Value("${repo.search.url:http\\://localhost:9200}")
+    @SearchIndexUrl
     private String url;
 
     /**
@@ -53,6 +56,7 @@ public class SearchConfiguration {
      * all indices ('*') are queried.
      */
     @Value("${repo.search.index:*}")
+    @SearchIndex
     private String index;
 
 }

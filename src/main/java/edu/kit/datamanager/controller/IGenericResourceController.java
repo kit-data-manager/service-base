@@ -65,7 +65,6 @@ public interface IGenericResourceController<C> {
             final HttpServletResponse response);
 
 
-   
     @Operation(operationId = "listResources",
             summary = "List all resources.",
             description = "List all resources in a paginated and/or sorted form. Possible queries are: listing with default values (X elements on first page sorted by database), "
