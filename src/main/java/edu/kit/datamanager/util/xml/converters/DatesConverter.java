@@ -26,42 +26,43 @@ import org.datacite.schema.kernel_4.DateType;
 import org.datacite.schema.kernel_4.Resource;
 
 /**
+ * Converter between HashSet and Dates object.
  *
  * @author jejkal
  */
-public class DatesConverter extends DozerConverter<HashSet, Resource.Dates> implements MapperAware{
+public class DatesConverter extends DozerConverter<HashSet, Resource.Dates> implements MapperAware {
 
-  private Mapper mapper;
-  private final DateTimeFormatter fmt = DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC);
+    private Mapper mapper;
+    private final DateTimeFormatter fmt = DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC);
 
-  public DatesConverter(){
-    super(HashSet.class, Resource.Dates.class);
-  }
-
-  @Override
-  public Resource.Dates convertTo(HashSet a, Resource.Dates b){
-    Resource.Dates result = new Resource.Dates();
-
-    for(Object o : a){
-      Date d = (Date) o;
-      Resource.Dates.Date date = new Resource.Dates.Date();
-      if(d.getType() != null){
-        date.setDateType(DateType.fromValue(d.getType().getValue()));
-      }
-      date.setValue(fmt.format(d.getValue()));
-      result.getDate().add(date);
+    public DatesConverter() {
+        super(HashSet.class, Resource.Dates.class);
     }
-    return result;
-  }
 
-  @Override
-  public HashSet convertFrom(Resource.Dates b, HashSet a){
-    return null;
-  }
+    @Override
+    public Resource.Dates convertTo(HashSet a, Resource.Dates b) {
+        Resource.Dates result = new Resource.Dates();
 
-  @Override
-  public void setMapper(Mapper mapper){
-    this.mapper = mapper;
-  }
+        for (Object o : a) {
+            Date d = (Date) o;
+            Resource.Dates.Date date = new Resource.Dates.Date();
+            if (d.getType() != null) {
+                date.setDateType(DateType.fromValue(d.getType().getValue()));
+            }
+            date.setValue(fmt.format(d.getValue()));
+            result.getDate().add(date);
+        }
+        return result;
+    }
+
+    @Override
+    public HashSet convertFrom(Resource.Dates b, HashSet a) {
+        return null;
+    }
+
+    @Override
+    public void setMapper(Mapper mapper) {
+        this.mapper = mapper;
+    }
 
 }

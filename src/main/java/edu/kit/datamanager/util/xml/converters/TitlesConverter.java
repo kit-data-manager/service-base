@@ -24,6 +24,7 @@ import org.datacite.schema.kernel_4.Resource;
 import org.datacite.schema.kernel_4.TitleType;
 
 /**
+ * Converter between HashSet and Subjects Titles.
  *
  * @author jejkal
  */

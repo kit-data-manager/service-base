@@ -23,7 +23,8 @@ import java.util.HashSet;
 import org.datacite.schema.kernel_4.Resource;
 
 /**
- *
+ * Converter between HashSet and RightsList object.
+ * 
  * @author jejkal
  */
 public class RightsConverter extends DozerConverter<HashSet, Resource.RightsList> implements MapperAware{

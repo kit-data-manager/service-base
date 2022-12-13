@@ -24,7 +24,7 @@ import org.datacite.schema.kernel_4.FunderIdentifierType;
 import org.datacite.schema.kernel_4.Resource;
 
 /**
- *
+ * Converter between HashSet and FundingReferences object.
  * @author jejkal
  */
 public class FundingReferencesConverter extends DozerConverter<HashSet, Resource.FundingReferences> implements MapperAware{

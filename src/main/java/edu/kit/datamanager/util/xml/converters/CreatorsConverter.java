@@ -22,7 +22,7 @@ import edu.kit.datamanager.entities.repo.Agent;
 import java.util.HashSet;
 import org.datacite.schema.kernel_4.Resource;
 
-/**
+/**Converter between HashSet and Creators object.
  *
  * @author jejkal
  */

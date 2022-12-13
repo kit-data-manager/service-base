@@ -23,7 +23,7 @@ import org.datacite.schema.kernel_4.Resource;
 
 
 /**
- *
+ * Converter between HashSet and Formats object.
  * @author jejkal
  */
 public class FormatsConverter extends DozerConverter<HashSet, Resource.Formats> implements MapperAware{

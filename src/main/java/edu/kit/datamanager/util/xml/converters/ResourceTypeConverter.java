@@ -22,37 +22,38 @@ import edu.kit.datamanager.entities.repo.ResourceType;
 import org.datacite.schema.kernel_4.Resource;
 
 /**
+ * Converter between HashSet and ResourceType object.
  *
  * @author jejkal
  */
-public class ResourceTypeConverter extends DozerConverter<ResourceType, Resource.ResourceType> implements MapperAware{
-  
-  private Mapper mapper;
-  
-  public ResourceTypeConverter(){
-    super(ResourceType.class, Resource.ResourceType.class);
-  }
-  
-  @Override
-  public Resource.ResourceType convertTo(ResourceType a, Resource.ResourceType b){
-    Resource.ResourceType result = new Resource.ResourceType();
-    if(a.getTypeGeneral() != null){
-      result.setResourceTypeGeneral(org.datacite.schema.kernel_4.ResourceType.fromValue(a.getTypeGeneral().getValue()));
-    } else{
-      result.setResourceTypeGeneral(org.datacite.schema.kernel_4.ResourceType.OTHER);
+public class ResourceTypeConverter extends DozerConverter<ResourceType, Resource.ResourceType> implements MapperAware {
+
+    private Mapper mapper;
+
+    public ResourceTypeConverter() {
+        super(ResourceType.class, Resource.ResourceType.class);
     }
-    result.setValue(a.getValue());
-    return result;
-  }
-  
-  @Override
-  public ResourceType convertFrom(Resource.ResourceType b, ResourceType a){
-    return null;
-  }
-  
-  @Override
-  public void setMapper(Mapper mapper){
-    this.mapper = mapper;
-  }
-  
+
+    @Override
+    public Resource.ResourceType convertTo(ResourceType a, Resource.ResourceType b) {
+        Resource.ResourceType result = new Resource.ResourceType();
+        if (a.getTypeGeneral() != null) {
+            result.setResourceTypeGeneral(org.datacite.schema.kernel_4.ResourceType.fromValue(a.getTypeGeneral().getValue()));
+        } else {
+            result.setResourceTypeGeneral(org.datacite.schema.kernel_4.ResourceType.OTHER);
+        }
+        result.setValue(a.getValue());
+        return result;
+    }
+
+    @Override
+    public ResourceType convertFrom(Resource.ResourceType b, ResourceType a) {
+        return null;
+    }
+
+    @Override
+    public void setMapper(Mapper mapper) {
+        this.mapper = mapper;
+    }
+
 }

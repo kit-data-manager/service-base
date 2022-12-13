@@ -35,94 +35,95 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
+ * Helper class for applying patch operations to objects.
  *
  * @author jejkal
  */
-public class PatchUtil{
+public class PatchUtil {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PatchUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PatchUtil.class);
 
-  private PatchUtil(){
-  }
-
-  public static <C> C applyPatch(C resource, JsonPatch patch, Class<C> resourceClass, Collection<? extends GrantedAuthority> authorities){
-    ObjectMapper tmpObjectMapper = new ObjectMapper();
-    tmpObjectMapper.registerModule(new JavaTimeModule());
-    JsonNode resourceAsNode = tmpObjectMapper.convertValue(resource, JsonNode.class);
-    C updated;
-    try{
-      // Apply the patch
-      JsonNode patchedDataResourceAsNode = patch.apply(resourceAsNode);
-      //convert resource back to POJO
-      updated = tmpObjectMapper.treeToValue(patchedDataResourceAsNode, resourceClass);
-    } catch(JsonPatchException | JsonProcessingException ex){
-      LOGGER.error("Failed to apply patch '" + patch.toString() + " to resource " + resource, ex);
-      throw new PatchApplicationException("Failed to apply patch to resource.");
+    private PatchUtil() {
     }
 
-    if(!PatchUtil.canUpdate(resource, updated, authorities)){
-      String message = "Patch not applicable.";
-      LOGGER.warn(message);
-      throw new UpdateForbiddenException(message);
-    }
-
-    return updated;
-  }
-
-  public static boolean canUpdate(Object originalObj, Object patched, Collection<? extends GrantedAuthority> authorities){
-    for(Field field : patched.getClass().getDeclaredFields()){
-      SecureUpdate secureUpdate = field.getAnnotation(SecureUpdate.class);
-      if(secureUpdate != null){
-        try{
-          field.setAccessible(true);
-          Object persistedField = field.get(patched);
-          Object originalField = field.get(originalObj);
-          String[] allowedRoles = secureUpdate.value();
-
-          if(!Objects.equals(persistedField, originalField)){
-            boolean canUpdate = false;
-            for(String role : allowedRoles){//go though all roles allowed to update
-              for(GrantedAuthority authority : authorities){//check owned authorities
-
-                String auth = authority.getAuthority();
-                if(auth.toLowerCase().startsWith("role") && role.toLowerCase().startsWith("role")){//compare two roles
-                  if(authority.getAuthority().equalsIgnoreCase(role)){//just use string comparison as the roles can be either user or group roles
-                    canUpdate = true;
-                    break;
-                  }
-                } else if(auth.toLowerCase().startsWith("permission") && role.toLowerCase().startsWith("permission")){//compare two permissions
-                  PERMISSION userPermission = PERMISSION.fromValue(auth);
-                  PERMISSION permissionAccepted = PERMISSION.fromValue(role);
-                  if(userPermission.atLeast(permissionAccepted)){
-                    canUpdate = true;
-                    break;
-                  }
-                } else{
-                  if(authority.getAuthority().equalsIgnoreCase(role)){//comparison of plain strings...for testing
-                    canUpdate = true;
-                    break;
-                  }
-                }
-              }
-              if(canUpdate){
-                //this field can be updated
-                break;
-              }
-            }
-            if(!canUpdate){
-              //at least one field cannot be updated
-              LOGGER.warn("Updating of field " + field + " is allowed by " + Arrays.asList(allowedRoles) + ", but caller only offered the following authorities: " + authorities + ".");
-              return false;
-            }
-          }
-        } catch(IllegalAccessException | IllegalArgumentException | SecurityException e){
-          LOGGER.error("Failed to check update applicability.", e);
-          throw new CustomInternalServerError("Unable to check if update is applicable. Message: " + e.getMessage());
+    public static <C> C applyPatch(C resource, JsonPatch patch, Class<C> resourceClass, Collection<? extends GrantedAuthority> authorities) {
+        ObjectMapper tmpObjectMapper = new ObjectMapper();
+        tmpObjectMapper.registerModule(new JavaTimeModule());
+        JsonNode resourceAsNode = tmpObjectMapper.convertValue(resource, JsonNode.class);
+        C updated;
+        try {
+            // Apply the patch
+            JsonNode patchedDataResourceAsNode = patch.apply(resourceAsNode);
+            //convert resource back to POJO
+            updated = tmpObjectMapper.treeToValue(patchedDataResourceAsNode, resourceClass);
+        } catch (JsonPatchException | JsonProcessingException ex) {
+            LOGGER.error("Failed to apply patch '" + patch.toString() + " to resource " + resource, ex);
+            throw new PatchApplicationException("Failed to apply patch to resource.");
         }
-      }
+
+        if (!PatchUtil.canUpdate(resource, updated, authorities)) {
+            String message = "Patch not applicable.";
+            LOGGER.warn(message);
+            throw new UpdateForbiddenException(message);
+        }
+
+        return updated;
     }
 
-    return true;
-  }
+    public static boolean canUpdate(Object originalObj, Object patched, Collection<? extends GrantedAuthority> authorities) {
+        for (Field field : patched.getClass().getDeclaredFields()) {
+            SecureUpdate secureUpdate = field.getAnnotation(SecureUpdate.class);
+            if (secureUpdate != null) {
+                try {
+                    field.setAccessible(true);
+                    Object persistedField = field.get(patched);
+                    Object originalField = field.get(originalObj);
+                    String[] allowedRoles = secureUpdate.value();
+
+                    if (!Objects.equals(persistedField, originalField)) {
+                        boolean canUpdate = false;
+                        for (String role : allowedRoles) {//go though all roles allowed to update
+                            for (GrantedAuthority authority : authorities) {//check owned authorities
+
+                                String auth = authority.getAuthority();
+                                if (auth.toLowerCase().startsWith("role") && role.toLowerCase().startsWith("role")) {//compare two roles
+                                    if (authority.getAuthority().equalsIgnoreCase(role)) {//just use string comparison as the roles can be either user or group roles
+                                        canUpdate = true;
+                                        break;
+                                    }
+                                } else if (auth.toLowerCase().startsWith("permission") && role.toLowerCase().startsWith("permission")) {//compare two permissions
+                                    PERMISSION userPermission = PERMISSION.fromValue(auth);
+                                    PERMISSION permissionAccepted = PERMISSION.fromValue(role);
+                                    if (userPermission.atLeast(permissionAccepted)) {
+                                        canUpdate = true;
+                                        break;
+                                    }
+                                } else {
+                                    if (authority.getAuthority().equalsIgnoreCase(role)) {//comparison of plain strings...for testing
+                                        canUpdate = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (canUpdate) {
+                                //this field can be updated
+                                break;
+                            }
+                        }
+                        if (!canUpdate) {
+                            //at least one field cannot be updated
+                            LOGGER.warn("Updating of field " + field + " is allowed by " + Arrays.asList(allowedRoles) + ", but caller only offered the following authorities: " + authorities + ".");
+                            return false;
+                        }
+                    }
+                } catch (IllegalAccessException | IllegalArgumentException | SecurityException e) {
+                    LOGGER.error("Failed to check update applicability.", e);
+                    throw new CustomInternalServerError("Unable to check if update is applicable. Message: " + e.getMessage());
+                }
+            }
+        }
+
+        return true;
+    }
 
 }

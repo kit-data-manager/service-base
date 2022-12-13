@@ -22,16 +22,19 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation for marking an attribute to be modifyable only by certain roles.
  *
  * @author jejkal
  */
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RUNTIME)
-public @interface SecureUpdate{
-  /**
-   * Get all values.
-   * @return Array of values.
-   */
-  String[] value();
+public @interface SecureUpdate {
+
+    /**
+     * Get all values.
+     *
+     * @return Array of values.
+     */
+    String[] value();
 }

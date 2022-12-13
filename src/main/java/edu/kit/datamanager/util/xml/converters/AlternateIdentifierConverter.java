@@ -22,44 +22,44 @@ import edu.kit.datamanager.entities.repo.Identifier;
 import java.util.HashSet;
 import org.datacite.schema.kernel_4.Resource;
 
-
 /**
+ * Converter between HashSet and AlternateIdentifiers object.
  *
  * @author jejkal
  */
-public class AlternateIdentifierConverter extends DozerConverter<HashSet, Resource.AlternateIdentifiers> implements MapperAware{
+public class AlternateIdentifierConverter extends DozerConverter<HashSet, Resource.AlternateIdentifiers> implements MapperAware {
 
-  private Mapper mapper;
+    private Mapper mapper;
 
-  public AlternateIdentifierConverter(){
-    super(HashSet.class, Resource.AlternateIdentifiers.class);
-  }
-
-  @Override
-  public Resource.AlternateIdentifiers convertTo(HashSet a, Resource.AlternateIdentifiers b){
-    Resource.AlternateIdentifiers result = new Resource.AlternateIdentifiers();
-    for(Object o : a){
-      Identifier id = (Identifier) o;
-      Resource.AlternateIdentifiers.AlternateIdentifier identifier = new Resource.AlternateIdentifiers.AlternateIdentifier();
-      if(id.getIdentifierType() != null){
-        identifier.setAlternateIdentifierType(id.getIdentifierType().getValue());
-      } else{
-        identifier.setAlternateIdentifierType("Other");
-      }
-      identifier.setValue(id.getValue());
-      result.getAlternateIdentifier().add(identifier);
+    public AlternateIdentifierConverter() {
+        super(HashSet.class, Resource.AlternateIdentifiers.class);
     }
-    return result;
-  }
 
-  @Override
-  public HashSet convertFrom(Resource.AlternateIdentifiers b, HashSet a){
-    return null;
-  }
+    @Override
+    public Resource.AlternateIdentifiers convertTo(HashSet a, Resource.AlternateIdentifiers b) {
+        Resource.AlternateIdentifiers result = new Resource.AlternateIdentifiers();
+        for (Object o : a) {
+            Identifier id = (Identifier) o;
+            Resource.AlternateIdentifiers.AlternateIdentifier identifier = new Resource.AlternateIdentifiers.AlternateIdentifier();
+            if (id.getIdentifierType() != null) {
+                identifier.setAlternateIdentifierType(id.getIdentifierType().getValue());
+            } else {
+                identifier.setAlternateIdentifierType("Other");
+            }
+            identifier.setValue(id.getValue());
+            result.getAlternateIdentifier().add(identifier);
+        }
+        return result;
+    }
 
-  @Override
-  public void setMapper(Mapper mapper){
-    this.mapper = mapper;
-  }
+    @Override
+    public HashSet convertFrom(Resource.AlternateIdentifiers b, HashSet a) {
+        return null;
+    }
+
+    @Override
+    public void setMapper(Mapper mapper) {
+        this.mapper = mapper;
+    }
 
 }

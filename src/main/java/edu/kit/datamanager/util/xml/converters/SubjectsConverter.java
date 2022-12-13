@@ -23,43 +23,44 @@ import java.util.HashSet;
 import org.datacite.schema.kernel_4.Resource;
 
 /**
+ * Converter between HashSet and Subjects object.
  *
  * @author jejkal
  */
-public class SubjectsConverter extends DozerConverter<HashSet, Resource.Subjects> implements MapperAware{
+public class SubjectsConverter extends DozerConverter<HashSet, Resource.Subjects> implements MapperAware {
 
-  private Mapper mapper;
+    private Mapper mapper;
 
-  public SubjectsConverter(){
-    super(HashSet.class, Resource.Subjects.class);
-  }
-
-  @Override
-  public Resource.Subjects convertTo(HashSet a, Resource.Subjects b){
-    Resource.Subjects result = new Resource.Subjects();
-    for(Object o : a){
-      Subject s = (Subject) o;
-      Resource.Subjects.Subject subject = new Resource.Subjects.Subject();
-      subject.setLang(s.getLang());
-      if(s.getScheme() != null){
-        subject.setSchemeURI(s.getScheme().getSchemeUri());
-        subject.setSubjectScheme(s.getScheme().getSchemeId());
-      }
-      subject.setValue(s.getValue());
-      subject.setValueURI(s.getValueUri());
-      result.getSubject().add(subject);
+    public SubjectsConverter() {
+        super(HashSet.class, Resource.Subjects.class);
     }
-    return result;
-  }
 
-  @Override
-  public HashSet convertFrom(Resource.Subjects b, HashSet a){
-    return null;
-  }
+    @Override
+    public Resource.Subjects convertTo(HashSet a, Resource.Subjects b) {
+        Resource.Subjects result = new Resource.Subjects();
+        for (Object o : a) {
+            Subject s = (Subject) o;
+            Resource.Subjects.Subject subject = new Resource.Subjects.Subject();
+            subject.setLang(s.getLang());
+            if (s.getScheme() != null) {
+                subject.setSchemeURI(s.getScheme().getSchemeUri());
+                subject.setSubjectScheme(s.getScheme().getSchemeId());
+            }
+            subject.setValue(s.getValue());
+            subject.setValueURI(s.getValueUri());
+            result.getSubject().add(subject);
+        }
+        return result;
+    }
 
-  @Override
-  public void setMapper(Mapper mapper){
-    this.mapper = mapper;
-  }
+    @Override
+    public HashSet convertFrom(Resource.Subjects b, HashSet a) {
+        return null;
+    }
+
+    @Override
+    public void setMapper(Mapper mapper) {
+        this.mapper = mapper;
+    }
 
 }

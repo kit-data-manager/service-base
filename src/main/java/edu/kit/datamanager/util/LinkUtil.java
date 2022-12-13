@@ -18,32 +18,33 @@ package edu.kit.datamanager.util;
 import javax.servlet.http.HttpServletResponse;
 
 /**
+ * Helper for creating navigation links, e.g., in response headers.
  *
  * @author jejkal
  */
-public final class LinkUtil{
+public final class LinkUtil {
 
-  public static final String REL_COLLECTION = "collection";
-  public static final String REL_NEXT = "next";
-  public static final String REL_PREV = "prev";
-  public static final String REL_FIRST = "first";
-  public static final String REL_LAST = "last";
+    public static final String REL_COLLECTION = "collection";
+    public static final String REL_NEXT = "next";
+    public static final String REL_PREV = "prev";
+    public static final String REL_FIRST = "first";
+    public static final String REL_LAST = "last";
 
-  private LinkUtil(){
-  }
+    private LinkUtil() {
+    }
 
-  //
-  /**
-   * Creates a Link Header to be stored in the {@link HttpServletResponse} to
-   * provide Discoverability features to the user
-   *
-   * @param uri the base uri
-   * @param rel the relative path
-   *
-   * @return the complete url
-   */
-  public static String createLinkHeader(final String uri, final String rel){
-    return "<" + uri + ">; rel=\"" + rel + "\"";
-  }
+    //
+    /**
+     * Creates a Link Header to be stored in the {@link HttpServletResponse} to
+     * provide Discoverability features to the user
+     *
+     * @param uri the base uri
+     * @param rel the relative path
+     *
+     * @return the complete url
+     */
+    public static String createLinkHeader(final String uri, final String rel) {
+        return "<" + uri + ">; rel=\"" + rel + "\"";
+    }
 
 }
