@@ -15,7 +15,7 @@
  */
 package edu.kit.datamanager.annotations;
 
-import edu.kit.datamanager.validator.SearchIndexValidator;
+import edu.kit.datamanager.validator.ElasticSearchUrlValidator;
 import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.FIELD;
 import java.lang.annotation.Retention;
@@ -30,7 +30,7 @@ import javax.validation.Payload;
  */
 @Target({FIELD})
 @Retention(RUNTIME)
-@Constraint(validatedBy = SearchIndexValidator.class)
+@Constraint(validatedBy = ElasticSearchUrlValidator.class)
 @Documented
 public @interface SearchIndexUrl{
 

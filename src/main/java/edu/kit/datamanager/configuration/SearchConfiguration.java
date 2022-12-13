@@ -20,6 +20,8 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import edu.kit.datamanager.annotations.SearchIndexUrl;
+import java.net.URL;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * Search configuration used by SearchController.
@@ -28,6 +30,7 @@ import edu.kit.datamanager.annotations.SearchIndexUrl;
  */
 @Configuration
 @Data
+@Validated
 public class SearchConfiguration {
 
     /**
@@ -46,9 +49,9 @@ public class SearchConfiguration {
      * SearchController. by default, an installation at 'http://localhost:9200'
      * is adressed.
      */
-    @Value("${repo.search.url:http\\://localhost:9200}")
+    @Value("${repo.search.url:http://localhost:9200}")
     @SearchIndexUrl
-    private String url;
+    private URL url;
 
     /**
      * The index search in. This property also supports multi-index search,
