@@ -131,6 +131,8 @@ public class JwtBuilder{
           addSimpleClaim("principalname", principal);
           claims.put("permissions", new ObjectMapper().writeValueAsString(permissions.toArray(new ScopedPermission[]{})));
           break;
+        default:
+            LOGGER.warn("Invalid type {}. Leaving claims unchanged.", type);
       }
     } catch(JsonProcessingException ex){
       LOGGER.warn("Failed to create claim map.", ex);

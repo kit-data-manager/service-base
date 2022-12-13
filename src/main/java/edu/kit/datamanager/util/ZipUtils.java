@@ -120,6 +120,7 @@ public final class ZipUtils{
           zipOut.close();
         }
       } catch(IOException ignored){
+          LOGGER.trace("Failed to close zip output stream. Error will be ignored.", ignored);
       }
     }
   }

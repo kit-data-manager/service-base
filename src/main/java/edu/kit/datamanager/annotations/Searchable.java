@@ -22,11 +22,12 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation for marking a field as searchable.
  *
  * @author jejkal
  */
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RUNTIME)
-public @interface Searchable{
+public @interface Searchable {
 }
