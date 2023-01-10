@@ -11,9 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Update to gradle version 7.6
-
+- Update to javers 6.6.5
+- Update to io.freefair.lombok 6.6.1
+- Update to org.owasp.dependencycheck 7.4.1
+- Update to spring-boot 2.7.6
+- Update to spring-doc 1.6.14
+- Update to spring-cloud 3.1.4
+- Update to h2 2.1.214
+- Update to gradle version 7.6
 
 ### Removed
+- Remove log libraries: use standard libraries from Spring Boot
 
 ### Deprecated
 
