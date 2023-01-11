@@ -35,14 +35,14 @@ Instead of using a local build you may also use the most recent version from the
 <dependency>
     <groupId>edu.kit.datamanager</groupId>
     <artifactId>service-base</artifactId>
-    <version>1.0.7</version>
+    <version>1.1.0</version>
 </dependency>
 ~~~~
 
 ### Gradle (short)
 
 ~~~~
-    implementation "edu.kit.datamanager:service-base:1.0.7"
+    implementation "edu.kit.datamanager:service-base:1.1.0"
 ~~~~
 
 
