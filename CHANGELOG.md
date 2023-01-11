@@ -35,7 +35,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump jackson-module-afterburner from 2.13.4 to 2.14.1 
 - Bump jackson-datatype-jsr310 from 2.13.4 to 2.14.1 
 - Bump jackson-jaxrs-json-provider from 2.13.4 to 2.14.1
-- Switch to mackito-inline 4.8.1
 
 ### Removed
 - Remove log libraries: use standard libraries from Spring Boot
