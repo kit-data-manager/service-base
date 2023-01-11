@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Karlsruhe Institute of Technology.
+ * Copyright 2022 Karlsruhe Institute of Technology.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,29 @@
  */
 package edu.kit.datamanager.annotations;
 
+import edu.kit.datamanager.validator.SearchIndexValidator;
 import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
+import static java.lang.annotation.ElementType.FIELD;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
+import javax.validation.Constraint;
+import javax.validation.Payload;
 
-/**
- * Annotation for marking a field as searchable.
+/**Annotation for marking search index property for validation.
  *
  * @author jejkal
  */
-@Documented
-@Target(ElementType.FIELD)
+@Target({FIELD})
 @Retention(RUNTIME)
-public @interface Searchable {
+@Constraint(validatedBy = SearchIndexValidator.class)
+@Documented
+public @interface SearchIndex{
+
+  String message() default "Provided search index invalid. A valid index to a search instance is required. (e.g.: index, index1, index*, index1,index2)";
+
+  Class<?>[] groups() default {};
+
+  Class<? extends Payload>[] payload() default {};
+
 }

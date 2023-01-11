@@ -25,7 +25,7 @@ import org.datacite.schema.kernel_4.RelationType;
 import org.datacite.schema.kernel_4.Resource;
 
 /**
- *
+ * Converter between HashSet and RelatedIdentifiers object.
  * @author jejkal
  */
 public class RelatedIdentifierConverter extends DozerConverter<HashSet, Resource.RelatedIdentifiers> implements MapperAware{

@@ -23,6 +23,7 @@ import edu.kit.datamanager.exceptions.EtagMissingException;
 import edu.kit.datamanager.exceptions.UnauthorizedAccessException;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import edu.kit.datamanager.util.ControllerUtils;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.security.Principal;
 import java.util.Iterator;
@@ -31,8 +32,8 @@ import java.util.Map;
 import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -173,7 +174,7 @@ public class ControllerUtilsTest {
 
     @Test(expected = UnauthorizedAccessException.class)
     public void testCheckAnonymousTrue() {
-        Mockito.when(securityContext.getAuthentication()).thenReturn(null);
+        Mockito.when(securityContext.getAuthentication()).thenReturn((JwtAuthenticationToken) null);
         SecurityContextHolder.setContext(securityContext);
 
         ControllerUtils.checkAnonymousAccess();
@@ -238,13 +239,8 @@ public class ControllerUtilsTest {
     }
 
     @Test
-    public void testGetLocalHostname() throws Exception {
-        //  PowerMockito.when(Inet4Address.class, "getHostName").thenReturn("localhost");
-        InetAddress a = InetAddress.getByName("localhost");
-
-        PowerMockito.whenNew(InetAddress.class).withAnyArguments().thenReturn(a);
-
-        System.out.println(ControllerUtils.getLocalHostname());
+    public void getGetLocalHostname() throws Exception {       
+        Assert.assertEquals(InetAddress.getLocalHost().getHostName(), ControllerUtils.getLocalHostname());
     }
 
     @Test

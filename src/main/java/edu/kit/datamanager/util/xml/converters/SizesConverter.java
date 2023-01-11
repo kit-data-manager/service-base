@@ -22,34 +22,35 @@ import java.util.HashSet;
 import org.datacite.schema.kernel_4.Resource;
 
 /**
+ * Converter between HashSet and Sizes object.
  *
  * @author jejkal
  */
-public class SizesConverter extends DozerConverter<HashSet, Resource.Sizes> implements MapperAware{
+public class SizesConverter extends DozerConverter<HashSet, Resource.Sizes> implements MapperAware {
 
-  private Mapper mapper;
+    private Mapper mapper;
 
-  public SizesConverter(){
-    super(HashSet.class, Resource.Sizes.class);
-  }
-
-  @Override
-  public Resource.Sizes convertTo(HashSet a, Resource.Sizes b){
-    Resource.Sizes sizes = new Resource.Sizes();
-    for(Object o : a){
-      sizes.getSize().add((String) o);
+    public SizesConverter() {
+        super(HashSet.class, Resource.Sizes.class);
     }
-    return sizes;
-  }
 
-  @Override
-  public HashSet convertFrom(Resource.Sizes b, HashSet a){
-    return null;
-  }
+    @Override
+    public Resource.Sizes convertTo(HashSet a, Resource.Sizes b) {
+        Resource.Sizes sizes = new Resource.Sizes();
+        for (Object o : a) {
+            sizes.getSize().add((String) o);
+        }
+        return sizes;
+    }
 
-  @Override
-  public void setMapper(Mapper mapper){
-    this.mapper = mapper;
-  }
+    @Override
+    public HashSet convertFrom(Resource.Sizes b, HashSet a) {
+        return null;
+    }
+
+    @Override
+    public void setMapper(Mapper mapper) {
+        this.mapper = mapper;
+    }
 
 }

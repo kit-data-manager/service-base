@@ -16,6 +16,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+### Security
+
+## [1.1.0] - 2023-01-11
+### Added
+- Search endpoint (proxy) for elasticsearch
+
+### Changed
+- Update to gradle version 7.6
+- Bump spring-boot-dependencies from 2.7.4 to 2.7.7
+- Bump org.owasp.dependencycheck from 7.4.1 to 7.4.4 
+- Bump io.freefair.maven-publish-java from 6.5.1 to 6.6.1
+- Bump io.freefair.lombok from 6.5.1 to 6.6.1 
+- Bump nimbus-jose-jwt from 9.25.6 to 9.27
+- Bump springDocVersion from 1.6.12 to 1.6.14 
+- Bump mockito-inline from 4.8.1 to 4.10.0
+- Bump jackson-datatype-joda from 2.13.4 to 2.14.1 
+- Bump jackson-module-afterburner from 2.13.4 to 2.14.1 
+- Bump jackson-datatype-jsr310 from 2.13.4 to 2.14.1 
+- Bump jackson-jaxrs-json-provider from 2.13.4 to 2.14.1
+
+### Removed
+- Remove log libraries: use standard libraries from Spring Boot
+
+### Deprecated
+
+### Fixed
+- User role INACTIVE is now properly checked. If a user is marked inactive, all access attempts will be answered with HTTP 403 (FORBIDDEN)
+
 ## [1.0.7] - 2022-10-14
 
 ### Fixed
@@ -160,7 +188,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.0.7...HEAD
+[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/kit-data-manager/service-base/compare/v1.0.7...v1.1.0
 [1.0.7]: https://github.com/kit-data-manager/service-base/compare/v1.0.6...v1.0.7
 [1.0.6]: https://github.com/kit-data-manager/service-base/compare/v1.0.5...v1.0.6
 [1.0.5]: https://github.com/kit-data-manager/service-base/compare/v1.0.4...v1.0.5

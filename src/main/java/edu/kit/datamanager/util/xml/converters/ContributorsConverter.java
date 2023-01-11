@@ -24,7 +24,7 @@ import org.datacite.schema.kernel_4.ContributorType;
 import org.datacite.schema.kernel_4.Resource;
 
 
-/**
+/**Converter between HashSet and Contributors object.
  *
  * @author jejkal
  */

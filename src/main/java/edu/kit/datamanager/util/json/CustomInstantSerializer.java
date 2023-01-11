@@ -25,7 +25,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-/**
+/**Serializer for Instant attributes.
  *
  * @author jejkal
  */

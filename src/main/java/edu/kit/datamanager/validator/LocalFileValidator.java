@@ -24,40 +24,43 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 
 /**
+ * Validator checking for a property to be a local file.
+ *
+ * @author jejkal
  *
  */
-public class LocalFileValidator implements ConstraintValidator<LocalFileURL, java.net.URL>{
+public class LocalFileValidator implements ConstraintValidator<LocalFileURL, java.net.URL> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(LocalFileValidator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LocalFileValidator.class);
 
-  @Override
-  public boolean isValid(java.net.URL value, ConstraintValidatorContext context) {
-    boolean validLocalFile = false;
-    if (value == null) {
-      LOGGER.error("Provided value is null.");
-      return validLocalFile;
-    }
-    try {
-      LOGGER.trace("Successfully validated file URL {}. Checking local path.", value.toURI().toString());
-      File localFile = new File(value.getPath());
-      String pathToLocalFile = localFile.getAbsolutePath();
-      if (!localFile.exists()) {
-        LOGGER.error("File at {} does not exist!", pathToLocalFile);
-      } else {
-        if (!localFile.isFile()) {
-          LOGGER.error("File at {} is not a file!", pathToLocalFile);
-        } else {
-          if (!localFile.canRead()) {
-            LOGGER.error("File at {} is not readable!", pathToLocalFile);
-          } else {
-            LOGGER.trace("File at {} exists and is readable.", pathToLocalFile);
-            validLocalFile = true;
-          }
+    @Override
+    public boolean isValid(java.net.URL value, ConstraintValidatorContext context) {
+        boolean validLocalFile = false;
+        if (value == null) {
+            LOGGER.error("Provided value is null.");
+            return validLocalFile;
         }
-      }
-    } catch (URISyntaxException ex) {
-      LOGGER.error("Failed to validate folder property with value " + value + ". -> Not a valid URL!", ex);
+        try {
+            LOGGER.trace("Successfully validated file URL {}. Checking local path.", value.toURI().toString());
+            File localFile = new File(value.getPath());
+            String pathToLocalFile = localFile.getAbsolutePath();
+            if (!localFile.exists()) {
+                LOGGER.error("File at {} does not exist!", pathToLocalFile);
+            } else {
+                if (!localFile.isFile()) {
+                    LOGGER.error("File at {} is not a file!", pathToLocalFile);
+                } else {
+                    if (!localFile.canRead()) {
+                        LOGGER.error("File at {} is not readable!", pathToLocalFile);
+                    } else {
+                        LOGGER.trace("File at {} exists and is readable.", pathToLocalFile);
+                        validLocalFile = true;
+                    }
+                }
+            }
+        } catch (URISyntaxException ex) {
+            LOGGER.error("Failed to validate folder property with value " + value + ". -> Not a valid URL!", ex);
+        }
+        return validLocalFile;
     }
-    return validLocalFile;
-  }
 }

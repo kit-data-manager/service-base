@@ -21,17 +21,18 @@ import java.time.format.DateTimeFormatter;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
+ * XmlAdapter implementation for Instant attributes.
  *
  * @author jejkal
  */
-public class InstantAdapter extends XmlAdapter<String, Instant>{
+public class InstantAdapter extends XmlAdapter<String, Instant> {
 
-  public Instant unmarshal(String v) throws Exception{
-    return (Instant) DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC).parse(v);
-  }
+    public Instant unmarshal(String v) throws Exception {
+        return (Instant) DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC).parse(v);
+    }
 
-  public String marshal(Instant v) throws Exception{
-    return DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC).format(v);
-  }
+    public String marshal(Instant v) throws Exception {
+        return DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC).format(v);
+    }
 
 }

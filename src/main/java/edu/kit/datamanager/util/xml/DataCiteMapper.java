@@ -37,6 +37,7 @@ import edu.kit.datamanager.util.xml.converters.TitlesConverter;
 import org.datacite.schema.kernel_4.Resource;
 
 /**
+ * Mapper from internal DataCite format to official format.
  *
  * @author jejkal
  */

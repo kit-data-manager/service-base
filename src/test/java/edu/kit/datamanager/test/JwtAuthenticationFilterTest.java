@@ -40,7 +40,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -53,13 +52,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
  */
 public class JwtAuthenticationFilterTest {
 
-    private final AuthenticationManager authenticationManager = PowerMockito.mock(AuthenticationManager.class);
-    private final HttpServletRequest request = PowerMockito.mock(HttpServletRequest.class);
-    private final HttpServletResponse response = PowerMockito.mock(HttpServletResponse.class);
-    private final FilterChain filterChain = PowerMockito.mock(FilterChain.class);
-    private final SecurityContext context = PowerMockito.mock(SecurityContext.class);
+    private final AuthenticationManager authenticationManager = Mockito.mock(AuthenticationManager.class);
+    private final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+    private final HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+    private final FilterChain filterChain = Mockito.mock(FilterChain.class);
+    private final SecurityContext context = Mockito.mock(SecurityContext.class);
+  
     private final String key = "vkfvoswsohwrxgjaxipuiyyjgubggzdaqrcuupbugxtnalhiegkppdgjgwxsmvdb";
 
+    
+    
     private KeycloakTokenFilter keycloaktokenFilterBean() throws Exception {
         return new KeycloakTokenFilter(KeycloakTokenValidator.builder()
                 .jwtLocalSecret(key)

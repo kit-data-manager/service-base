@@ -25,7 +25,7 @@ import org.datacite.schema.kernel_4.Point;
 import org.datacite.schema.kernel_4.Resource;
 
 /**
- *
+ * Converter between HashSet and GeoLocations object.
  * @author jejkal
  */
 public class GeoLocationsConverter extends DozerConverter<HashSet, Resource.GeoLocations> implements MapperAware{

@@ -44,6 +44,7 @@ import org.purl.dc.elements._1.ObjectFactory;
 import org.purl.dc.elements._1.SimpleLiteral;
 
 /**
+ * Mapper from internal DataCite format to DublinCore.
  *
  * @author jejkal
  */

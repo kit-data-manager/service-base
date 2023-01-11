@@ -24,39 +24,42 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 
 /**
+ * Validator checking for properties to be an executable file.
+ *
+ * @author jejkal
  */
 public class ExecutableFileValidator implements ConstraintValidator<ExecutableFileURL, java.net.URL> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ExecutableFileValidator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExecutableFileValidator.class);
 
-  @Override
-  public boolean isValid(java.net.URL value, ConstraintValidatorContext context) {
-    boolean validExecutableFile = false;
-    if (value == null) {
-      LOGGER.error("Provided value is null.");
-      return validExecutableFile;
-    }
-    try {
-      LOGGER.trace("Successfully validated file URL {}. Checking local path.", value.toURI().toString());
-      File executableFile = new File(value.getPath());
-      String pathToExecutableFile = executableFile.getAbsolutePath();
-      if (!executableFile.exists()) {
-        LOGGER.error("File at {} does not exist!", pathToExecutableFile);
-      } else {
-        if (!executableFile.isFile()) {
-          LOGGER.error("File at {} is not a file!", pathToExecutableFile);
-        } else {
-          if (!executableFile.canExecute()) {
-            LOGGER.error("File at {} is not executable!", pathToExecutableFile);
-          } else {
-            LOGGER.trace("File at {} exists and is executable.", pathToExecutableFile);
-            validExecutableFile = true;
-          }
+    @Override
+    public boolean isValid(java.net.URL value, ConstraintValidatorContext context) {
+        boolean validExecutableFile = false;
+        if (value == null) {
+            LOGGER.error("Provided value is null.");
+            return validExecutableFile;
         }
-      }
-    } catch (URISyntaxException ex) {
-      LOGGER.error("Failed to validate property with value " + value + ". -> Not a valid URL!", ex);
+        try {
+            LOGGER.trace("Successfully validated file URL {}. Checking local path.", value.toURI().toString());
+            File executableFile = new File(value.getPath());
+            String pathToExecutableFile = executableFile.getAbsolutePath();
+            if (!executableFile.exists()) {
+                LOGGER.error("File at {} does not exist!", pathToExecutableFile);
+            } else {
+                if (!executableFile.isFile()) {
+                    LOGGER.error("File at {} is not a file!", pathToExecutableFile);
+                } else {
+                    if (!executableFile.canExecute()) {
+                        LOGGER.error("File at {} is not executable!", pathToExecutableFile);
+                    } else {
+                        LOGGER.trace("File at {} exists and is executable.", pathToExecutableFile);
+                        validExecutableFile = true;
+                    }
+                }
+            }
+        } catch (URISyntaxException ex) {
+            LOGGER.error("Failed to validate property with value " + value + ". -> Not a valid URL!", ex);
+        }
+        return validExecutableFile;
     }
-    return validExecutableFile;
-  }
 }

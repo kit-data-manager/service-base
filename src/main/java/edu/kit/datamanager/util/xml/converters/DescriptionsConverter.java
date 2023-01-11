@@ -24,43 +24,44 @@ import org.datacite.schema.kernel_4.DescriptionType;
 import org.datacite.schema.kernel_4.Resource;
 
 /**
+ * Converter between HashSet and Descriptions object.
  *
  * @author jejkal
  */
-public class DescriptionsConverter extends DozerConverter<HashSet, Resource.Descriptions> implements MapperAware{
+public class DescriptionsConverter extends DozerConverter<HashSet, Resource.Descriptions> implements MapperAware {
 
-  private Mapper mapper;
+    private Mapper mapper;
 
-  public DescriptionsConverter(){
-    super(HashSet.class, Resource.Descriptions.class);
-  }
-
-  @Override
-  public Resource.Descriptions convertTo(HashSet a, Resource.Descriptions b){
-    Resource.Descriptions result = new Resource.Descriptions();
-    for(Object o : a){
-      Description d = (Description) o;
-      Resource.Descriptions.Description description = new Resource.Descriptions.Description();
-      description.setLang(d.getLang());
-      if(d.getType() != null){
-        description.setDescriptionType(DescriptionType.fromValue(d.getType().getValue()));
-      } else{
-        description.setDescriptionType(DescriptionType.OTHER);
-      }
-      description.getContent().add(d.getDescription());
-      result.getDescription().add(description);
+    public DescriptionsConverter() {
+        super(HashSet.class, Resource.Descriptions.class);
     }
-    return result;
-  }
 
-  @Override
-  public HashSet convertFrom(Resource.Descriptions b, HashSet a){
-    return null;
-  }
+    @Override
+    public Resource.Descriptions convertTo(HashSet a, Resource.Descriptions b) {
+        Resource.Descriptions result = new Resource.Descriptions();
+        for (Object o : a) {
+            Description d = (Description) o;
+            Resource.Descriptions.Description description = new Resource.Descriptions.Description();
+            description.setLang(d.getLang());
+            if (d.getType() != null) {
+                description.setDescriptionType(DescriptionType.fromValue(d.getType().getValue()));
+            } else {
+                description.setDescriptionType(DescriptionType.OTHER);
+            }
+            description.getContent().add(d.getDescription());
+            result.getDescription().add(description);
+        }
+        return result;
+    }
 
-  @Override
-  public void setMapper(Mapper mapper){
-    this.mapper = mapper;
-  }
+    @Override
+    public HashSet convertFrom(Resource.Descriptions b, HashSet a) {
+        return null;
+    }
+
+    @Override
+    public void setMapper(Mapper mapper) {
+        this.mapper = mapper;
+    }
 
 }
