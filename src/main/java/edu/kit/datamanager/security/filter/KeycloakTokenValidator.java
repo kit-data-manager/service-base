@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -152,6 +153,12 @@ public class KeycloakTokenValidator {
                     LOG.trace("No roles found in JWT. Using default roles {}.", aRoles);
                 }
 
+                //@TODO make claim name configurable
+                String[] groupIds = claimsSet.getStringArrayClaim("groups");
+                if (groupIds != null) {
+                    LOG.trace("Obtained roles {} from JWT.", aRoles);
+                }
+
                 //token type? Service, Temp, User?
                 Map<String, Object> claims = new HashMap<>();
                 String roles = new ObjectMapper().writeValueAsString(aRoles);
@@ -161,6 +168,9 @@ public class KeycloakTokenValidator {
                 claims.put("lastname", claimsSet.getStringClaim("family_name"));
                 claims.put("email", claimsSet.getStringClaim("email"));
                 claims.put("roles", roles);
+                if (groupIds != null) {
+                    claims.put("groups", Arrays.asList(groupIds));
+                }
                 JwtAuthenticationToken returnValue = null;
                 returnValue = JwtAuthenticationToken.factoryToken(accessToken, claims);
                 return returnValue;

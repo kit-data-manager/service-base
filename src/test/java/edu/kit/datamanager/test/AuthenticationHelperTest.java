@@ -50,8 +50,9 @@ public class AuthenticationHelperTest {
         Assert.assertTrue(AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.getValue()));
         Assert.assertEquals("test", AuthenticationHelper.getFirstname());
         Assert.assertEquals("user", AuthenticationHelper.getLastname());
-        Assert.assertEquals("tester", AuthenticationHelper.getAuthorizationIdentities().get(0));
-        Assert.assertEquals("USERS", AuthenticationHelper.getAuthorizationIdentities().get(1));
+        Assert.assertTrue(AuthenticationHelper.getAuthorizationIdentities().contains("tester"));
+        Assert.assertTrue(AuthenticationHelper.getAuthorizationIdentities().contains("anonymousUser"));
+        Assert.assertTrue(AuthenticationHelper.getAuthorizationIdentities().contains("USERS"));
         Assert.assertFalse(AuthenticationHelper.isAuthenticatedAsService());
         Assert.assertEquals(PERMISSION.NONE, AuthenticationHelper.getScopedPermission(String.class.getSimpleName(), "1"));
     }
@@ -96,7 +97,7 @@ public class AuthenticationHelperTest {
                 addSimpleClaim("firstname", "test").
                 addSimpleClaim("lastname", "user").
                 addSimpleClaim("email", "test@mail.org").
-                addSimpleClaim("groupid", "USERS").
+                addObjectClaim("groups", Arrays.asList("USERS")).
                 getJwtAuthenticationToken(key);
 
         Mockito.when(securityContext.getAuthentication()).thenReturn(userToken);
@@ -106,7 +107,7 @@ public class AuthenticationHelperTest {
     private void mockJwtServiceAuthentication() throws JsonProcessingException {
         JwtAuthenticationToken serviceToken = edu.kit.datamanager.util.JwtBuilder.
                 createServiceToken("metadata_extractor", RepoServiceRole.SERVICE_READ).
-                addSimpleClaim("groupid", "USERS").
+                addObjectClaim("groups", Arrays.asList("USERS")).
                 getJwtAuthenticationToken(key);
         Mockito.when(securityContext.getAuthentication()).thenReturn(serviceToken);
         SecurityContextHolder.setContext(securityContext);

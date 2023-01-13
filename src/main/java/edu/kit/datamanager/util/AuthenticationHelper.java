@@ -120,10 +120,10 @@ public class AuthenticationHelper{
     identities.add(getPrincipal());
     if(getAuthentication() instanceof JwtAuthenticationToken){
       //obtain groupId ... this is only available for user tokens
-      String groupId = ((JwtAuthenticationToken) getAuthentication()).getGroupId();
-      if(groupId != null){
+      List<String> groupIds = ((JwtAuthenticationToken) getAuthentication()).getGroups();
+      if(groupIds != null && !groupIds.isEmpty()){
         //if group id not null, add to the list of identities
-        identities.add(groupId);
+        identities.addAll(groupIds);
       }
     }
     identities.add(ANONYMOUS_USER_PRINCIPAL);

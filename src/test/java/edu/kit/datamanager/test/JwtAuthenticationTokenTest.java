@@ -25,6 +25,7 @@ import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import edu.kit.datamanager.security.filter.JwtTemporaryToken;
 import edu.kit.datamanager.security.filter.JwtUserToken;
 import edu.kit.datamanager.security.filter.ScopedPermission;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Assert;
@@ -36,209 +37,208 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
  *
  * @author jejkal
  */
-public class JwtAuthenticationTokenTest{
+public class JwtAuthenticationTokenTest {
 
-  @Test
-  public void testEmptyToken(){
-    JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123");
-    Assert.assertTrue(token.getAuthorities().isEmpty());
-    Assert.assertEquals("test123", token.getToken());
-    Assert.assertNull(token.getPrincipal());
-    Assert.assertEquals(JwtAuthenticationToken.NOT_AVAILABLE, token.getCredentials());
-    Assert.assertFalse(token.isAuthenticated());
-  }
+    @Test
+    public void testEmptyToken() {
+        JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123");
+        Assert.assertTrue(token.getAuthorities().isEmpty());
+        Assert.assertEquals("test123", token.getToken());
+        Assert.assertNull(token.getPrincipal());
+        Assert.assertEquals(JwtAuthenticationToken.NOT_AVAILABLE, token.getCredentials());
+        Assert.assertFalse(token.isAuthenticated());
+    }
 
-  @Test
-  public void testTokenTypeFromString(){
-    Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.UNSUPPORTED, JwtAuthenticationToken.TOKEN_TYPE.fromString("invalid"));
-  }
+    @Test
+    public void testTokenTypeFromString() {
+        Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.UNSUPPORTED, JwtAuthenticationToken.TOKEN_TYPE.fromString("invalid"));
+    }
 
-  @Test
-  public void testGrantedAuthoritiesFromNull(){
-    Assert.assertNotNull(JwtAuthenticationToken.grantedAuthorities(null));
-    Assert.assertTrue(JwtAuthenticationToken.grantedAuthorities(null).isEmpty());
-  }
+    @Test
+    public void testGrantedAuthoritiesFromNull() {
+        Assert.assertNotNull(JwtAuthenticationToken.grantedAuthorities(null));
+        Assert.assertTrue(JwtAuthenticationToken.grantedAuthorities(null).isEmpty());
+    }
 
-  @Test(expected = InvalidAuthenticationException.class)
-  public void testFactoryUnsupportedToken() throws JsonProcessingException{
-    Map<String, Object> claimMap = new HashMap<>();
-    claimMap.put("tokenType", "UNSUPPORTED");
-    claimMap.put("username", "tester");
-    claimMap.put("firstname", "test");
-    claimMap.put("lastname", "user");
-    claimMap.put("email", "test@mail.org");
-    claimMap.put("groupid", "USERS");
-    claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoUserRole.ADMINISTRATOR.getValue()}));
+    @Test(expected = InvalidAuthenticationException.class)
+    public void testFactoryUnsupportedToken() throws JsonProcessingException {
+        Map<String, Object> claimMap = new HashMap<>();
+        claimMap.put("tokenType", "UNSUPPORTED");
+        claimMap.put("username", "tester");
+        claimMap.put("firstname", "test");
+        claimMap.put("lastname", "user");
+        claimMap.put("email", "test@mail.org");
+       claimMap.put("groups", Arrays.asList("USERS"));
+        claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoUserRole.ADMINISTRATOR.getValue()}));
 
-    JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
-    Assert.fail("Token " + token + " should not have been created due to invalid token type.");
-  }
+        JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
+        Assert.fail("Token " + token + " should not have been created due to invalid token type.");
+    }
 
-  @Test
-  public void testUserToken() throws JsonProcessingException{
-    Map<String, Object> claimMap = new HashMap<>();
-    claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.USER.toString());
-    claimMap.put("username", "tester");
-    claimMap.put("firstname", "test");
-    claimMap.put("lastname", "user");
-    claimMap.put("email", "test@mail.org");
-    claimMap.put("groupid", "USERS");
-    claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoUserRole.ADMINISTRATOR.getValue()}));
+    @Test
+    public void testUserToken() throws JsonProcessingException {
+        Map<String, Object> claimMap = new HashMap<>();
+        claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.USER.toString());
+        claimMap.put("username", "tester");
+        claimMap.put("firstname", "test");
+        claimMap.put("lastname", "user");
+        claimMap.put("email", "test@mail.org");
+        claimMap.put("groups", Arrays.asList("USERS"));
+        claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoUserRole.ADMINISTRATOR.getValue()}));
 
-    JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
-    Assert.assertTrue(token instanceof JwtUserToken);
-    Assert.assertEquals(1, token.getAuthorities().size());
-    Assert.assertEquals("tester", token.getPrincipal());
-    Assert.assertEquals("test", ((JwtUserToken) token).getFirstname());
-    Assert.assertEquals("user", ((JwtUserToken) token).getLastname());
-    Assert.assertEquals("test@mail.org", ((JwtUserToken) token).getEmail());
-    Assert.assertEquals("USERS", token.getGroupId());
-    Assert.assertEquals(RepoUserRole.ADMINISTRATOR.getValue(), ((SimpleGrantedAuthority) token.getAuthorities().toArray()[0]).getAuthority());
-    Assert.assertEquals("test123", token.getToken());
-    Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.USER, token.getTokenType());
-    Assert.assertTrue(token.isAuthenticated());
-  }
+        JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
+        Assert.assertTrue(token instanceof JwtUserToken);
+        Assert.assertEquals(1, token.getAuthorities().size());
+        Assert.assertEquals("tester", token.getPrincipal());
+        Assert.assertEquals("test", ((JwtUserToken) token).getFirstname());
+        Assert.assertEquals("user", ((JwtUserToken) token).getLastname());
+        Assert.assertEquals("test@mail.org", ((JwtUserToken) token).getEmail());
+        Assert.assertEquals("USERS", token.getGroups().get(0));
+        Assert.assertEquals(RepoUserRole.ADMINISTRATOR.getValue(), ((SimpleGrantedAuthority) token.getAuthorities().toArray()[0]).getAuthority());
+        Assert.assertEquals("test123", token.getToken());
+        Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.USER, token.getTokenType());
+        Assert.assertTrue(token.isAuthenticated());
+    }
 
-  @Test
-  public void testServiceToken() throws JsonProcessingException{
-    Map<String, Object> claimMap = new HashMap<>();
-    claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.SERVICE.toString());
-    claimMap.put("servicename", "testService");
-    claimMap.put("groupid", "USERS");
-    claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoServiceRole.SERVICE_READ.getValue()}));
+    @Test
+    public void testServiceToken() throws JsonProcessingException {
+        Map<String, Object> claimMap = new HashMap<>();
+        claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.SERVICE.toString());
+        claimMap.put("servicename", "testService");
+        claimMap.put("groups", Arrays.asList("USERS"));
+        claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoServiceRole.SERVICE_READ.getValue()}));
 
-    JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
+        JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
 
-    //should work but nothing happens as claim is invalid
-    token.setValueFromClaim("invalid", "value");
+        //should work but nothing happens as claim is invalid
+        token.setValueFromClaim("invalid", "value");
 
-    Assert.assertEquals("testService", token.getPrincipal());
-    Assert.assertEquals("USERS", token.getGroupId());
-    Assert.assertEquals("test123", token.getToken());
-    Assert.assertEquals(RepoServiceRole.SERVICE_READ.getValue(), ((SimpleGrantedAuthority) token.getAuthorities().toArray()[0]).getAuthority());
-    Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.SERVICE, token.getTokenType());
-    Assert.assertTrue(token.isAuthenticated());
-  }
+        Assert.assertEquals("testService", token.getPrincipal());
+        Assert.assertEquals("USERS", token.getGroups().get(0));
+        Assert.assertEquals("test123", token.getToken());
+        Assert.assertEquals(RepoServiceRole.SERVICE_READ.getValue(), ((SimpleGrantedAuthority) token.getAuthorities().toArray()[0]).getAuthority());
+        Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.SERVICE, token.getTokenType());
+        Assert.assertTrue(token.isAuthenticated());
+    }
 
-  @Test(expected = InvalidAuthenticationException.class)
-  public void testServiceTokenWithInvalidSources() throws JsonProcessingException{
-    Map<String, Object> claimMap = new HashMap<>();
-    claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.SERVICE.toString());
-    claimMap.put("servicename", "testService");
-    claimMap.put("groupid", "USERS");
-    claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoServiceRole.SERVICE_READ.getValue()}));
-    claimMap.put("sources", "invalidValue");
+    @Test(expected = InvalidAuthenticationException.class)
+    public void testServiceTokenWithInvalidSources() throws JsonProcessingException {
+        Map<String, Object> claimMap = new HashMap<>();
+        claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.SERVICE.toString());
+        claimMap.put("servicename", "testService");
+        claimMap.put("groups", Arrays.asList("USERS"));
+        claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoServiceRole.SERVICE_READ.getValue()}));
+        claimMap.put("sources", "invalidValue");
 
-    JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
-    Assert.fail("Token " + token + " should not have been created due to invalid sources claim.");
+        JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
+        Assert.fail("Token " + token + " should not have been created due to invalid sources claim.");
+    }
 
-  }
+    @Test
+    public void testTemporaryToken() throws JsonProcessingException {
+        ScopedPermission[] perms = new ScopedPermission[]{ScopedPermission.factoryScopedPermission(JwtTemporaryToken.class, "1", PERMISSION.READ)};
 
-  @Test
-  public void testTemporaryToken() throws JsonProcessingException{
-    ScopedPermission[] perms = new ScopedPermission[]{ScopedPermission.factoryScopedPermission(JwtTemporaryToken.class, "1", PERMISSION.READ)};
+        Map<String, Object> claimMap = new HashMap<>();
+        claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY.toString());
+        claimMap.put("principalname", "test@mail.org");
+        claimMap.put("permissions", new ObjectMapper().writeValueAsString(perms));
 
-    Map<String, Object> claimMap = new HashMap<>();
-    claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY.toString());
-    claimMap.put("principalname", "test@mail.org");
-    claimMap.put("permissions", new ObjectMapper().writeValueAsString(perms));
+        JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
 
-    JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
+        //should work but nothing happens as claim is invalid
+        token.setValueFromClaim("invalid", "value");
 
-    //should work but nothing happens as claim is invalid
-    token.setValueFromClaim("invalid", "value");
+        Assert.assertTrue(token instanceof JwtTemporaryToken);
+        Assert.assertEquals("test@mail.org", token.getPrincipal());
+        Assert.assertEquals(1, ((JwtTemporaryToken) token).getScopedPermissions().length);
+        Assert.assertEquals("JwtTemporaryToken", ((JwtTemporaryToken) token).getScopedPermissions()[0].getResourceType());
+        Assert.assertEquals("1", ((JwtTemporaryToken) token).getScopedPermissions()[0].getResourceId());
+        Assert.assertEquals(PERMISSION.READ, ((JwtTemporaryToken) token).getScopedPermissions()[0].getPermission());
+        Assert.assertEquals("test123", token.getToken());
+        Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY, token.getTokenType());
+        Assert.assertTrue(token.isAuthenticated());
+    }
 
-    Assert.assertTrue(token instanceof JwtTemporaryToken);
-    Assert.assertEquals("test@mail.org", token.getPrincipal());
-    Assert.assertEquals(1, ((JwtTemporaryToken) token).getScopedPermissions().length);
-    Assert.assertEquals("JwtTemporaryToken", ((JwtTemporaryToken) token).getScopedPermissions()[0].getResourceType());
-    Assert.assertEquals("1", ((JwtTemporaryToken) token).getScopedPermissions()[0].getResourceId());
-    Assert.assertEquals(PERMISSION.READ, ((JwtTemporaryToken) token).getScopedPermissions()[0].getPermission());
-    Assert.assertEquals("test123", token.getToken());
-    Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY, token.getTokenType());
-    Assert.assertTrue(token.isAuthenticated());
-  }
+    @Test(expected = InvalidAuthenticationException.class)
+    public void testTemporaryTokenWithNoPermissions() throws JsonProcessingException {
+        Map<String, Object> claimMap = new HashMap<>();
+        claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY.toString());
+        claimMap.put("principalname", "test@mail.org");
 
-  @Test(expected = InvalidAuthenticationException.class)
-  public void testTemporaryTokenWithNoPermissions() throws JsonProcessingException{
-    Map<String, Object> claimMap = new HashMap<>();
-    claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY.toString());
-    claimMap.put("principalname", "test@mail.org");
+        JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
+        Assert.fail("Token " + token + " should not have been created due to missing scoped permissions.");
+    }
 
-    JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
-    Assert.fail("Token " + token + " should not have been created due to missing scoped permissions.");
-  }
+    @Test(expected = InvalidAuthenticationException.class)
+    public void testTemporaryTokenWithInvalidPermissions() throws JsonProcessingException {
 
-  @Test(expected = InvalidAuthenticationException.class)
-  public void testTemporaryTokenWithInvalidPermissions() throws JsonProcessingException{
+        Map<String, Object> claimMap = new HashMap<>();
+        claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY.toString());
+        claimMap.put("principalname", "test@mail.org");
+        claimMap.put("permissions", "invalid value");
 
-    Map<String, Object> claimMap = new HashMap<>();
-    claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY.toString());
-    claimMap.put("principalname", "test@mail.org");
-    claimMap.put("permissions", "invalid value");
+        JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
+        Assert.fail("Token " + token + " should not have been created due to missing scoped permissions.");
+    }
 
-    JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
-    Assert.fail("Token " + token + " should not have been created due to missing scoped permissions.");
-  }
+    @Test
+    public void testNoType() throws JsonProcessingException {
+        Map<String, Object> claimMap = new HashMap<>();
+        claimMap.put("username", "tester");
 
-  @Test
-  public void testNoType() throws JsonProcessingException{
-    Map<String, Object> claimMap = new HashMap<>();
-    claimMap.put("username", "tester");
+        JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
+        Assert.assertTrue(token instanceof JwtUserToken);
+        Assert.assertEquals("tester", token.getPrincipal());
+        Assert.assertTrue(token.getAuthorities().stream().filter(a -> a.getAuthority().equals(RepoUserRole.GUEST.getValue())).count() > 0);
+        Assert.assertTrue(token.isAuthenticated());
+    }
 
-    JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
-    Assert.assertTrue(token instanceof JwtUserToken);
-    Assert.assertEquals("tester", token.getPrincipal());
-    Assert.assertTrue(token.getAuthorities().stream().filter(a -> a.getAuthority().equals(RepoUserRole.GUEST.getValue())).count() > 0);
-    Assert.assertTrue(token.isAuthenticated());
-  }
+    @Test(expected = InvalidAuthenticationException.class)
+    public void testInvalidClaimType() throws JsonProcessingException {
+        Map<String, Object> claimMap = new HashMap<>();
+        claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY.toString());
+        claimMap.put("principalname", "test@mail.org");
+        claimMap.put("permissions", 12);//wrong type
 
-  @Test(expected = InvalidAuthenticationException.class)
-  public void testInvalidClaimType() throws JsonProcessingException{
-    Map<String, Object> claimMap = new HashMap<>();
-    claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY.toString());
-    claimMap.put("principalname", "test@mail.org");
-    claimMap.put("permissions", 12);//wrong type
+        JwtAuthenticationToken.factoryToken("test123", claimMap);
+        Assert.fail("Claim type check succeeded unexpectedly.");
+    }
 
-    JwtAuthenticationToken.factoryToken("test123", claimMap);
-    Assert.fail("Claim type check succeeded unexpectedly.");
-  }
+    @Test(expected = InvalidAuthenticationException.class)
+    public void testTemporaryTokenWithoutPermissions() throws JsonProcessingException {
+        Map<String, Object> claimMap = new HashMap<>();
+        claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY.toString());
+        claimMap.put("principalname", "test@mail.org");
 
-  @Test(expected = InvalidAuthenticationException.class)
-  public void testTemporaryTokenWithoutPermissions() throws JsonProcessingException{
-    Map<String, Object> claimMap = new HashMap<>();
-    claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY.toString());
-    claimMap.put("principalname", "test@mail.org");
+        JwtAuthenticationToken.factoryToken("test123", claimMap);
+        Assert.fail("Creation of temporary token without permissions should fail.");
+    }
 
-    JwtAuthenticationToken.factoryToken("test123", claimMap);
-    Assert.fail("Creation of temporary token without permissions should fail.");
-  }
+    @Test(expected = InvalidAuthenticationException.class)
+    public void testTokenWithoutPrincipal() throws JsonProcessingException {
+        ScopedPermission[] perms = new ScopedPermission[]{ScopedPermission.factoryScopedPermission(JwtTemporaryToken.class, "1", PERMISSION.READ)};
 
-  @Test(expected = InvalidAuthenticationException.class)
-  public void testTokenWithoutPrincipal() throws JsonProcessingException{
-    ScopedPermission[] perms = new ScopedPermission[]{ScopedPermission.factoryScopedPermission(JwtTemporaryToken.class, "1", PERMISSION.READ)};
+        Map<String, Object> claimMap = new HashMap<>();
+        claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY.toString());
+        claimMap.put("permissions", new ObjectMapper().writeValueAsString(perms));
 
-    Map<String, Object> claimMap = new HashMap<>();
-    claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY.toString());
-    claimMap.put("permissions", new ObjectMapper().writeValueAsString(perms));
+        JwtAuthenticationToken.factoryToken("test123", claimMap);
+        Assert.fail("Creation of temporary token without principal should fail.");
+    }
 
-    JwtAuthenticationToken.factoryToken("test123", claimMap);
-    Assert.fail("Creation of temporary token without principal should fail.");
-  }
+    @Test
+    public void testInvalidRolesValue() throws JsonProcessingException {
+        Map<String, Object> claimMap = new HashMap<>();
+        claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.USER.toString());
+        claimMap.put("username", "tester");
+        claimMap.put("firstname", "test");
+        claimMap.put("lastname", "user");
+        claimMap.put("email", "test@mail.org");
+        claimMap.put("groups", Arrays.asList("USERS"));
+        claimMap.put("roles", new ObjectMapper().writeValueAsString("INVALID_VALUE"));
 
-  @Test
-  public void testInvalidRolesValue() throws JsonProcessingException{
-    Map<String, Object> claimMap = new HashMap<>();
-    claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.USER.toString());
-    claimMap.put("username", "tester");
-    claimMap.put("firstname", "test");
-    claimMap.put("lastname", "user");
-    claimMap.put("email", "test@mail.org");
-    claimMap.put("groupid", "USERS");
-    claimMap.put("roles", new ObjectMapper().writeValueAsString("INVALID_VALUE"));
-
-    JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
-    Assert.assertEquals(1, token.getAuthorities().size());
-    Assert.assertEquals(RepoUserRole.GUEST.getValue(), token.getAuthorities().toArray(new GrantedAuthority[]{})[0].getAuthority());
-  }
+        JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
+        Assert.assertEquals(1, token.getAuthorities().size());
+        Assert.assertEquals(RepoUserRole.GUEST.getValue(), token.getAuthorities().toArray(new GrantedAuthority[]{})[0].getAuthority());
+    }
 }

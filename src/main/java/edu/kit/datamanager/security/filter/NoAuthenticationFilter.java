@@ -24,6 +24,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,7 +57,7 @@ public class NoAuthenticationFilter extends OncePerRequestFilter{
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException, AuthenticationException{
     Claims claims = new DefaultClaims();
-    claims.put("groupid", "USERS");
+    claims.put("groups", Arrays.asList("USERS"));
     claims.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.SERVICE.toString());
     claims.put("servicename", JwtServiceToken.SELF_SERVICE_NAME);
 

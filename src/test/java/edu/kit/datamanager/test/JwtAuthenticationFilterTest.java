@@ -27,6 +27,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.impl.DefaultClaims;
+import java.util.Arrays;
 import java.util.Date;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -57,11 +58,9 @@ public class JwtAuthenticationFilterTest {
     private final HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
     private final FilterChain filterChain = Mockito.mock(FilterChain.class);
     private final SecurityContext context = Mockito.mock(SecurityContext.class);
-  
+
     private final String key = "vkfvoswsohwrxgjaxipuiyyjgubggzdaqrcuupbugxtnalhiegkppdgjgwxsmvdb";
 
-    
-    
     private KeycloakTokenFilter keycloaktokenFilterBean() throws Exception {
         return new KeycloakTokenFilter(KeycloakTokenValidator.builder()
                 .jwtLocalSecret(key)
@@ -99,7 +98,9 @@ public class JwtAuthenticationFilterTest {
     @Test
     public void testValidJwtToken() throws Exception {
         //create new token for user 'user' with ADMINISTRATOR role in group USERS which expires in one hour
-        final String token = JwtBuilder.createUserToken("user", RepoUserRole.ADMINISTRATOR).addSimpleClaim("groupid", "USERS").getCompactToken(key, DateUtils.addHours(new Date(), 1));
+        final String token = JwtBuilder.createUserToken("user", RepoUserRole.ADMINISTRATOR)
+                .addObjectClaim("groups", Arrays.asList("USERS"))
+                .getCompactToken(key, DateUtils.addHours(new Date(), 1));
 
         //add checks to check for user token
         doAnswer((Answer) new Answer() {
@@ -110,15 +111,15 @@ public class JwtAuthenticationFilterTest {
 
                 Assert.assertTrue(answer instanceof JwtAuthenticationToken);
                 Assert.assertTrue(answer instanceof JwtUserToken);
-                Assert.assertEquals("USERS", ((JwtAuthenticationToken) answer).getGroupId());
+                Assert.assertEquals("USERS", ((JwtAuthenticationToken) answer).getGroups().get(0));
                 Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.USER, ((JwtUserToken) answer).getTokenType());
                 Assert.assertEquals("user", ((JwtUserToken) answer).getPrincipal());
                 Assert.assertTrue(((JwtUserToken) answer).getAuthorities().contains(new SimpleGrantedAuthority(RepoUserRole.ADMINISTRATOR.getValue())));
 
                 Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(((JwtUserToken) answer).getToken());
-                DefaultClaims claims = (DefaultClaims)jws.getBody();
+                DefaultClaims claims = (DefaultClaims) jws.getBody();
                 Assert.assertTrue(claims.containsKey("tokenType"));
-                Assert.assertTrue(claims.containsKey("groupid"));
+                Assert.assertTrue(claims.containsKey("groups"));
                 Assert.assertTrue(claims.containsKey("username"));
                 Assert.assertTrue(claims.containsKey("roles"));
                 Assert.assertTrue(claims.containsKey("exp"));
@@ -145,7 +146,7 @@ public class JwtAuthenticationFilterTest {
     @Test(expected = InvalidAuthenticationException.class)
     public void testUnauthorizedAccessDetected() throws Exception {
         //create new token for user 'test123' with ADMINISTRATOR role in group USERS which expires in one hour
-        final String token = JwtBuilder.createUserToken("test123", RepoUserRole.ADMINISTRATOR).addSimpleClaim("groupid", "USERS").getCompactToken(key, DateUtils.addHours(new Date(), -1));
+        final String token = JwtBuilder.createUserToken("test123", RepoUserRole.ADMINISTRATOR).addObjectClaim("groups", Arrays.asList("USERS")).getCompactToken(key, DateUtils.addHours(new Date(), -1));
 
         Mockito.when(request.getHeader(KeycloakTokenFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer " + token);
         keycloaktokenFilterBean().doFilter(request, response, filterChain);
