@@ -78,7 +78,10 @@ public class KeycloakTokenValidator {
      * defined in keycloak mapper for client id: preferred_username or username
      */
     private String jwtClaim;
-
+    /**
+     * defined in keycloak mapper for group ids: default is groups
+     */
+    private String groupsClaim;
     /**
      * The HTTP connects timeout, in milliseconds, zero for infinite. Must not
      * be negative.
@@ -153,10 +156,9 @@ public class KeycloakTokenValidator {
                     LOG.trace("No roles found in JWT. Using default roles {}.", aRoles);
                 }
 
-                //@TODO make claim name configurable
-                String[] groupIds = claimsSet.getStringArrayClaim("groups");
+                String[] groupIds = claimsSet.getStringArrayClaim((groupsClaim == null) ? "groups" : groupsClaim);
                 if (groupIds != null) {
-                    LOG.trace("Obtained roles {} from JWT.", aRoles);
+                    LOG.trace("Obtained group ids {} from JWT.", Arrays.asList(groupIds));
                 }
 
                 //token type? Service, Temp, User?
@@ -242,6 +244,20 @@ public class KeycloakTokenValidator {
         public KeycloakTokenValidator build(final String jwksetUrl, final String resource, final String jwt_username_claim) {
             accessTokenValidator.resource = resource;
             accessTokenValidator.jwtClaim = jwt_username_claim;
+            accessTokenValidator.jwkUrl = jwksetUrl;
+
+            if (accessTokenValidator.jwtProcessor == null && jwksetUrl != null) {
+                accessTokenValidator.jwtProcessor = new DefaultJWTProcessor();
+                accessTokenValidator.init();
+            }
+
+            return accessTokenValidator;
+        }
+
+        public KeycloakTokenValidator build(final String jwksetUrl, final String resource, final String jwt_username_claim, final String jwt_groups_claim) {
+            accessTokenValidator.resource = resource;
+            accessTokenValidator.jwtClaim = jwt_username_claim;
+            accessTokenValidator.groupsClaim = jwt_groups_claim;
             accessTokenValidator.jwkUrl = jwksetUrl;
 
             if (accessTokenValidator.jwtProcessor == null && jwksetUrl != null) {

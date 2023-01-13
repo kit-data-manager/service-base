@@ -24,7 +24,6 @@ package edu.kit.datamanager.security.filter;
 import com.nimbusds.jose.proc.BadJOSEException;
 import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
-import static edu.kit.datamanager.util.AuthenticationHelper.getAuthentication;
 import edu.kit.datamanager.util.NetworkUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

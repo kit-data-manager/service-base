@@ -42,6 +42,11 @@ public class KeycloakJwtProperties {
     private String jwtClaim;
 
     /**
+     * defined in keycloak mapper for group ids: default is groups
+     */
+    private String groupClaim;
+
+    /**
      * The HTTP connects timeout, in milliseconds, zero for infinite. Must not
      * be negative. The HTTP read timeout, in milliseconds, zero for infinite.
      */
@@ -72,6 +77,14 @@ public class KeycloakJwtProperties {
 
     public void setResource(String resource) {
         this.resource = resource;
+    }
+
+    public String getGroupClaim() {
+        return groupClaim;
+    }
+
+    public void setGroupClaim(String groupClaim) {
+        this.groupClaim = groupClaim;
     }
 
     public String getJwtClaim() {
