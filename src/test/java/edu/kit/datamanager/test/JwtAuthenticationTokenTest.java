@@ -68,7 +68,7 @@ public class JwtAuthenticationTokenTest {
         claimMap.put("firstname", "test");
         claimMap.put("lastname", "user");
         claimMap.put("email", "test@mail.org");
-       claimMap.put("groups", Arrays.asList("USERS"));
+        claimMap.put("groups", Arrays.asList("USERS"));
         claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoUserRole.ADMINISTRATOR.getValue()}));
 
         JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
@@ -83,7 +83,7 @@ public class JwtAuthenticationTokenTest {
         claimMap.put("firstname", "test");
         claimMap.put("lastname", "user");
         claimMap.put("email", "test@mail.org");
-        claimMap.put("groups", Arrays.asList("USERS"));
+        claimMap.put("groups", Arrays.asList("USERS", "MANAGERS"));
         claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoUserRole.ADMINISTRATOR.getValue()}));
 
         JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
@@ -93,7 +93,8 @@ public class JwtAuthenticationTokenTest {
         Assert.assertEquals("test", ((JwtUserToken) token).getFirstname());
         Assert.assertEquals("user", ((JwtUserToken) token).getLastname());
         Assert.assertEquals("test@mail.org", ((JwtUserToken) token).getEmail());
-        Assert.assertEquals("USERS", token.getGroups().get(0));
+        Assert.assertTrue(token.getGroups().contains("USERS"));
+        Assert.assertTrue(token.getGroups().contains("MANAGERS"));
         Assert.assertEquals(RepoUserRole.ADMINISTRATOR.getValue(), ((SimpleGrantedAuthority) token.getAuthorities().toArray()[0]).getAuthority());
         Assert.assertEquals("test123", token.getToken());
         Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.USER, token.getTokenType());
@@ -105,7 +106,7 @@ public class JwtAuthenticationTokenTest {
         Map<String, Object> claimMap = new HashMap<>();
         claimMap.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.SERVICE.toString());
         claimMap.put("servicename", "testService");
-        claimMap.put("groups", Arrays.asList("USERS"));
+        claimMap.put("groups", Arrays.asList("USERS", "ADMINS"));
         claimMap.put("roles", new ObjectMapper().writeValueAsString(new String[]{RepoServiceRole.SERVICE_READ.getValue()}));
 
         JwtAuthenticationToken token = JwtAuthenticationToken.factoryToken("test123", claimMap);
@@ -114,7 +115,8 @@ public class JwtAuthenticationTokenTest {
         token.setValueFromClaim("invalid", "value");
 
         Assert.assertEquals("testService", token.getPrincipal());
-        Assert.assertEquals("USERS", token.getGroups().get(0));
+        Assert.assertTrue(token.getGroups().contains("USERS"));
+        Assert.assertTrue(token.getGroups().contains("ADMINS"));
         Assert.assertEquals("test123", token.getToken());
         Assert.assertEquals(RepoServiceRole.SERVICE_READ.getValue(), ((SimpleGrantedAuthority) token.getAuthorities().toArray()[0]).getAuthority());
         Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.SERVICE, token.getTokenType());

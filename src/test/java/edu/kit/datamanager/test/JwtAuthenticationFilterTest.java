@@ -99,7 +99,7 @@ public class JwtAuthenticationFilterTest {
     public void testValidJwtToken() throws Exception {
         //create new token for user 'user' with ADMINISTRATOR role in group USERS which expires in one hour
         final String token = JwtBuilder.createUserToken("user", RepoUserRole.ADMINISTRATOR)
-                .addObjectClaim("groups", Arrays.asList("USERS"))
+                .addObjectClaim("groups", Arrays.asList("USERS", "TEAM1"))
                 .getCompactToken(key, DateUtils.addHours(new Date(), 1));
 
         //add checks to check for user token
@@ -111,7 +111,8 @@ public class JwtAuthenticationFilterTest {
 
                 Assert.assertTrue(answer instanceof JwtAuthenticationToken);
                 Assert.assertTrue(answer instanceof JwtUserToken);
-                Assert.assertEquals("USERS", ((JwtAuthenticationToken) answer).getGroups().get(0));
+                Assert.assertTrue(((JwtAuthenticationToken) answer).getGroups().contains("USERS"));
+                Assert.assertTrue(((JwtAuthenticationToken) answer).getGroups().contains("TEAM1"));
                 Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.USER, ((JwtUserToken) answer).getTokenType());
                 Assert.assertEquals("user", ((JwtUserToken) answer).getPrincipal());
                 Assert.assertTrue(((JwtUserToken) answer).getAuthorities().contains(new SimpleGrantedAuthority(RepoUserRole.ADMINISTRATOR.getValue())));

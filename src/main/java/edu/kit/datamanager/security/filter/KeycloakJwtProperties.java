@@ -23,6 +23,33 @@ package edu.kit.datamanager.security.filter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * ConfigurationProperties holder for Keycloak-based JWT support.
+ *
+ * There are several configuration properties, where only two of them are
+ * mandatory:
+ *
+ * <ul>
+ * <li>jwkUrl - The URL to the Json Web Key file provided by Keycloak containing
+ * all public keys used for signing JWTs. Typically, this URL looks as follows:
+ * https://keycloak-host:8443/realms/your-realm/protocol/openid-connect/certs
+ * (mandatory)</li>
+ * <li>resource - The identifier of the configured Keycloak client.
+ * (mandatory)</li>
+ * <li>jwtClaim - JWT claim containing the unique username, e.g.,
+ * preferred_username (default)</li>
+ * <li>groupClaim - JWT claim containing a list of groupIds the user is member
+ * of, e.g., groups (default)</li>
+ * <li>connectTimeoutms - Connect timeout in ms (>= 0) for connecting the jwkUrl
+ * (0 = infinite (default))</li>
+ * <li>readTimeoutms - Read timeout in ms (>= 0) for reading from jwkUrl (0 =
+ * infinite (default))</li>
+ * <li>sizeLimit - The read size limit in bytes (>= 0) for reading from jwkUrl
+ * (0 = infinite (default))</li>
+ * </ul>
+ *
+ * @author jejkal
+ */
 @ConfigurationProperties("keycloakjwt")
 public class KeycloakJwtProperties {
 
@@ -48,7 +75,7 @@ public class KeycloakJwtProperties {
 
     /**
      * The HTTP connects timeout, in milliseconds, zero for infinite. Must not
-     * be negative. The HTTP read timeout, in milliseconds, zero for infinite.
+     * be negative.
      */
     private int connectTimeoutms = 0;
 
