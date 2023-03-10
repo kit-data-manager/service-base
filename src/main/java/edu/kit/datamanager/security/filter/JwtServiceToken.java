@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,72 +28,75 @@ import org.springframework.security.core.GrantedAuthority;
  *
  * @author jejkal
  */
-public class JwtServiceToken extends JwtAuthenticationToken{
+public class JwtServiceToken extends JwtAuthenticationToken {
 
-  private final static Logger LOGGER = LoggerFactory.getLogger(JwtServiceToken.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(JwtServiceToken.class);
 
-  public final static String SELF_SERVICE_NAME = "SELF";
+    public final static String SELF_SERVICE_NAME = "SELF";
 
-  private String[] sources;
+    private String[] sources;
 
-  public JwtServiceToken(String token, Collection<? extends GrantedAuthority> authorities){
-    super(token, authorities);
-  }
-
-  @Override
-  public Class getClassForClaim(String claim){
-    return String.class;
-  }
-
-  @Override
-  public String[] getSupportedClaims(){
-    return new String[]{"servicename", "sources", "groupid"};
-  }
-
-  @Override
-  public void setValueFromClaim(String claim, Object value){
-    switch(claim){
-      case "servicename":
-        setPrincipalName((String) value);
-        break;
-      case "sources":
-        parseSources((String) value);
-        break;
-      case "groupid":
-        setGroupId((String) value);
-        break;
-      default:
-        LOGGER.warn("Invalid claim {} with value {} received. Claim will be ignored.", claim, value);
+    public JwtServiceToken(String token, Collection<? extends GrantedAuthority> authorities) {
+        super(token, authorities);
     }
-  }
 
-  private void parseSources(String value){
-    if(value == null){
-      //no sources found
-      return;
+    @Override
+    public Class getClassForClaim(String claim) {
+        if ("groups".equals(claim)) {
+            return List.class;
+        }
+        return String.class;
     }
-    ObjectMapper mapper = new ObjectMapper();
-    try{
-      sources = mapper.readValue(value, String[].class);
-    } catch(IOException ex){
-      throw new InvalidAuthenticationException("Failed to read sources from claim value " + value + ".");
+
+    @Override
+    public String[] getSupportedClaims() {
+        return new String[]{"servicename", "sources", "groups"};
     }
-  }
 
-  @Override
-  public void validate() throws InvalidAuthenticationException{
-    if(sources == null && !SELF_SERVICE_NAME.equals(getPrincipal())){
-      LOGGER.warn("No sources provided in service token for service '" + getPrincipal() + ". Possible security risk!");
+    @Override
+    public void setValueFromClaim(String claim, Object value) {
+        switch (claim) {
+            case "servicename":
+                setPrincipalName((String) value);
+                break;
+            case "sources":
+                parseSources((String) value);
+                break;
+            case "groups":
+                setGroups((List<String>) value);
+                break;
+            default:
+                LOGGER.warn("Invalid claim {} with value {} received. Claim will be ignored.", claim, value);
+        }
     }
-  }
 
-  public String[] getSources(){
-    return sources;
-  }
+    private void parseSources(String value) {
+        if (value == null) {
+            //no sources found
+            return;
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            sources = mapper.readValue(value, String[].class);
+        } catch (IOException ex) {
+            throw new InvalidAuthenticationException("Failed to read sources from claim value " + value + ".");
+        }
+    }
 
-  @Override
-  public TOKEN_TYPE getTokenType(){
-    return TOKEN_TYPE.SERVICE;
-  }
+    @Override
+    public void validate() throws InvalidAuthenticationException {
+        if (sources == null && !SELF_SERVICE_NAME.equals(getPrincipal())) {
+            LOGGER.warn("No sources provided in service token for service '" + getPrincipal() + ". Possible security risk!");
+        }
+    }
+
+    public String[] getSources() {
+        return sources;
+    }
+
+    @Override
+    public TOKEN_TYPE getTokenType() {
+        return TOKEN_TYPE.SERVICE;
+    }
 
 }

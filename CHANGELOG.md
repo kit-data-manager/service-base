@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Elastic search configuration validation now retries three times with 5 seconds delay to connect to repo.search.url before startup fails in case of slow Elastic startup
 
 ### Removed
 

@@ -116,6 +116,11 @@ public class JwtBuilder {
         return this;
     }
 
+    public JwtBuilder addObjectClaim(String claimName, Object value) {
+        claims.put(claimName, value);
+        return this;
+    }
+
     public Map<String, Object> getClaimMap() {
         //put principal, roles or permissions into map
         try {

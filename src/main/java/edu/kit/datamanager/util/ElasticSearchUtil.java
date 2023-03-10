@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -57,29 +58,50 @@ public class ElasticSearchUtil {
         boolean validElasticSearchServer = false;
         if (elasticsearchURL != null) {
             String baseUrl = elasticsearchURL.toString();
-            String accessUrl = baseUrl + "/_search";
-            RestTemplate restTemplate = new RestTemplate();
-            try {
-                ResponseEntity<String> entity = restTemplate.getForEntity(accessUrl,
-                        String.class,
-                        baseUrl);
-                LOGGER.info("Status code value: " + entity.getStatusCodeValue());
-                LOGGER.info("HTTP Header 'ContentType': " + entity.getHeaders().getContentType());
-                if (entity.getStatusCodeValue() == HttpStatus.OK.value()) {
-                    LOGGER.trace("Elasticsearch server at '{}' seems to be up and running!", baseUrl);
-                    validElasticSearchServer = true;
-                }
-            } catch (Exception ex) {
-                LOGGER.error("Error accessing elasticsearch server!", ex);
-            }
             // test for trailing '/'
             if (baseUrl.trim().endsWith("/")) {
-                LOGGER.error("Please remove trailing '/' from URL '{}'!", baseUrl);
+                LOGGER.error("Invalid elasticsearch URL. Please remove trailing '/' from URL '{}'!", baseUrl);
                 validElasticSearchServer = false;
+            } else {
+                String accessUrl = baseUrl + "/_search";
+                RestTemplate restTemplate = new RestTemplate();
+                int retries = 3;
+                LOGGER.trace("Trying to connect to elasticsearch instance.");
+                while (retries > 0) {
+                    try {
+                        ResponseEntity<String> entity = restTemplate.getForEntity(accessUrl,
+                                String.class,
+                                baseUrl);
+                        LOGGER.info("Status code value: " + entity.getStatusCodeValue());
+                        LOGGER.info("HTTP Header 'ContentType': " + entity.getHeaders().getContentType());
+                        if (entity.getStatusCodeValue() == HttpStatus.OK.value()) {
+                            LOGGER.trace("Elasticsearch server at '{}' seems to be up and running!", baseUrl);
+                            validElasticSearchServer = true;
+                            retries = 0;
+                        } else {
+                            LOGGER.debug("Invalid response from elasticsearch server. Expected HTTP 200, received HTTP " + entity.getStatusCodeValue() + ". Aborting.");
+                        }
+                    } catch (RestClientException ex) {
+                        LOGGER.warn("Failed accessing elasticsearch server.", ex);
+                    }
+
+                    if (retries > 0) {
+                        LOGGER.warn("Retrying in 5 seconds.");
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException ie) {
+                        }
+                        retries--;
+                    } else {
+                        LOGGER.error("Unable to access elasticsearch server within 3 attempts. Aborting.");
+                    }
+                }
             }
             if (!validElasticSearchServer) {
-                LOGGER.trace("URL seems to be invalid: '{}'!", baseUrl);
+                LOGGER.trace("Unable to connect to elasticsearch instance at '{}' withing 3 attempts!", baseUrl);
             }
+        } else {
+            LOGGER.warn("No elasticsearch URL provided. Aborting.");
         }
         return validElasticSearchServer;
     }
@@ -102,7 +124,7 @@ public class ElasticSearchUtil {
         return validIndex;
     }
 
-    public static void  buildPostFilter(ObjectNode queryNode) {
+    public static void buildPostFilter(ObjectNode queryNode) {
         if (queryNode.has(POST_FILTER)) {
             LOGGER.warn("PostFilter found in provided query. Filter will be replaced!");
         }

@@ -23,7 +23,7 @@ import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -33,6 +33,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @Data
+@ConditionalOnExpression("${repo.messaging.enabled:false}")
 public class RabbitMQConfiguration {
 
     private final Logger logger = LoggerFactory.getLogger(RabbitMQConfiguration.class);
@@ -53,7 +54,6 @@ public class RabbitMQConfiguration {
     private boolean messagingEnabled;
 
     @Bean
-    @ConditionalOnProperty(prefix = "repo.messaging", name = "enabled", havingValue = "true")
     public ConnectionFactory rabbitMQConnectionFactory() {
         logger.trace("Connecting to RabbitMQ service at host {} and port {}.", hostname, port);
         CachingConnectionFactory factory = new CachingConnectionFactory(hostname, port);
@@ -63,14 +63,12 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "repo.messaging", name = "enabled", havingValue = "true")
     public RabbitTemplate rabbitMQTemplate() {
         logger.trace("Get RabbitMQ template");
         return new RabbitTemplate(rabbitMQConnectionFactory());
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "repo.messaging", name = "enabled", havingValue = "true")
     public TopicExchange rabbitMQExchange() {
         logger.trace("Get Topic Exchange '{}'", exchange);
         return new TopicExchange(exchange);
