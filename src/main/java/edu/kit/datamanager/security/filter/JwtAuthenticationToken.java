@@ -43,6 +43,25 @@ public abstract class JwtAuthenticationToken extends AbstractAuthenticationToken
 
     private final static Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationToken.class);
 
+    //temporary token claims
+    public final static String PRINCIPALNAME_CLAIM = "principalname";
+    public final static String PERMISSIONS_CLAIM = "permissions";
+
+    //service token claims
+    public final static String SERVICENAME_CLAIM = "servicename";
+    public final static String SOURCES_CLAIM = "sources";
+
+    //user token claims
+    public final static String USERNAME_CLAIM = "username";
+    public final static String FIRSTNAME_CLAIM = "firstname";
+    public final static String LASTNAME_CLAIM = "lastname";
+    public final static String EMAIL_CLAIM = "email";
+    public final static String GROUPS_CLAIM = "groups";
+
+    //external claims
+    public final static String TOKENTYPE_CLAIM = "tokenType";
+    public final static String ROLES_CLAIM = "roles";
+
     public enum TOKEN_TYPE {
         USER,
         SERVICE,
@@ -85,9 +104,9 @@ public abstract class JwtAuthenticationToken extends AbstractAuthenticationToken
     }
 
     public static JwtAuthenticationToken factoryToken(String token, Map<String, Object> claims) {
-        String type = MapUtils.getString(claims, "tokenType");
-        String roles = MapUtils.getString(claims, "roles");
-        
+        String type = MapUtils.getString(claims, TOKENTYPE_CLAIM);
+        String roles = MapUtils.getString(claims, ROLES_CLAIM);
+
         Set<String> roleSet = new HashSet<>();
         if (roles == null) {
             LOGGER.warn("No 'roles' claim found in JWT " + claims + ". Using ROLE_GUEST as default.");
@@ -184,7 +203,7 @@ public abstract class JwtAuthenticationToken extends AbstractAuthenticationToken
     }
 
     public List<String> getGroups() {
-        if(groups == null){
+        if (groups == null) {
             this.groups = new ArrayList<>();
         }
         return groups;
@@ -195,6 +214,20 @@ public abstract class JwtAuthenticationToken extends AbstractAuthenticationToken
         if (groups != null) {
             this.groups.addAll(groups);
         }
+    }
+
+    @Deprecated
+    public void setGroupId(String groupId) {
+        setGroups(Arrays.asList(groupId));
+    }
+
+    @Deprecated
+    public String getGroupId() {
+        String groupId = null;
+        if (this.groups != null && !this.groups.isEmpty()) {
+            groupId = this.groups.get(0);
+        }
+        return groupId;
     }
 
     @Override

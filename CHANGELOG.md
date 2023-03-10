@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 ### Deprecated
+- set/getGroupId in JwtAuthenticationToken is deprecated and will be removed in the next major version. Instead, set/getGroups should be used.
 
 ### Fixed
 

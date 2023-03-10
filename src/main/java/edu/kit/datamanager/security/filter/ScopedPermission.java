@@ -17,8 +17,6 @@ package edu.kit.datamanager.security.filter;
 
 import edu.kit.datamanager.entities.PERMISSION;
 import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -27,7 +25,6 @@ import org.slf4j.LoggerFactory;
 @Data
 public class ScopedPermission{
 
-  private final static Logger LOGGER = LoggerFactory.getLogger(ScopedPermission.class);
   private String resourceType;
   private String resourceId;
   private PERMISSION permission;

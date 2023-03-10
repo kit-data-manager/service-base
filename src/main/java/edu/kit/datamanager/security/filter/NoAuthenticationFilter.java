@@ -49,6 +49,8 @@ public class NoAuthenticationFilter extends OncePerRequestFilter{
   private final String secretKey;
   private final AuthenticationManager authenticationManager;
 
+  private static final String USERS_GROUP = "USERS";
+  
   public NoAuthenticationFilter(String secretKey, AuthenticationManager authenticationManager){
     this.secretKey = secretKey;
     this.authenticationManager = authenticationManager;
@@ -57,14 +59,14 @@ public class NoAuthenticationFilter extends OncePerRequestFilter{
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException, AuthenticationException{
     Claims claims = new DefaultClaims();
-    claims.put("groups", Arrays.asList("USERS"));
-    claims.put("tokenType", JwtAuthenticationToken.TOKEN_TYPE.SERVICE.toString());
-    claims.put("servicename", JwtServiceToken.SELF_SERVICE_NAME);
+    claims.put(JwtAuthenticationToken.GROUPS_CLAIM, Arrays.asList(USERS_GROUP));
+    claims.put(JwtAuthenticationToken.TOKENTYPE_CLAIM, JwtAuthenticationToken.TOKEN_TYPE.SERVICE.toString());
+    claims.put(JwtAuthenticationToken.SERVICENAME_CLAIM, JwtServiceToken.SELF_SERVICE_NAME);
 
     Set<String> rolesAsString = new HashSet<>();
     rolesAsString.add(RepoServiceRole.SERVICE_WRITE.getValue());
     try{
-      claims.put("roles", new ObjectMapper().writeValueAsString(rolesAsString.toArray(new String[]{})));
+      claims.put(JwtAuthenticationToken.ROLES_CLAIM, new ObjectMapper().writeValueAsString(rolesAsString.toArray(new String[]{})));
     } catch(JsonProcessingException ex){
       throw new InvalidAuthenticationException("Failed to create JWToken.", ex);
     }

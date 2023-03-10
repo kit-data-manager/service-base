@@ -42,7 +42,7 @@ public class JwtServiceToken extends JwtAuthenticationToken {
 
     @Override
     public Class getClassForClaim(String claim) {
-        if ("groups".equals(claim)) {
+        if (GROUPS_CLAIM.equals(claim)) {
             return List.class;
         }
         return String.class;
@@ -50,19 +50,19 @@ public class JwtServiceToken extends JwtAuthenticationToken {
 
     @Override
     public String[] getSupportedClaims() {
-        return new String[]{"servicename", "sources", "groups"};
+        return new String[]{SERVICENAME_CLAIM, SOURCES_CLAIM, GROUPS_CLAIM};
     }
 
     @Override
     public void setValueFromClaim(String claim, Object value) {
         switch (claim) {
-            case "servicename":
+            case SERVICENAME_CLAIM:
                 setPrincipalName((String) value);
                 break;
-            case "sources":
+            case SOURCES_CLAIM:
                 parseSources((String) value);
                 break;
-            case "groups":
+            case GROUPS_CLAIM:
                 setGroups((List<String>) value);
                 break;
             default:

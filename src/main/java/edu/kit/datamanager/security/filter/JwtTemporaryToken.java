@@ -40,7 +40,7 @@ public class JwtTemporaryToken extends JwtAuthenticationToken{
 
   @Override
   public String[] getSupportedClaims(){
-    return new String[]{"principalname", "permissions"};
+    return new String[]{PRINCIPALNAME_CLAIM, PERMISSIONS_CLAIM};
   }
 
   @Override
@@ -57,10 +57,10 @@ public class JwtTemporaryToken extends JwtAuthenticationToken{
   @Override
   public void setValueFromClaim(String claim, Object value){
     switch(claim){
-      case "principalname":
+      case PRINCIPALNAME_CLAIM:
         setPrincipalName((String) value);
         break;
-      case "permissions":
+      case PERMISSIONS_CLAIM:
         parsePermissions((String) value);
         break;
       default:
