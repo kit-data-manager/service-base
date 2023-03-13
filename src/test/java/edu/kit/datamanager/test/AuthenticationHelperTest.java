@@ -50,8 +50,9 @@ public class AuthenticationHelperTest {
         Assert.assertTrue(AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.getValue()));
         Assert.assertEquals("test", AuthenticationHelper.getFirstname());
         Assert.assertEquals("user", AuthenticationHelper.getLastname());
-        Assert.assertEquals("tester", AuthenticationHelper.getAuthorizationIdentities().get(0));
-        Assert.assertEquals("USERS", AuthenticationHelper.getAuthorizationIdentities().get(1));
+        Assert.assertTrue(AuthenticationHelper.hasIdentity("tester"));
+        Assert.assertTrue(AuthenticationHelper.hasIdentity("anonymousUser"));
+        Assert.assertTrue(AuthenticationHelper.hasIdentity("USERS"));
         Assert.assertFalse(AuthenticationHelper.isAuthenticatedAsService());
         Assert.assertEquals(PERMISSION.NONE, AuthenticationHelper.getScopedPermission(String.class.getSimpleName(), "1"));
     }
@@ -71,6 +72,8 @@ public class AuthenticationHelperTest {
 
         Assert.assertEquals("metadata_extractor", AuthenticationHelper.getPrincipal());
         Assert.assertTrue(AuthenticationHelper.hasIdentity("metadata_extractor"));
+        Assert.assertTrue(AuthenticationHelper.hasIdentity("USERS"));
+        Assert.assertTrue(AuthenticationHelper.hasIdentity("SERVICE"));
         Assert.assertTrue(AuthenticationHelper.hasAuthority(RepoServiceRole.SERVICE_READ.getValue()));
         Assert.assertTrue(AuthenticationHelper.isAuthenticatedAsService());
 
@@ -96,7 +99,7 @@ public class AuthenticationHelperTest {
                 addSimpleClaim("firstname", "test").
                 addSimpleClaim("lastname", "user").
                 addSimpleClaim("email", "test@mail.org").
-                addSimpleClaim("groupid", "USERS").
+                addObjectClaim("groups", Arrays.asList("USERS")).
                 getJwtAuthenticationToken(key);
 
         Mockito.when(securityContext.getAuthentication()).thenReturn(userToken);
@@ -106,7 +109,7 @@ public class AuthenticationHelperTest {
     private void mockJwtServiceAuthentication() throws JsonProcessingException {
         JwtAuthenticationToken serviceToken = edu.kit.datamanager.util.JwtBuilder.
                 createServiceToken("metadata_extractor", RepoServiceRole.SERVICE_READ).
-                addSimpleClaim("groupid", "USERS").
+                addObjectClaim("groups", Arrays.asList("USERS", "SERVICE")).
                 getJwtAuthenticationToken(key);
         Mockito.when(securityContext.getAuthentication()).thenReturn(serviceToken);
         SecurityContextHolder.setContext(securityContext);

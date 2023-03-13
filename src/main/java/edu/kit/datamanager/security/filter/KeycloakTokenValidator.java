@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +78,10 @@ public class KeycloakTokenValidator {
      * defined in keycloak mapper for client id: preferred_username or username
      */
     private String jwtClaim;
-
+    /**
+     * defined in keycloak mapper for group ids: default is groups
+     */
+    private String groupsClaim;
     /**
      * The HTTP connects timeout, in milliseconds, zero for infinite. Must not
      * be negative.
@@ -152,6 +156,11 @@ public class KeycloakTokenValidator {
                     LOG.trace("No roles found in JWT. Using default roles {}.", aRoles);
                 }
 
+                String[] groupIds = claimsSet.getStringArrayClaim((groupsClaim == null) ? "groups" : groupsClaim);
+                if (groupIds != null) {
+                    LOG.trace("Obtained group ids {} from JWT.", Arrays.asList(groupIds));
+                }
+
                 //token type? Service, Temp, User?
                 Map<String, Object> claims = new HashMap<>();
                 String roles = new ObjectMapper().writeValueAsString(aRoles);
@@ -161,6 +170,9 @@ public class KeycloakTokenValidator {
                 claims.put("lastname", claimsSet.getStringClaim("family_name"));
                 claims.put("email", claimsSet.getStringClaim("email"));
                 claims.put("roles", roles);
+                if (groupIds != null) {
+                    claims.put("groups", Arrays.asList(groupIds));
+                }
                 JwtAuthenticationToken returnValue = null;
                 returnValue = JwtAuthenticationToken.factoryToken(accessToken, claims);
                 return returnValue;
@@ -232,6 +244,20 @@ public class KeycloakTokenValidator {
         public KeycloakTokenValidator build(final String jwksetUrl, final String resource, final String jwt_username_claim) {
             accessTokenValidator.resource = resource;
             accessTokenValidator.jwtClaim = jwt_username_claim;
+            accessTokenValidator.jwkUrl = jwksetUrl;
+
+            if (accessTokenValidator.jwtProcessor == null && jwksetUrl != null) {
+                accessTokenValidator.jwtProcessor = new DefaultJWTProcessor();
+                accessTokenValidator.init();
+            }
+
+            return accessTokenValidator;
+        }
+
+        public KeycloakTokenValidator build(final String jwksetUrl, final String resource, final String jwt_username_claim, final String jwt_groups_claim) {
+            accessTokenValidator.resource = resource;
+            accessTokenValidator.jwtClaim = jwt_username_claim;
+            accessTokenValidator.groupsClaim = jwt_groups_claim;
             accessTokenValidator.jwkUrl = jwksetUrl;
 
             if (accessTokenValidator.jwtProcessor == null && jwksetUrl != null) {

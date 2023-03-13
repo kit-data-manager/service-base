@@ -61,7 +61,7 @@ public class NoAuthenticationFilterTest {
                 Authentication answer = (Authentication) invocation.getArguments()[0];
                 Assert.assertTrue(answer instanceof JwtAuthenticationToken);
                 Assert.assertTrue(answer instanceof JwtServiceToken);
-                Assert.assertEquals("USERS", ((JwtAuthenticationToken) answer).getGroupId());
+                Assert.assertEquals("USERS", ((JwtAuthenticationToken) answer).getGroups().get(0));
                 Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.SERVICE, ((JwtServiceToken) answer).getTokenType());
                 Assert.assertEquals(JwtServiceToken.SELF_SERVICE_NAME, ((JwtServiceToken) answer).getPrincipal());
                 Assert.assertTrue(((JwtServiceToken) answer).getAuthorities().contains(new SimpleGrantedAuthority(RepoServiceRole.SERVICE_WRITE.getValue())));
@@ -69,7 +69,7 @@ public class NoAuthenticationFilterTest {
                 Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(((JwtServiceToken) answer).getToken());
                 DefaultClaims claims = (DefaultClaims) jws.getBody();
 
-                Assert.assertTrue(claims.containsKey("groupid"));
+                Assert.assertTrue(claims.containsKey("groups"));
                 Assert.assertTrue(claims.containsKey("tokenType"));
                 Assert.assertTrue(claims.containsKey("servicename"));
                 Assert.assertTrue(claims.containsKey("roles"));

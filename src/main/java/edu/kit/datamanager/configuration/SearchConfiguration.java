@@ -26,6 +26,29 @@ import org.springframework.validation.annotation.Validated;
 /**
  * Search configuration used by SearchController.
  *
+ * The search configuration covers three properties:
+ * 
+ * <ul> 
+ *  <li>repo.search.enabled - TRUE/FALSE, determined whether search capabilities will be enabled or not. Default: FALSE</li>
+ *  <li>repo.search.url - URL to a running Elastic instance used as search backend. The URL will be validated at instantiation time using a connection check. See below for further elaborations on that and potential issues. Default: http://localhost:9200</li>
+ *  <li>repo.search.index - One or more indices in the given Elastic index included in the search. The provided value should be in lowercase and may contain multiple enties separated by , (i.e. index1,index2) as well as wildcard character * to select a range of indices (i.e. index*). Default: *</li>
+ * </ul>
+ *
+ * To ensure a proper configuration, <i>repo.search.url</i> is validated using a connection check for the configured elastic instance as soon as ElasticConfiguration is instantiated. This means, that if you use SearchConfiguration
+ * in your project and you want to allow to disable search via <i>repo.search.enabled:FALSE</i> you should ensure, that in this case, SearchConfiguration is NOT instantiated as this will cause a validation exception if the connection
+ * check to the Elastic instance fails. This can be achieved by conditional use of SearchConfiguration as shown in the following example:
+ *
+ * <pre>{@code 
+ * @Bean
+ * @ConfigurationProperties("repo")
+ * @ConditionalOnProperty(prefix = "repo.search", name = "enabled", havingValue = "true")
+ * public SearchConfiguration searchConfiguration() {
+ *  return new SearchConfiguration();
+ * }  
+ * }</pre>
+ * 
+ * If using ConditionalOnProperty the bean will only be instantiated if property <i>repo.search.enabled</i> is TRUE, otherwise the bean remains 'null'.
+ *
  * @author jejkal
  */
 @Configuration

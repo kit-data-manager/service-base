@@ -34,7 +34,7 @@ import javax.validation.Payload;
 @Documented
 public @interface SearchIndexUrl{
 
-  String message() default "Provided URL invalid. A valid URL to a is required. (e.g.: http://localhost:9200)";
+  String message() default "SearchIndexUrl seems to be invalid or not accessible. Please make sure to provide a valid URL (e.g.: http://localhost:9200) and that the Elastic instance is accessible.";
 
   Class<?>[] groups() default {};
 
