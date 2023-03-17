@@ -7,13 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support group memberships from JWT for authorization decisions by @ThomasJejkal in https://github.com/kit-data-manager/service-base/pull/124
 
 ### Changed
 - Elastic search configuration validation now retries three times with 5 seconds delay to connect to repo.search.url before startup fails in case of slow Elastic startup
+- Improve documentation on SearchConfiguration usage by @ThomasJejkal in https://github.com/kit-data-manager/service-base/pull/122
+- Bump mockito-inline from 4.10.0 to 4.11.0 by @dependabot in https://github.com/kit-data-manager/service-base/pull/120
+- Bump httpclient from 4.5.13 to 4.5.14 by @dependabot in https://github.com/kit-data-manager/service-base/pull/119
+- Bump nimbus-jose-jwt from 9.27 to 9.28 by @dependabot in https://github.com/kit-data-manager/service-base/pull/118
 
 ### Removed
 
 ### Deprecated
+- set/getGroupId in JwtAuthenticationToken is deprecated and will be removed in the next major version. Instead, set/getGroups should be used.
 
 ### Fixed
 

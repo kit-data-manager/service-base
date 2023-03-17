@@ -63,6 +63,12 @@ public class KeycloakTokenValidator {
     private static final Logger LOG = LoggerFactory.getLogger(KeycloakTokenValidator.class);
 
     public static final String JWT_AUD = "aud";
+    public static final String KEYCLOAK_GIVENNAME_CLAIM = "given_name";
+    public static final String KEYCLOAK_FAMILYNAME_CLAIM = "family_name";
+    public static final String KEYCLOAK_EMAIL_CLAIM = "email";
+    public static final String KEYCLOAK_USERNAME_CLAIM = "preferred_user";
+    public static final String KEYCLOAK_REALMACCESS_CLAIM = "realm_access";
+    
 
     /**
      * keycloak certs url
@@ -144,9 +150,9 @@ public class KeycloakTokenValidator {
                 //build auth token
                 ArrayList aRoles = null;
 
-                Map<String, Object> o = claimsSet.getJSONObjectClaim("realm_access");
+                Map<String, Object> o = claimsSet.getJSONObjectClaim(KEYCLOAK_REALMACCESS_CLAIM);
                 if (o != null) {
-                    aRoles = (ArrayList) o.get("roles");
+                    aRoles = (ArrayList) o.get(JwtAuthenticationToken.ROLES_CLAIM);
                     LOG.trace("Obtained roles {} from JWT.", aRoles);
                 }
 
@@ -156,7 +162,7 @@ public class KeycloakTokenValidator {
                     LOG.trace("No roles found in JWT. Using default roles {}.", aRoles);
                 }
 
-                String[] groupIds = claimsSet.getStringArrayClaim((groupsClaim == null) ? "groups" : groupsClaim);
+                String[] groupIds = claimsSet.getStringArrayClaim((groupsClaim == null) ? JwtAuthenticationToken.GROUPS_CLAIM : groupsClaim);
                 if (groupIds != null) {
                     LOG.trace("Obtained group ids {} from JWT.", Arrays.asList(groupIds));
                 }
@@ -165,13 +171,13 @@ public class KeycloakTokenValidator {
                 Map<String, Object> claims = new HashMap<>();
                 String roles = new ObjectMapper().writeValueAsString(aRoles);
                 LOG.trace("Adding roles string {} to claims.", roles);
-                claims.put("username", claimsSet.getStringClaim((jwtClaim == null) ? "preferred_user" : jwtClaim));
-                claims.put("firstname", claimsSet.getStringClaim("given_name"));
-                claims.put("lastname", claimsSet.getStringClaim("family_name"));
-                claims.put("email", claimsSet.getStringClaim("email"));
-                claims.put("roles", roles);
+                claims.put(JwtAuthenticationToken.USERNAME_CLAIM, claimsSet.getStringClaim((jwtClaim == null) ? KEYCLOAK_USERNAME_CLAIM : jwtClaim));
+                claims.put(JwtAuthenticationToken.FIRSTNAME_CLAIM, claimsSet.getStringClaim(KEYCLOAK_GIVENNAME_CLAIM));
+                claims.put(JwtAuthenticationToken.LASTNAME_CLAIM, claimsSet.getStringClaim(KEYCLOAK_FAMILYNAME_CLAIM));
+                claims.put(JwtAuthenticationToken.EMAIL_CLAIM, claimsSet.getStringClaim(KEYCLOAK_EMAIL_CLAIM));
+                claims.put(JwtAuthenticationToken.ROLES_CLAIM, roles);
                 if (groupIds != null) {
-                    claims.put("groups", Arrays.asList(groupIds));
+                    claims.put(JwtAuthenticationToken.GROUPS_CLAIM, Arrays.asList(groupIds));
                 }
                 JwtAuthenticationToken returnValue = null;
                 returnValue = JwtAuthenticationToken.factoryToken(accessToken, claims);

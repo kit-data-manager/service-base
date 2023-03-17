@@ -40,12 +40,12 @@ public class JwtUserToken extends JwtAuthenticationToken {
 
     @Override
     public String[] getSupportedClaims() {
-        return new String[]{"username", "firstname", "lastname", "email", "groups"};
+        return new String[]{USERNAME_CLAIM, FIRSTNAME_CLAIM, LASTNAME_CLAIM, EMAIL_CLAIM, GROUPS_CLAIM};
     }
 
     @Override
     public Class getClassForClaim(String claim) {
-        if ("groups".equals(claim)) {
+        if (GROUPS_CLAIM.equals(claim)) {
             return List.class;
         }
         return String.class;
@@ -54,19 +54,19 @@ public class JwtUserToken extends JwtAuthenticationToken {
     @Override
     public void setValueFromClaim(String claim, Object value) {
         switch (claim) {
-            case "username":
+            case USERNAME_CLAIM:
                 setPrincipalName((String) value);
                 break;
-            case "firstname":
+            case FIRSTNAME_CLAIM:
                 firstname = (String) value;
                 break;
-            case "lastname":
+            case LASTNAME_CLAIM:
                 lastname = (String) value;
                 break;
-            case "email":
+            case EMAIL_CLAIM:
                 email = (String) value;
                 break;
-            case "groups":
+            case GROUPS_CLAIM:
                 setGroups((List<String>) value);
                 break;
             default:

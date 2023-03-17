@@ -55,6 +55,9 @@ public class KeycloakTokenFilter extends OncePerRequestFilter {
 
     private static final String BEARER = "Bearer ";
     public final static String AUTHORIZATION_HEADER = "Authorization";
+    
+    public final static String BASIC_AUTH_PREFIX = "BASIC";
+    
     private final KeycloakTokenValidator tokenValidator;
     private JwtAuthenticationToken jwToken;
 
@@ -71,7 +74,7 @@ public class KeycloakTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader(AUTHORIZATION_HEADER);
         boolean contextSet = false;
-        if (token != null && !token.toUpperCase().startsWith("BASIC") && token.startsWith(BEARER)) {
+        if (token != null && !token.toUpperCase().startsWith(BASIC_AUTH_PREFIX) && token.startsWith(BEARER)) {
             LOG.trace("Starting JWT filtering.");
             try {
                 //remove Bearer prefix
