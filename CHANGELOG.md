@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Removed
+
+### Deprecated
+
+### Fixed
+
+### Security
+
+## [1.1.1] - 2023-03-17
+
+### Added
 - Support group memberships from JWT for authorization decisions by @ThomasJejkal in https://github.com/kit-data-manager/service-base/pull/124
 
 ### Changed
@@ -16,16 +30,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump httpclient from 4.5.13 to 4.5.14 by @dependabot in https://github.com/kit-data-manager/service-base/pull/119
 - Bump nimbus-jose-jwt from 9.27 to 9.28 by @dependabot in https://github.com/kit-data-manager/service-base/pull/118
 
-### Removed
-
 ### Deprecated
 - set/getGroupId in JwtAuthenticationToken is deprecated and will be removed in the next major version. Instead, set/getGroups should be used.
 
-### Fixed
-
-### Security
-
 ## [1.1.0] - 2023-01-11
+
 ### Added
 - Search endpoint (proxy) for elasticsearch
 
@@ -195,7 +204,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/kit-data-manager/service-base/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/kit-data-manager/service-base/compare/v1.0.7...v1.1.0
 [1.0.7]: https://github.com/kit-data-manager/service-base/compare/v1.0.6...v1.0.7
 [1.0.6]: https://github.com/kit-data-manager/service-base/compare/v1.0.5...v1.0.6
