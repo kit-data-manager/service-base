@@ -97,7 +97,7 @@ public class ElasticSearchUtil {
         }
       }
       if (!validElasticSearchServer) {
-        LOGGER.trace("Unable to connect to elasticsearch instance at '{}' withing '{}' attempts!", baseUrl, NO_OF_RETRIES);
+        LOGGER.trace("Unable to connect to elasticsearch instance at '{}' within '{}' attempts!", baseUrl, NO_OF_RETRIES);
       }
     } else {
       LOGGER.warn("No elasticsearch URL provided. Aborting.");
