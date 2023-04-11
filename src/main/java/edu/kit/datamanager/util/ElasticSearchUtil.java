@@ -47,7 +47,7 @@ public class ElasticSearchUtil {
   public static final String RESULTS_SIZE = "size";
   static final String SID_READ = "read";
 
-  static final int NO_OF_RETRIES = 3;
+  private static final int NO_OF_RETRIES = 3;
 
   /**
    * Test URL for pointing to a running elasticsearch instance.
@@ -109,7 +109,7 @@ public class ElasticSearchUtil {
    * Test if string is a valid elasticsearch index. If not - change to lower
    * case - replace all invalid characters by '_'
    *
-   * @param elasticsearchIndex
+   * @param elasticsearchIndex index to test.
    * @return valid index
    */
   public static String testForValidIndex(String elasticsearchIndex) {
@@ -122,7 +122,11 @@ public class ElasticSearchUtil {
     }
     return validIndex;
   }
-
+  
+  /**
+   * Build post filter to restrict only to authorized results.
+   * @param queryNode Node holding query.
+   */
   public static void buildPostFilter(ObjectNode queryNode) {
     if (queryNode.has(POST_FILTER)) {
       LOGGER.warn("PostFilter found in provided query. Filter will be replaced!");
@@ -152,7 +156,13 @@ public class ElasticSearchUtil {
     LOGGER.trace("PostFilter: '{}'", postFilter);
     queryNode.replace(POST_FILTER, postFilter);
   }
-
+  
+  /**
+   * Add pagination to query if not already present.
+   * @param queryNode Node holding query.
+   * @param page Number of the page.
+   * @param size Size of the page.
+   */
   public static void addPaginationInformation(ObjectNode queryNode, int page, int size) {
     if (queryNode.has(RESULTS_FROM) || queryNode.has(RESULTS_SIZE)) {
       LOGGER.trace("Provided query already specifies 'from' and/or 'size'. Ignoring pagination information from request.");
