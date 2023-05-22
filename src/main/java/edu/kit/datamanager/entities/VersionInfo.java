@@ -21,7 +21,7 @@ package edu.kit.datamanager.entities;
  */
 import java.util.Set;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 import lombok.Getter;
 import lombok.Setter;

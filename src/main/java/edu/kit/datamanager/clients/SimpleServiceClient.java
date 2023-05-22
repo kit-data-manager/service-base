@@ -355,7 +355,7 @@ public class SimpleServiceClient {
         ResponseEntity<String> response = restTemplate.postForEntity(uriBuilder.toUriString(), new HttpEntity<>(body, headers), String.class);
         LOGGER.trace("Upload returned with status {}.", response.getStatusCodeValue());
         collectResponseHeaders(response.getHeaders());
-        return response.getStatusCode();
+        return HttpStatus.resolve(response.getStatusCode().value());
 
     }
 

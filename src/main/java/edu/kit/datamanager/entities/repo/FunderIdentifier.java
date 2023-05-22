@@ -19,9 +19,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import edu.kit.datamanager.entities.BaseEnum;
 import edu.kit.datamanager.entities.Identifier;
 import edu.kit.datamanager.entities.Identifier.IDENTIFIER_TYPE;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
