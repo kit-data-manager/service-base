@@ -17,10 +17,10 @@ package edu.kit.datamanager.security.filter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.util.StandardCharset;
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
 import java.io.IOException;
 import java.util.Arrays;
@@ -91,7 +91,7 @@ public class PublicAuthenticationFilter extends OncePerRequestFilter {
       Set<Map.Entry<String, Object>> claimEntries = claims.entrySet();
       Map<String, Object> claimMap = new HashMap<>();
       claimEntries.forEach(entry -> claimMap.put(entry.getKey(), entry.getValue()));
-      Key key = new SecretKeySpec(secretKey.getBytes(), "HmacSHA256");
+      Key key = new SecretKeySpec(secretKey.getBytes(StandardCharset.UTF_8), "HmacSHA256");
       String token = Jwts.builder().setClaims(claims).setExpiration(Date.from(Instant.now().plus(1l, ChronoUnit.HOURS))).signWith(key).compact();
       JwtAuthenticationToken res = JwtAuthenticationToken.factoryToken(token, claimMap);
       SecurityContextHolder.getContext().setAuthentication(res);
