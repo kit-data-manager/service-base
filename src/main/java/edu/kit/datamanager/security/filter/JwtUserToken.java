@@ -28,7 +28,7 @@ import org.springframework.security.core.GrantedAuthority;
  */
 public class JwtUserToken extends JwtAuthenticationToken {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(JwtUserToken.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtUserToken.class);
 
     private String firstname = null;
     private String lastname = null;

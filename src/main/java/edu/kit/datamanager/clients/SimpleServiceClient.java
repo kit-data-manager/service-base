@@ -55,7 +55,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 public class SimpleServiceClient {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(SimpleServiceClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleServiceClient.class);
     private RestTemplate restTemplate = new RestTemplate();
 
     private final String resourceBaseUrl;

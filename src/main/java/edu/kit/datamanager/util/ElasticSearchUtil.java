@@ -39,9 +39,9 @@ public class ElasticSearchUtil {
     /**
      * Logger for this class.
      */
-    private final static Logger LOGGER = LoggerFactory.getLogger(ElasticSearchUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ElasticSearchUtil.class);
 
-    final static JsonNodeFactory factory = JsonNodeFactory.instance;
+    static final JsonNodeFactory factory = JsonNodeFactory.instance;
 
     public static final String RESULTS_FROM = "from";
     public static final String RESULTS_SIZE = "size";

@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JwtBuilder {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(JwtBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtBuilder.class);
 
     private final Map<String, Object> claims;
     private final List<String> roles;

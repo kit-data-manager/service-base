@@ -31,7 +31,7 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _ResourceDescriptionsDescriptionBr_QNAME = new QName("http://datacite.org/schema/kernel-4", "br");
+    private static final QName _ResourceDescriptionsDescriptionBr_QNAME = new QName("http://datacite.org/schema/kernel-4", "br");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.datacite.schema.kernel_4

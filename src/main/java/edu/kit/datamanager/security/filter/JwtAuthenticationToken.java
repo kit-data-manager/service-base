@@ -41,26 +41,26 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
  */
 public abstract class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationToken.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationToken.class);
 
     //temporary token claims
-    public final static String PRINCIPALNAME_CLAIM = "principalname";
-    public final static String PERMISSIONS_CLAIM = "permissions";
+    public static final String PRINCIPALNAME_CLAIM = "principalname";
+    public static final String PERMISSIONS_CLAIM = "permissions";
 
     //service token claims
-    public final static String SERVICENAME_CLAIM = "servicename";
-    public final static String SOURCES_CLAIM = "sources";
+    public static final String SERVICENAME_CLAIM = "servicename";
+    public static final String SOURCES_CLAIM = "sources";
 
     //user token claims
-    public final static String USERNAME_CLAIM = "username";
-    public final static String FIRSTNAME_CLAIM = "firstname";
-    public final static String LASTNAME_CLAIM = "lastname";
-    public final static String EMAIL_CLAIM = "email";
-    public final static String GROUPS_CLAIM = "groups";
+    public static final String USERNAME_CLAIM = "username";
+    public static final String FIRSTNAME_CLAIM = "firstname";
+    public static final String LASTNAME_CLAIM = "lastname";
+    public static final String EMAIL_CLAIM = "email";
+    public static final String GROUPS_CLAIM = "groups";
 
     //external claims
-    public final static String TOKENTYPE_CLAIM = "tokenType";
-    public final static String ROLES_CLAIM = "roles";
+    public static final String TOKENTYPE_CLAIM = "tokenType";
+    public static final String ROLES_CLAIM = "roles";
 
     public enum TOKEN_TYPE {
         USER,

@@ -54,9 +54,9 @@ public class KeycloakTokenFilter extends OncePerRequestFilter {
     private static final Logger LOG = LoggerFactory.getLogger(KeycloakTokenFilter.class);
 
     private static final String BEARER = "Bearer ";
-    public final static String AUTHORIZATION_HEADER = "Authorization";
+    public static final String AUTHORIZATION_HEADER = "Authorization";
     
-    public final static String BASIC_AUTH_PREFIX = "BASIC";
+    public static final String BASIC_AUTH_PREFIX = "BASIC";
     
     private final KeycloakTokenValidator tokenValidator;
     private JwtAuthenticationToken jwToken;

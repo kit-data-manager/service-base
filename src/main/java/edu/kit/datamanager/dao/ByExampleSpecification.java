@@ -171,7 +171,7 @@ public class ByExampleSpecification{
     };
   }
 
-  static private String pattern(String str){
+  private static String pattern(String str){
     return "%" + str + "%";
   }
 }
