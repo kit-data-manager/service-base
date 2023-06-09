@@ -17,16 +17,13 @@ package edu.kit.datamanager.security.filter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.kit.datamanager.entities.RepoServiceRole;
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
-import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -35,10 +32,13 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.commons.lang3.time.DateUtils;
+import java.security.Key;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import javax.crypto.spec.SecretKeySpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -71,6 +71,7 @@ public class PublicAuthenticationFilter extends OncePerRequestFilter {
     this.secretKey = secretKey;
   }
 
+  @SuppressWarnings("JavaUtilDate")
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException, AuthenticationException {
     if (SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -89,11 +90,9 @@ public class PublicAuthenticationFilter extends OncePerRequestFilter {
       }
       Set<Map.Entry<String, Object>> claimEntries = claims.entrySet();
       Map<String, Object> claimMap = new HashMap<>();
-      claimEntries.forEach((entry) -> {
-        claimMap.put(entry.getKey(), entry.getValue());
-      });
-
-      String token = Jwts.builder().setClaims(claims).setExpiration(DateUtils.addHours(new Date(), 1)).signWith(SignatureAlgorithm.HS256, secretKey).compact();
+      claimEntries.forEach(entry -> claimMap.put(entry.getKey(), entry.getValue()));
+      Key key = new SecretKeySpec(secretKey.getBytes(), "HmacSHA256");
+      String token = Jwts.builder().setClaims(claims).setExpiration(Date.from(Instant.now().plus(1l, ChronoUnit.HOURS))).signWith(key).compact();
       JwtAuthenticationToken res = JwtAuthenticationToken.factoryToken(token, claimMap);
       SecurityContextHolder.getContext().setAuthentication(res);
     } else {
