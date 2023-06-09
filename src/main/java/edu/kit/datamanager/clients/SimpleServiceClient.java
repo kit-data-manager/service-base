@@ -239,7 +239,7 @@ public class SimpleServiceClient {
      * @return Page holding all responses.
      */
     public <C> ResultPage<C> getResources(Class<C[]> responseType) {
-        LOGGER.trace("Calling getResource().");
+        LOGGER.trace("Calling getResources().");
         String destinationUri = resourceBaseUrl + ((resourcePath != null) ? resourcePath : "");
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri).queryParams(queryParams);
         LOGGER.trace("Obtaining resource from resource URI {}.", uriBuilder.toUriString());
@@ -259,7 +259,7 @@ public class SimpleServiceClient {
      * @return Page holding all responses.
      */
     public <C> ResultPage<C> findResources(C resource, Class<C[]> responseType) {
-        LOGGER.trace("Calling getResource().");
+        LOGGER.trace("Calling findResources().");
         String destinationUri = resourceBaseUrl + "search";
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri).queryParams(queryParams);
         LOGGER.trace("Obtaining resource from resource URI {}.", uriBuilder.toUriString());
