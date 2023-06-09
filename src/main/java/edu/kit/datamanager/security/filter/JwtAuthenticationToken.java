@@ -136,11 +136,10 @@ public abstract class JwtAuthenticationToken extends AbstractAuthenticationToken
                 break;
             case TEMPORARY:
                 jwToken = new JwtTemporaryToken(token, grantedAuthorities);
-        }
-
-        if (jwToken == null) {
-            //as long as no additional types are added, we'll never arrive here
-            throw new InvalidAuthenticationException("JWTokens of type " + type + " are currently not supported.");
+                break;
+            default:
+                //as long as no additional types are added, we'll never arrive here
+                throw new InvalidAuthenticationException("JWTokens of type " + type + " are currently not supported.");
         }
 
         for (String claim : jwToken.getSupportedClaims()) {
