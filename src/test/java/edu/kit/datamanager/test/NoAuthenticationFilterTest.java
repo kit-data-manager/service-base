@@ -15,10 +15,10 @@
  */
 package edu.kit.datamanager.test;
 
+import com.nimbusds.jose.util.StandardCharset;
 import edu.kit.datamanager.entities.RepoServiceRole;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import edu.kit.datamanager.security.filter.JwtServiceToken;
-import edu.kit.datamanager.security.filter.JwtUserToken;
 import edu.kit.datamanager.security.filter.NoAuthenticationFilter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -28,6 +28,8 @@ import java.util.Date;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.security.Key;
+import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -66,7 +68,8 @@ public class NoAuthenticationFilterTest {
                 Assert.assertEquals(JwtServiceToken.SELF_SERVICE_NAME, ((JwtServiceToken) answer).getPrincipal());
                 Assert.assertTrue(((JwtServiceToken) answer).getAuthorities().contains(new SimpleGrantedAuthority(RepoServiceRole.SERVICE_WRITE.getValue())));
 
-                Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(((JwtServiceToken) answer).getToken());
+                Key secretKey = new SecretKeySpec(key.getBytes(StandardCharset.UTF_8), "HmacSHA256");
+                Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(((JwtServiceToken) answer).getToken());
                 DefaultClaims claims = (DefaultClaims) jws.getBody();
 
                 Assert.assertTrue(claims.containsKey("groups"));

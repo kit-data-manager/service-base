@@ -17,7 +17,6 @@ package edu.kit.datamanager.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.util.StandardCharset;
 import edu.kit.datamanager.entities.RepoRole;
 import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
@@ -26,9 +25,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
-import java.security.Key;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -37,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import javax.crypto.spec.SecretKeySpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,15 +162,12 @@ public class JwtBuilder {
   }
 
   public String getCompactToken(String secret, Date expiresAt) {
-    Key key = new SecretKeySpec(secret.getBytes(StandardCharset.UTF_8), "HmacSHA256");
-    io.jsonwebtoken.JwtBuilder jwtBuilder = Jwts.builder().setClaims(claims).signWith(key);
-
     if (expiresAt != null) {
-      jwtBuilder = jwtBuilder.setExpiration(expiresAt);
+            return Jwts.builder().setClaims(getClaims()).setExpiration(expiresAt).signWith(SignatureAlgorithm.HS256, secret).compact();
     } else {
       LOGGER.debug("Warn: Creating JWT token without expiration time.");
+            return Jwts.builder().setClaims(getClaims()).signWith(SignatureAlgorithm.HS256, secret).compact();
     }
-    return jwtBuilder.compact();
   }
 
   public JwtAuthenticationToken getJwtAuthenticationToken(String secret) {
