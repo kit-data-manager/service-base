@@ -58,7 +58,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  */
 public class PublicAuthenticationFilter extends OncePerRequestFilter {
 
-  public static final String PUBLIC_USER = "PUBLIC";
+  public static final String PUBLIC_USER = "anonymousUser";
   public static final String ROLE_PUBLIC_READ = "ROLE_ANONYMOUS";
 
   private static final Logger LOG = LoggerFactory.getLogger(PublicAuthenticationFilter.class);
