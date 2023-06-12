@@ -50,17 +50,22 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- *
+ * Helper class to access services via REST.
+ * 
  * @author jejkal
  */
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class SimpleServiceClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleServiceClient.class);
+    // define some log messages used multiple times. 
+    private static final String OBTAINING_RESOURCE = "Obtaining resource from resource URI {}.";
+    private static final String RETURN_STATUS = "Request returned with status {}. Returning response body.";
+    
     private RestTemplate restTemplate = new RestTemplate();
 
     private final String resourceBaseUrl;
     private String resourcePath = null;
-    private String bearerToken = null;
     private HttpHeaders headers;
     private Map<String, String> requestedResponseHeaders = null;
 
@@ -89,8 +94,7 @@ public class SimpleServiceClient {
      * @return Service client.
      */
     public static SimpleServiceClient create(String baseUrl) {
-        SimpleServiceClient client = new SimpleServiceClient(baseUrl);
-        return client;
+        return new SimpleServiceClient(baseUrl);
     }
 
     /**
@@ -100,7 +104,6 @@ public class SimpleServiceClient {
      * @return Service client with authentication.
      */
     public SimpleServiceClient withBearerToken(String bearerToken) {
-        this.bearerToken = bearerToken;
         if (bearerToken != null) {
             return withHeader("Authorization", "Bearer " + bearerToken);
         }
@@ -224,7 +227,7 @@ public class SimpleServiceClient {
         LOGGER.trace("Calling getResource().");
         String destinationUri = resourceBaseUrl + ((resourcePath != null) ? resourcePath : "");
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri).queryParams(queryParams);
-        LOGGER.trace("Obtaining resource from resource URI {}.", uriBuilder.toUriString());
+        LOGGER.trace(OBTAINING_RESOURCE, uriBuilder.toUriString());
         ResponseEntity<C> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, new HttpEntity<>(headers), responseType);
         collectResponseHeaders(response.getHeaders());
         LOGGER.trace("Request returned with status {}. Returning response body.", response.getStatusCodeValue());
@@ -242,7 +245,7 @@ public class SimpleServiceClient {
         LOGGER.trace("Calling getResources().");
         String destinationUri = resourceBaseUrl + ((resourcePath != null) ? resourcePath : "");
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri).queryParams(queryParams);
-        LOGGER.trace("Obtaining resource from resource URI {}.", uriBuilder.toUriString());
+        LOGGER.trace(OBTAINING_RESOURCE, uriBuilder.toUriString());
         ResponseEntity<C[]> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, new HttpEntity<>(headers), responseType);
         LOGGER.trace("Request returned with status {}. Returning response body.", response.getStatusCodeValue());
         ContentRange contentRange = ControllerUtils.parseContentRangeHeader(response.getHeaders().getFirst("Content-Range"));
@@ -262,7 +265,7 @@ public class SimpleServiceClient {
         LOGGER.trace("Calling findResources().");
         String destinationUri = resourceBaseUrl + "search";
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri).queryParams(queryParams);
-        LOGGER.trace("Obtaining resource from resource URI {}.", uriBuilder.toUriString());
+        LOGGER.trace(OBTAINING_RESOURCE, uriBuilder.toUriString());
         ResponseEntity<C[]> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, new HttpEntity<>(resource, headers), responseType);
         LOGGER.trace("Request returned with status {}. Returning response body.", response.getStatusCodeValue());
         ContentRange contentRange = ControllerUtils.parseContentRangeHeader(response.getHeaders().getFirst("Content-Range"));
@@ -284,9 +287,9 @@ public class SimpleServiceClient {
 
         RequestCallback requestCallback = request -> {
             Set<Entry<String, List<String>>> entries = headers.entrySet();
-            entries.forEach((entry) -> {
-                request.getHeaders().addAll(entry.getKey(), entry.getValue());
-            });
+            entries.forEach(
+                    entry -> request.getHeaders().addAll(entry.getKey(), entry.getValue())
+            );
         };
 
         ResponseExtractor<ClientHttpResponse> responseExtractor = response -> {
@@ -372,7 +375,7 @@ public class SimpleServiceClient {
 
         String destinationUri = resourceBaseUrl + ((resourcePath != null) ? resourcePath : "");
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri).queryParams(queryParams);
-        LOGGER.trace("Obtaining resource from resource URI {}.", uriBuilder.toUriString());
+        LOGGER.trace(OBTAINING_RESOURCE, uriBuilder.toUriString());
         ResponseEntity<C> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, new HttpEntity<>(headers), responseType);
         LOGGER.trace("Reading ETag from response header.");
         String etag = response.getHeaders().getFirst("ETag");
@@ -392,7 +395,7 @@ public class SimpleServiceClient {
         LOGGER.trace("Calling delete().");
         String destinationUri = resourceBaseUrl + ((resourcePath != null) ? resourcePath : "");
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(destinationUri).queryParams(queryParams);
-        LOGGER.trace("Obtaining resource from resource URI {}.", uriBuilder.toUriString());
+        LOGGER.trace(OBTAINING_RESOURCE, uriBuilder.toUriString());
         ResponseEntity<DataResource> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, new HttpEntity<>(headers), DataResource.class);
         LOGGER.trace("Reading ETag from response header.");
         String etag = response.getHeaders().getFirst("ETag");
@@ -414,9 +417,9 @@ public class SimpleServiceClient {
         if (requestedResponseHeaders != null) {
             Set<Entry<String, String>> entries = requestedResponseHeaders.entrySet();
 
-            entries.forEach((entry) -> {
-                requestedResponseHeaders.put(entry.getKey(), responseHeaders.getFirst(entry.getKey()));
-            });
+            entries.forEach(
+                    entry -> requestedResponseHeaders.put(entry.getKey(), responseHeaders.getFirst(entry.getKey()))
+            );
         }
     }
 
@@ -427,9 +430,9 @@ public class SimpleServiceClient {
      */
     public static void main(String[] args) throws Exception {
         ResultPage<DataResource> result = SimpleServiceClient.create("http://localhost:8090/api/v1/dataresources1/").getResources(DataResource[].class);
-        System.out.println(result.getContentRange());
+        LOGGER.info(result.getContentRange().toString());
         for (DataResource r : result.getResources()) {
-            System.out.println(r);
+            LOGGER.info(r.toString());
         }
     }
 
