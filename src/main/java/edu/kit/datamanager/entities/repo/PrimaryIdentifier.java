@@ -23,12 +23,14 @@ import jakarta.xml.bind.annotation.XmlValue;
 import lombok.Data;
 
 /**
+ * Entity for primary identifier. 
  *
  * @author jejkal
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class PrimaryIdentifier{
 
   private long id;

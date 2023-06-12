@@ -22,12 +22,14 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import lombok.Data;
 
 /**
+ * Entity for title.
  *
  * @author jejkal
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class Title{
 
   public enum TITLE_TYPE implements BaseEnum{

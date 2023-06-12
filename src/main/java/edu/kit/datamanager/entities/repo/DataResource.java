@@ -37,6 +37,7 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import lombok.Data;
 
 /**
+ * Entity for data resource.
  *
  * @author jejkal
  */
@@ -44,6 +45,7 @@ import lombok.Data;
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "resource", namespace = "http://datacite.org/schema/kernel-4")
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class DataResource implements Serializable{
 
   public enum State implements BaseEnum{

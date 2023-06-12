@@ -18,7 +18,6 @@ package edu.kit.datamanager.entities;
 import edu.kit.datamanager.annotations.Searchable;
 import edu.kit.datamanager.annotations.SecureUpdate;
 import edu.kit.datamanager.util.EnumUtils;
-import io.swagger.v3.oas.annotations.Parameter;
 import java.util.Objects;
 import java.util.UUID;
 import jakarta.persistence.Entity;
@@ -35,13 +34,15 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import lombok.Data;
 
 /**
- *
+ * Entity for identifiers.
+ * 
  * @author jejkal
  */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class Identifier {
 
   public enum IDENTIFIER_TYPE implements BaseEnum {

@@ -18,16 +18,16 @@ package edu.kit.datamanager.entities.repo;
 import edu.kit.datamanager.entities.BaseEnum;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlType;
 import lombok.Data;
 
 /**
+ * Entity for identifier.
  *
  * @author jejkal
  */
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class Identifier{
 
   public enum IDENTIFIER_TYPE implements BaseEnum{

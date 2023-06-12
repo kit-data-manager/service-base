@@ -25,16 +25,17 @@ import edu.kit.datamanager.util.json.CustomInstantSerializer;
 import java.time.Instant;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import lombok.Data;
 
 /**
+ * Entity for date (DataCite)
  *
  * @author jejkal
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class Date{
 
   //Date types

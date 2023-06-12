@@ -23,12 +23,14 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import lombok.Data;
 
 /**
+ * Entity for agent entity.
  *
  * @author jejkal
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class Agent{
 
   private long id;

@@ -22,12 +22,14 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import lombok.Data;
 
 /**
+ * Entity for resource type.
  *
  * @author jejkal
  */
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class ResourceType{
 
   public enum TYPE_GENERAL implements BaseEnum{

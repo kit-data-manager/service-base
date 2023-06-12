@@ -20,10 +20,12 @@ import java.util.Map;
 import lombok.Data;
 
 /**
- *
+ * Entity for message about data resources.
+ * 
  * @author jejkal
  */
 @Data
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class DataResourceMessage extends BasicMessage{
 
   public enum ACTION{

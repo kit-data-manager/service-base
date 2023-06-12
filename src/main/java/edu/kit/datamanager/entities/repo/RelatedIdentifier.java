@@ -22,12 +22,14 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import lombok.Data;
 
 /**
+ * Entity for related identifier.
  *
  * @author jejkal
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XmlAccessorType(XmlAccessType.FIELD)
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class RelatedIdentifier {
 
     public enum RELATED_IDENTIFIER_TYPE implements BaseEnum {

@@ -22,12 +22,14 @@ import jakarta.xml.bind.annotation.XmlElement;
 import lombok.Data;
 
 /**
+ * Entity for point. 
  *
  * @author jejkal
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class Point{
 
   @XmlElement(name = "pointLongitude")
