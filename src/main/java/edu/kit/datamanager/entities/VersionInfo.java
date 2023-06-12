@@ -15,10 +15,6 @@
  */
 package edu.kit.datamanager.entities;
 
-/**
- *
- * @author jejkal
- */
 import java.util.Set;
 
 import jakarta.validation.constraints.NotBlank;
@@ -33,6 +29,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class VersionInfo{
 
   /**

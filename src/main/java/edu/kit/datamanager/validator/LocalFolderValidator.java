@@ -25,18 +25,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import edu.kit.datamanager.annotations.LocalFolderURL;
+import java.net.URL;
 
 /**
  * Validator checking a property to be a local folder.
  *
  * @author jejkal
  */
-public class LocalFolderValidator implements ConstraintValidator<LocalFolderURL, java.net.URL> {
+public class LocalFolderValidator implements ConstraintValidator<LocalFolderURL, URL> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LocalFolderValidator.class);
 
     @Override
-    public boolean isValid(java.net.URL value, ConstraintValidatorContext context) {
+    public boolean isValid(URL value, ConstraintValidatorContext context) {
         boolean folderValid = false;
         if (value == null) {
             LOGGER.error("Provided value is null.");
