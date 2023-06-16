@@ -15,7 +15,7 @@
  */
 package edu.kit.datamanager.util;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Helper for creating navigation links, e.g., in response headers.

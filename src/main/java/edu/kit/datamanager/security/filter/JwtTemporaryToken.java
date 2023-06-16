@@ -30,7 +30,7 @@ import org.springframework.security.core.GrantedAuthority;
  */
 public class JwtTemporaryToken extends JwtAuthenticationToken{
 
-  private final static Logger LOGGER = LoggerFactory.getLogger(JwtTemporaryToken.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(JwtTemporaryToken.class);
 
   private ScopedPermission[] scopedPermissions = new ScopedPermission[0];
 

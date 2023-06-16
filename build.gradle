@@ -30,15 +30,15 @@ plugins {
 }
 
 ext { 
-    springBootVersion = '2.7.10' 
+    springBootVersion = '3.1.0' 
     springDocVersion  = '1.7.0'
 }
 
 description = "Base service module containing entities, interfaces and helpers."
 group = "edu.kit.datamanager"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.17
+targetCompatibility = 1.17
 
 jar {
     archivesBaseName = 'service-base'
@@ -59,7 +59,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-    implementation "org.springframework.cloud:spring-cloud-gateway-mvc:3.1.4"
+    implementation "org.springframework.cloud:spring-cloud-gateway-mvc:4.0.6"
 
     implementation "org.springdoc:springdoc-openapi-ui:${springDocVersion}"
     implementation "org.springdoc:springdoc-openapi-data-rest:${springDocVersion}"

@@ -17,11 +17,12 @@ package edu.kit.datamanager.validator;
 
 import edu.kit.datamanager.annotations.LocalFileURL;
 import java.net.URISyntaxException;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.File;
+import java.net.URL;
 
 /**
  * Validator checking for a property to be a local file.
@@ -29,12 +30,12 @@ import java.io.File;
  * @author jejkal
  *
  */
-public class LocalFileValidator implements ConstraintValidator<LocalFileURL, java.net.URL> {
+public class LocalFileValidator implements ConstraintValidator<LocalFileURL, URL> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LocalFileValidator.class);
 
     @Override
-    public boolean isValid(java.net.URL value, ConstraintValidatorContext context) {
+    public boolean isValid(URL value, ConstraintValidatorContext context) {
         boolean validLocalFile = false;
         if (value == null) {
             LOGGER.error("Provided value is null.");

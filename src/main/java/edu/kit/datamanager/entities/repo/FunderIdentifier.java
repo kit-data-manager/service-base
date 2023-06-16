@@ -17,15 +17,13 @@ package edu.kit.datamanager.entities.repo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import edu.kit.datamanager.entities.BaseEnum;
-import edu.kit.datamanager.entities.Identifier;
-import edu.kit.datamanager.entities.Identifier.IDENTIFIER_TYPE;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
+ * Entity for funder identifier.
  *
  * @author jejkal
  */
@@ -33,6 +31,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @XmlAccessorType(XmlAccessType.FIELD)
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class FunderIdentifier{
 
   public enum FUNDER_IDENTIFIER_TYPE implements BaseEnum{

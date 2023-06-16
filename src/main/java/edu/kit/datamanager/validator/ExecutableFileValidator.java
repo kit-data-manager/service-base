@@ -17,23 +17,24 @@ package edu.kit.datamanager.validator;
 
 import edu.kit.datamanager.annotations.ExecutableFileURL;
 import java.net.URISyntaxException;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.File;
+import java.net.URL;
 
 /**
  * Validator checking for properties to be an executable file.
  *
  * @author jejkal
  */
-public class ExecutableFileValidator implements ConstraintValidator<ExecutableFileURL, java.net.URL> {
+public class ExecutableFileValidator implements ConstraintValidator<ExecutableFileURL, URL> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecutableFileValidator.class);
 
     @Override
-    public boolean isValid(java.net.URL value, ConstraintValidatorContext context) {
+    public boolean isValid(URL value, ConstraintValidatorContext context) {
         boolean validExecutableFile = false;
         if (value == null) {
             LOGGER.error("Provided value is null.");

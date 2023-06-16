@@ -16,7 +16,7 @@
 package edu.kit.datamanager.handlers;
 
 import edu.kit.datamanager.exceptions.ResourceElsewhereException;
-import javax.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.HibernateException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;

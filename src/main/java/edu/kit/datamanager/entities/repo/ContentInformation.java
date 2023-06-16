@@ -29,12 +29,15 @@ import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
 
 /**
+ * Entity for content information.
+ * 
  *
  * @author jejkal
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @EqualsAndHashCode(callSuper = false)
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class ContentInformation implements Serializable{
 
   public static final MediaType CONTENT_INFORMATION_MEDIA_TYPE = MediaType.parseMediaType("application/vnd.datamanager.content-information+json");

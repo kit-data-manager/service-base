@@ -19,10 +19,12 @@ import edu.kit.datamanager.entities.PERMISSION;
 import lombok.Data;
 
 /**
+ * Data object for scoped permission.
  *
  * @author jejkal
  */
 @Data
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class ScopedPermission{
 
   private String resourceType;

@@ -26,16 +26,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * Just for short tests.
  *
  * @author jejkal
  */
-public class Test{
+@SuppressWarnings("UnnecessarilyFullyQualified")
+public class Test {
 
-  public static void main(String[] args) throws Exception{
+  private static final Logger logger = LoggerFactory.getLogger(Test.class);
 
-    if(true){
+  public static void main(String[] args) throws Exception {
+
+    if (true) {
       return;
     }
     ObjectMapper mapper = new ObjectMapper();
@@ -47,7 +53,7 @@ public class Test{
 
     JsonPatchOperation op_replace = new ReplaceOperation(JsonPointer.of("title"), mapper.readTree(mapper.writeValueAsString("Test")));
     List<JsonPatchOperation> ops = new ArrayList<>();
-    for(int i = 0; i < 100; i++){
+    for (int i = 0; i < 100; i++) {
       ops.add(new ReplaceOperation(JsonPointer.of("title"), mapper.readTree(mapper.writeValueAsString("Test" + i))));
     }
 
@@ -59,42 +65,42 @@ public class Test{
 
     long s = System.currentTimeMillis();
     JsonNode patchedDataResourceAsNode = patch.apply(resourceAsNode);
-    System.out.println("Dur: " + (System.currentTimeMillis() - s));
+    logger.info("Dur: " + (System.currentTimeMillis() - s));
 
-    System.out.println("Patched: " + patchedDataResourceAsNode);
+    logger.info("Patched: " + patchedDataResourceAsNode);
 
     Entity updated = mapper.treeToValue(patchedDataResourceAsNode, Entity.class);
 
     JsonPatch patchGenerated = JsonDiff.asJsonPatch(mapper.convertValue(toPatch, JsonNode.class), mapper.convertValue(updated, JsonNode.class));
 
-    System.out.println("Input: " + toPatch);
-    System.out.println("Output: " + updated);
-    System.out.println("Patch: " + patchGenerated);
+    logger.info("Input: " + toPatch);
+    logger.info("Output: " + updated);
+    logger.info("Patch: " + patchGenerated);
 
   }
 
   @Data
-  static class Entity{
+  static class Entity {
 
     private String title;
     private int number;
     private Collection<String> list;
 
-    public Entity(){
+    public Entity() {
       list = new ArrayList<>();
     }
 
-    public Entity(String title, int number){
+    public Entity(String title, int number) {
       this();
       this.title = title;
       this.number = number;
     }
 
-    public void addListEntry(String entry){
+    public void addListEntry(String entry) {
       list.add(entry);
     }
 
-    public void removeListEntry(String entry){
+    public void removeListEntry(String entry) {
       list.remove(entry);
     }
 

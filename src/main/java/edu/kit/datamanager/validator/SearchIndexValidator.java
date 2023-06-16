@@ -18,8 +18,8 @@ package edu.kit.datamanager.validator;
 import edu.kit.datamanager.annotations.SearchIndex;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -17,11 +17,11 @@ package edu.kit.datamanager.security.filter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.util.StandardCharset;
 import edu.kit.datamanager.entities.RepoServiceRole;
 import edu.kit.datamanager.exceptions.InvalidAuthenticationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
 import java.io.IOException;
 import java.util.Arrays;
@@ -30,11 +30,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.lang3.time.DateUtils;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.security.Key;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import javax.crypto.spec.SecretKeySpec;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,20 +47,20 @@ import org.springframework.web.filter.OncePerRequestFilter;
  *
  * @author jejkal
  */
-public class NoAuthenticationFilter extends OncePerRequestFilter{
+public class NoAuthenticationFilter extends OncePerRequestFilter {
 
   private final String secretKey;
   private final AuthenticationManager authenticationManager;
 
   private static final String USERS_GROUP = "USERS";
-  
-  public NoAuthenticationFilter(String secretKey, AuthenticationManager authenticationManager){
+
+  public NoAuthenticationFilter(String secretKey, AuthenticationManager authenticationManager) {
     this.secretKey = secretKey;
     this.authenticationManager = authenticationManager;
   }
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException, AuthenticationException{
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException, AuthenticationException {
     Claims claims = new DefaultClaims();
     claims.put(JwtAuthenticationToken.GROUPS_CLAIM, Arrays.asList(USERS_GROUP));
     claims.put(JwtAuthenticationToken.TOKENTYPE_CLAIM, JwtAuthenticationToken.TOKEN_TYPE.SERVICE.toString());
@@ -65,18 +68,17 @@ public class NoAuthenticationFilter extends OncePerRequestFilter{
 
     Set<String> rolesAsString = new HashSet<>();
     rolesAsString.add(RepoServiceRole.SERVICE_WRITE.getValue());
-    try{
+    try {
       claims.put(JwtAuthenticationToken.ROLES_CLAIM, new ObjectMapper().writeValueAsString(rolesAsString.toArray(new String[]{})));
-    } catch(JsonProcessingException ex){
+    } catch (JsonProcessingException ex) {
       throw new InvalidAuthenticationException("Failed to create JWToken.", ex);
     }
     Set<Map.Entry<String, Object>> claimEntries = claims.entrySet();
     Map<String, Object> claimMap = new HashMap<>();
-    claimEntries.forEach((entry) -> {
-      claimMap.put(entry.getKey(), entry.getValue());
-    });
+    claimEntries.forEach(entry -> claimMap.put(entry.getKey(), entry.getValue()));
 
-    String token = Jwts.builder().setClaims(claims).setExpiration(DateUtils.addHours(new Date(), 1)).signWith(SignatureAlgorithm.HS256, secretKey).compact();
+    Key key = new SecretKeySpec(secretKey.getBytes(StandardCharset.UTF_8), "HmacSHA256");
+    String token = Jwts.builder().setClaims(claims).setExpiration(Date.from(Instant.now().plus(1l, ChronoUnit.HOURS))).signWith(key).compact();
     JwtAuthenticationToken res = JwtAuthenticationToken.factoryToken(token, claimMap);
     SecurityContextHolder.getContext().setAuthentication(res);
     //continue filtering

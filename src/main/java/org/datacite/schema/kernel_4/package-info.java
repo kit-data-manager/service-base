@@ -5,5 +5,5 @@
 // Generiert: 2018.01.10 um 07:42:46 AM CET 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://datacite.org/schema/kernel-4", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://datacite.org/schema/kernel-4", elementFormDefault = jakarta.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package org.datacite.schema.kernel_4;

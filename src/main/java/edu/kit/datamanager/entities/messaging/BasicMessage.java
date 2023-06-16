@@ -33,11 +33,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Entity for (RabbitMQ) message.
+ * 
  * @author jejkal
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class BasicMessage implements IAMQPSubmittable{
 
   private static final Logger LOGGER = LoggerFactory.getLogger(BasicMessage.class);
