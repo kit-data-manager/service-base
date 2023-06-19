@@ -16,23 +16,25 @@
 package edu.kit.datamanager.validator;
 
 import edu.kit.datamanager.util.ElasticSearchUtil;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import edu.kit.datamanager.annotations.SearchIndexUrl;
+import java.net.URL;
 
 /**
  * Validates an elastic base url, e.g., http://localhost:9200.
  *
  * @author jejkal
  */
-public class ElasticSearchUrlValidator implements ConstraintValidator<SearchIndexUrl, java.net.URL> {
+@SuppressWarnings("UnnecessarilyFullyQualified")
+public class ElasticSearchUrlValidator implements ConstraintValidator<SearchIndexUrl, URL> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ElasticSearchUrlValidator.class);
 
   @Override
-  public boolean isValid(java.net.URL value, ConstraintValidatorContext context) {
+  public boolean isValid(URL value, ConstraintValidatorContext context) {
     boolean validElasticsearchUrl = false;
     if (value == null) {
       LOGGER.error("Provided value is null.");

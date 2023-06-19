@@ -35,9 +35,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.context.request.WebRequest;
 
 /**
+ * Utility class for controllers.
  *
  * @author jejkal
  */
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class ControllerUtils {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ControllerUtils.class);

@@ -15,14 +15,15 @@
  */
 package edu.kit.datamanager.entities;
 
-import java.net.URI;
 import lombok.Data;
 
 /**
- *
+ * Entity for a single content element.
+ * 
  * @author jejkal
  */
 @Data
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class ContentElement{
 
   private String resourceId;

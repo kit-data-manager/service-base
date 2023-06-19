@@ -18,7 +18,7 @@ package edu.kit.datamanager.controller.hateoas;
 import edu.kit.datamanager.controller.hateoas.event.PaginatedResultsRetrievedEvent;
 import edu.kit.datamanager.util.LinkUtil;
 import java.util.Objects;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.ApplicationListener;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;

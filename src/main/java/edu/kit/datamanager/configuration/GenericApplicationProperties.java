@@ -21,12 +21,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- *
+ * Base (authentication) properties for SpringBoot applications.
+ * 
  * @author jejkal
  */
 @Component
 @Data
 @EqualsAndHashCode
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class GenericApplicationProperties{
 
   @Value("${repo.auth.jwtSecret}")

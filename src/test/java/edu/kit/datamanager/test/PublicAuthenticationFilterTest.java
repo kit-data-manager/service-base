@@ -19,7 +19,8 @@ import com.nimbusds.jose.util.StandardCharset;
 import edu.kit.datamanager.entities.RepoServiceRole;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import edu.kit.datamanager.security.filter.JwtServiceToken;
-import edu.kit.datamanager.security.filter.NoAuthenticationFilter;
+import edu.kit.datamanager.security.filter.JwtUserToken;
+import edu.kit.datamanager.security.filter.PublicAuthenticationFilter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -41,6 +42,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -50,7 +52,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * @author jejkal
  */
 @RunWith(MockitoJUnitRunner.class)
-public class NoAuthenticationFilterTest {
+public class PublicAuthenticationFilterTest {
 
     private String key = "vkfvoswsohwrxgjaxipuiyyjgubggzdaqrcuupbugxtnalhiegkppdgjgwxsmvdb";
 
@@ -62,19 +64,23 @@ public class NoAuthenticationFilterTest {
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 Authentication answer = (Authentication) invocation.getArguments()[0];
                 Assert.assertTrue(answer instanceof JwtAuthenticationToken);
-                Assert.assertTrue(answer instanceof JwtServiceToken);
-                Assert.assertEquals("USERS", ((JwtAuthenticationToken) answer).getGroups().get(0));
-                Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.SERVICE, ((JwtServiceToken) answer).getTokenType());
-                Assert.assertEquals(JwtServiceToken.SELF_SERVICE_NAME, ((JwtServiceToken) answer).getPrincipal());
-                Assert.assertTrue(((JwtServiceToken) answer).getAuthorities().contains(new SimpleGrantedAuthority(RepoServiceRole.SERVICE_WRITE.getValue())));
+                Assert.assertEquals("PUBLIC", ((JwtAuthenticationToken) answer).getGroups().get(0));
+                Assert.assertEquals(JwtAuthenticationToken.TOKEN_TYPE.USER, ((JwtUserToken) answer).getTokenType());
+                Assert.assertEquals(PublicAuthenticationFilter.PUBLIC_USER, ((JwtUserToken) answer).getPrincipal());
+                for (GrantedAuthority item: ((JwtUserToken) answer).getAuthorities()) {
+                  System.out.println("item: " + item.getAuthority());
+                }
+                Assert.assertFalse(((JwtUserToken) answer).getAuthorities().contains(new SimpleGrantedAuthority(RepoServiceRole.SERVICE_WRITE.getValue())));
+                Assert.assertFalse(((JwtUserToken) answer).getAuthorities().contains(new SimpleGrantedAuthority(RepoServiceRole.SERVICE_READ.getValue())));
+                Assert.assertTrue(((JwtUserToken) answer).getAuthorities().contains(new SimpleGrantedAuthority(PublicAuthenticationFilter.ROLE_PUBLIC_READ)));
 
                 Key secretKey = new SecretKeySpec(key.getBytes(StandardCharset.UTF_8), "HmacSHA256");
-                Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(((JwtServiceToken) answer).getToken());
+                Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(((JwtUserToken) answer).getToken());
                 DefaultClaims claims = (DefaultClaims) jws.getBody();
 
                 Assert.assertTrue(claims.containsKey("groups"));
                 Assert.assertTrue(claims.containsKey("tokenType"));
-                Assert.assertTrue(claims.containsKey("servicename"));
+                Assert.assertTrue(claims.containsKey("username"));
                 Assert.assertTrue(claims.containsKey("roles"));
                 Assert.assertTrue(claims.containsKey("exp"));
                 Assert.assertTrue(claims.get("exp", Date.class).before(DateUtils.addHours(new Date(), 1)));
@@ -91,7 +97,7 @@ public class NoAuthenticationFilterTest {
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
-        NoAuthenticationFilter filter = new NoAuthenticationFilter(key, null);
+        PublicAuthenticationFilter filter = new PublicAuthenticationFilter(key);
 
         filter.doFilter(request, response, filterChain);
     }

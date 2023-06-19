@@ -18,7 +18,7 @@ package edu.kit.datamanager.util.xml.adapters;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  * XmlAdapter implementation for Instant attributes.

@@ -26,9 +26,13 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Utility class for managing zipped archives. 
+ */
 public final class ZipUtils{
 
   /**
@@ -323,7 +327,7 @@ public final class ZipUtils{
 
       // delete zip file in case of success
       //deletion must be outside of "try-with-resource" block as fSourceZip is in use inside
-      if(delete && fSourceZip != null && fSourceZip.exists() && !org.apache.commons.io.FileUtils.deleteQuietly(fSourceZip)){
+      if(delete && fSourceZip != null && fSourceZip.exists() && !FileUtils.deleteQuietly(fSourceZip)){
         LOGGER.error("Error deleting '{}'!?", fSourceZip.getAbsolutePath());
       }
     } catch(IOException ioe){

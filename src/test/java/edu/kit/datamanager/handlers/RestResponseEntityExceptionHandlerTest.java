@@ -15,7 +15,7 @@
  */
 package edu.kit.datamanager.handlers;
 
-import javax.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.HibernateException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Assert;

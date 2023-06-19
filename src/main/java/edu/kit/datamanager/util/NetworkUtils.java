@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class NetworkUtils {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(NetworkUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NetworkUtils.class);
 
     private NetworkUtils() {
     }

@@ -30,9 +30,9 @@ import org.springframework.security.core.GrantedAuthority;
  */
 public class JwtServiceToken extends JwtAuthenticationToken {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(JwtServiceToken.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtServiceToken.class);
 
-    public final static String SELF_SERVICE_NAME = "SELF";
+    public static final String SELF_SERVICE_NAME = "SELF";
 
     private String[] sources;
 

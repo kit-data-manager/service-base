@@ -17,17 +17,19 @@ package edu.kit.datamanager.entities.repo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import edu.kit.datamanager.entities.BaseEnum;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import lombok.Data;
 
 /**
+ * Entity for resource type.
  *
  * @author jejkal
  */
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class ResourceType{
 
   public enum TYPE_GENERAL implements BaseEnum{

@@ -54,6 +54,7 @@ import org.springframework.validation.annotation.Validated;
 @Configuration
 @Data
 @Validated
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class SearchConfiguration {
 
     /**

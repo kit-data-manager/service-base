@@ -21,12 +21,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- *
+ * Properties for SpringBoot applications. 
+ * 
  * @author jejkal
  */
 @Component
 @Data
 @EqualsAndHashCode
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class GenericPluginProperties{
 
   @Value("${repo.plugin.repositoryBaseUrl:http://localhost:8090/api/v1/dataresources/}")
