@@ -44,7 +44,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- *
+ * Filter adding security context if no authorization is available. 
+ * 
+ * User has role 'ROLE_ADMINISTRATOR' and username 'SELF'.
+ * 
  * @author jejkal
  */
 public class NoAuthenticationFilter extends OncePerRequestFilter {

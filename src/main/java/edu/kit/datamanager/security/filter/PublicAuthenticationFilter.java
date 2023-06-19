@@ -46,7 +46,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 /**
  * Filter adding security context for unauthenticated user. 
  * 
- * User has role 'ROLE_ANONYMOUS' and username 'PUBLIC'.
+ * User has role 'ROLE_ANONYMOUS' and username 'anonymousUser'.
  * 
  * It has to be added after other filters:
  * <code>
