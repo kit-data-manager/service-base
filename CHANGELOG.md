@@ -18,6 +18,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## [1.2.0] - 2023-06-19
+
+### Added
+- Add credentials for unauthenticated users.
+
+### Changed
+- At least JDK 17 is now required.
+- Bump some github actions from 2 to 3.
+- Bump com.fasterxml.jackson.datatype:jackson-datatype-joda from 2.14.1 to 2.15.2.
+- Bump com.fasterxml.jackson.datatype:jackson-datatype-jsr310 from 2.14.1 to 2.15.2.
+- Bump com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider from 2.14.1 to 2.15.2.
+- Bump com.fasterxml.jackson.module:jackson-module-afterburner from 2.14.1 to 2.15.2.
+- Bump com.sun.xml.bind:jaxb-core from 4.0.1 to 4.0.3.
+- Bump com.sun.xml.bind:jaxb-impl from 4.0.1 to 4.0.3. 
+- Bump commons-io:commons-io from 2.11.0 to 2.13.0. 
+- Bump io.freefair.lombok from 6.6.1 to 8.0.1.
+- Bump io.freefair.maven-publish-java from 6.6.1 to 8.0.1.
+- Bump io.github.gradle-nexus.publish-plugin from 1.1.0 to 1.3.0.
+- Bump JAVA version to 17 due to Spring Boot 3. 
+- Bump org.mockito:mockito-inline from 4.11.0 to 5.2.0.
+- Bump org.owasp.dependencycheck from 7.4.4 to 8.2.1.
+- Bump org.springframework.boot:spring-boot-dependencies from 2.7.7 to 3.1.0.
+- Bump springDocVersion from 1.6.14 to 1.7.0.
+
+
 ## [1.1.1] - 2023-03-17
 
 ### Added
@@ -204,7 +229,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/kit-data-manager/service-base/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/kit-data-manager/service-base/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/kit-data-manager/service-base/compare/v1.0.7...v1.1.0
 [1.0.7]: https://github.com/kit-data-manager/service-base/compare/v1.0.6...v1.0.7

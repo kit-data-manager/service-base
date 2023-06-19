@@ -28,12 +28,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- *
+ * Properties for RabbitMQ inside SpringBoot applications.
+ * 
  * @author jejkal
  */
 @Configuration
 @Data
 @ConditionalOnExpression("${repo.messaging.enabled:false}")
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class RabbitMQConfiguration {
 
     private final Logger logger = LoggerFactory.getLogger(RabbitMQConfiguration.class);

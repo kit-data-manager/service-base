@@ -19,10 +19,12 @@ import edu.kit.datamanager.entities.PERMISSION;
 import lombok.Data;
 
 /**
- *
+ * Entity for ACL entry.
+ * 
  * @author jejkal
  */
 @Data
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class AclEntry{
 
   private long id;

@@ -7,8 +7,12 @@ import java.util.Optional;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * Message about PID records. 
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class PidRecordMessage extends BasicMessage {
 
     // A url-string that will simply resolve the pid.

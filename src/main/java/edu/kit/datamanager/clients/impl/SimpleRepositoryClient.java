@@ -37,7 +37,7 @@ import org.springframework.http.MediaType;
  */
 public class SimpleRepositoryClient{
 
-  private final static Logger LOGGER = LoggerFactory.getLogger(SimpleRepositoryClient.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SimpleRepositoryClient.class);
   private final String resourceBaseUrl;
   private final String bearerToken;
 
