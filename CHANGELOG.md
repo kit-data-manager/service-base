@@ -42,6 +42,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump org.springframework.boot:spring-boot-dependencies from 2.7.7 to 3.1.0.
 - Bump springDocVersion from 1.6.14 to 1.7.0.
 
+### Fixed
+- Fix misleading log for elasticsearch.
 
 ## [1.1.1] - 2023-03-17
 
