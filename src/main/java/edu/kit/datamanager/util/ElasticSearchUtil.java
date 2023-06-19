@@ -36,101 +36,104 @@ import org.springframework.web.client.RestTemplate;
  */
 public class ElasticSearchUtil {
 
-    /**
-     * Logger for this class.
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ElasticSearchUtil.class);
+  /**
+   * Logger for this class.
+   */
+  private final static Logger LOGGER = LoggerFactory.getLogger(ElasticSearchUtil.class);
 
-    static final JsonNodeFactory factory = JsonNodeFactory.instance;
+  final static JsonNodeFactory factory = JsonNodeFactory.instance;
 
-    public static final String RESULTS_FROM = "from";
-    public static final String RESULTS_SIZE = "size";
-    static final String SID_READ = "read";
+  public static final String RESULTS_FROM = "from";
+  public static final String RESULTS_SIZE = "size";
+  static final String SID_READ = "read";
 
-    /**
-     * Test URL for pointing to a running elasticsearch instance.
-     *
-     * @param elasticsearchURL the given URL to check for an elasticsearch
-     * instance.I
-     * @return true if server is available.
-     */
-    public static boolean testForElasticsearch(URL elasticsearchURL) {
-        boolean validElasticSearchServer = false;
-        if (elasticsearchURL != null) {
-            String baseUrl = elasticsearchURL.toString();
-            // test for trailing '/'
-            if (baseUrl.trim().endsWith("/")) {
-                LOGGER.error("Invalid elasticsearch URL. Please remove trailing '/' from URL '{}'!", baseUrl);
-                validElasticSearchServer = false;
+  private static final int NO_OF_RETRIES = 3;
+
+  /**
+   * Test URL for pointing to a running elasticsearch instance.
+   *
+   * @param elasticsearchURL the given URL to check for an elasticsearch
+   * instance.I
+   * @return true if server is available.
+   */
+  public static boolean testForElasticsearch(URL elasticsearchURL) {
+    boolean validElasticSearchServer = false;
+    if (elasticsearchURL != null) {
+      String baseUrl = elasticsearchURL.toString();
+      // test for trailing '/'
+      if (baseUrl.trim().endsWith("/")) {
+        LOGGER.error("Invalid elasticsearch URL. Please remove trailing '/' from URL '{}'!", baseUrl);
+      } else {
+        String accessUrl = baseUrl + "/_search";
+        RestTemplate restTemplate = new RestTemplate();
+        int retries = 1;
+        LOGGER.trace("Trying to connect to elasticsearch instance.");
+        while (retries <= NO_OF_RETRIES) {
+          try {
+            ResponseEntity<String> entity = restTemplate.getForEntity(accessUrl,
+                    String.class,
+                    baseUrl);
+            LOGGER.trace("Status code value: " + entity.getStatusCodeValue());
+            LOGGER.trace("HTTP Header 'ContentType': " + entity.getHeaders().getContentType());
+            if (entity.getStatusCodeValue() == HttpStatus.OK.value()) {
+              LOGGER.info("Elasticsearch server at '{}' seems to be up and running!", baseUrl);
+              validElasticSearchServer = true;
+              break;
             } else {
-                String accessUrl = baseUrl + "/_search";
-                RestTemplate restTemplate = new RestTemplate();
-                int retries = 3;
-                LOGGER.trace("Trying to connect to elasticsearch instance.");
-                while (retries > 0) {
-                    try {
-                        ResponseEntity<String> entity = restTemplate.getForEntity(accessUrl,
-                                String.class,
-                                baseUrl);
-                        LOGGER.info("Status code value: " + entity.getStatusCodeValue());
-                        LOGGER.info("HTTP Header 'ContentType': " + entity.getHeaders().getContentType());
-                        if (entity.getStatusCodeValue() == HttpStatus.OK.value()) {
-                            LOGGER.trace("Elasticsearch server at '{}' seems to be up and running!", baseUrl);
-                            validElasticSearchServer = true;
-                            retries = 0;
-                        } else {
-                            LOGGER.debug("Invalid response from elasticsearch server. Expected HTTP 200, received HTTP " + entity.getStatusCodeValue() + ". Aborting.");
-                        }
-                    } catch (RestClientException ex) {
-                        LOGGER.warn("Failed accessing elasticsearch server.", ex);
-                    }
-
-                    if (retries > 0) {
-                        LOGGER.warn("Retrying in 5 seconds.");
-                        try {
-                            Thread.sleep(5000);
-                        } catch (InterruptedException ie) {
-                        }
-                        retries--;
-                    } else {
-                        LOGGER.error("Unable to access elasticsearch server within 3 attempts. Aborting.");
-                    }
-                }
+              LOGGER.debug("Invalid response from elasticsearch server. Expected HTTP 200, received HTTP " + entity.getStatusCodeValue() + ". Aborting.");
             }
-            if (!validElasticSearchServer) {
-                LOGGER.trace("Unable to connect to elasticsearch instance at '{}' withing 3 attempts!", baseUrl);
+          } catch (RestClientException ex) {
+            LOGGER.warn("Failed accessing elasticsearch server.", ex);
+          }
+          LOGGER.warn("Attempt {}/{} failed!", retries, NO_OF_RETRIES);
+          if (retries < NO_OF_RETRIES) {
+            LOGGER.warn("Retrying in 5 seconds...");
+            try {
+              Thread.sleep(5000);
+            } catch (InterruptedException ie) {
             }
-        } else {
-            LOGGER.warn("No elasticsearch URL provided. Aborting.");
+          }
+          retries++;
         }
-        return validElasticSearchServer;
+      }
+      if (!validElasticSearchServer) {
+        LOGGER.trace("Unable to connect to elasticsearch instance at '{}' within '{}' attempts!", baseUrl, NO_OF_RETRIES);
+      }
+    } else {
+      LOGGER.warn("No elasticsearch URL provided. Aborting.");
+    }
+    return validElasticSearchServer;
+  }
+
+  /**
+   * Test if string is a valid elasticsearch index. If not - change to lower
+   * case - replace all invalid characters by '_'
+   *
+   * @param elasticsearchIndex index to test.
+   * @return valid index
+   */
+  public static String testForValidIndex(String elasticsearchIndex) {
+    String validIndex = elasticsearchIndex;
+
+    boolean valid = new SearchIndexValidator().isValid(validIndex, null);
+    if (!valid) {
+      String pattern = "[" + SearchIndexValidator.SPECIAL_CHARACTERS + "]";
+      validIndex = validIndex.toLowerCase().replaceAll(pattern, "_");
+    }
+    return validIndex;
+  }
+  
+  /**
+   * Build post filter to restrict only to authorized results.
+   * @param queryNode Node holding query.
+   */
+  public static void buildPostFilter(ObjectNode queryNode) {
+    if (queryNode.has(POST_FILTER)) {
+      LOGGER.warn("PostFilter found in provided query. Filter will be replaced!");
     }
 
-    /**
-     * Test if string is a valid elasticsearch index. If not - change to lower
-     * case - replace all invalid characters by '_'
-     *
-     * @param elasticsearchIndex
-     * @return valid index
-     */
-    public static String testForValidIndex(String elasticsearchIndex) {
-        String validIndex = elasticsearchIndex;
-
-        boolean valid = new SearchIndexValidator().isValid(validIndex, null);
-        if (!valid) {
-            String pattern = "[" + SearchIndexValidator.SPECIAL_CHARACTERS + "]";
-            validIndex = validIndex.toLowerCase().replaceAll(pattern, "_");
-        }
-        return validIndex;
-    }
-
-    public static void buildPostFilter(ObjectNode queryNode) {
-        if (queryNode.has(POST_FILTER)) {
-            LOGGER.warn("PostFilter found in provided query. Filter will be replaced!");
-        }
-
-        JsonNode postFilter;
-        /* Post filter may look like this: 
+    JsonNode postFilter;
+    /* Post filter may look like this: 
      {
        "bool" : {
          "should" : [
@@ -140,28 +143,34 @@ public class ElasticSearchUtil {
          "minimum_should_match" : 1
        }
      } 
-         */
-        LOGGER.trace("Adding PostFilter to elastic query.");
-        ArrayNode arrayNode = factory.arrayNode();
-        for (String sid : AuthenticationHelper.getAuthorizationIdentities()) {
-            JsonNode match = factory.objectNode().set("match", factory.objectNode().put(SID_READ, sid));
-            arrayNode.add(match);
-        }
-        ObjectNode should = factory.objectNode().set("should", arrayNode);
-        should.put("minimum_should_match", 1);
-        postFilter = factory.objectNode().set("bool", should);
-        LOGGER.trace("PostFilter: '{}'", postFilter);
-        queryNode.replace(POST_FILTER, postFilter);
+     */
+    LOGGER.trace("Adding PostFilter to elastic query.");
+    ArrayNode arrayNode = factory.arrayNode();
+    for (String sid : AuthenticationHelper.getAuthorizationIdentities()) {
+      JsonNode match = factory.objectNode().set("match", factory.objectNode().put(SID_READ, sid));
+      arrayNode.add(match);
+    }
+    ObjectNode should = factory.objectNode().set("should", arrayNode);
+    should.put("minimum_should_match", 1);
+    postFilter = factory.objectNode().set("bool", should);
+    LOGGER.trace("PostFilter: '{}'", postFilter);
+    queryNode.replace(POST_FILTER, postFilter);
+  }
+  
+  /**
+   * Add pagination to query if not already present.
+   * @param queryNode Node holding query.
+   * @param page Number of the page.
+   * @param size Size of the page.
+   */
+  public static void addPaginationInformation(ObjectNode queryNode, int page, int size) {
+    if (queryNode.has(RESULTS_FROM) || queryNode.has(RESULTS_SIZE)) {
+      LOGGER.trace("Provided query already specifies 'from' and/or 'size'. Ignoring pagination information from request.");
+    } else {
+      LOGGER.trace("Provided query does not specify 'from' and/or 'size'. Using pagination information with page {} and size {}", page, size);
+      queryNode.replace(RESULTS_FROM, factory.numberNode(page * size));
+      queryNode.replace(RESULTS_SIZE, factory.numberNode(size));
     }
 
-    public static void addPaginationInformation(ObjectNode queryNode, int page, int size) {
-        if (queryNode.has(RESULTS_FROM) || queryNode.has(RESULTS_SIZE)) {
-            LOGGER.trace("Provided query already specifies 'from' and/or 'size'. Ignoring pagination information from request.");
-        } else {
-            LOGGER.trace("Provided query does not specify 'from' and/or 'size'. Using pagination information with page {} and size {}", page, size);
-            queryNode.replace(RESULTS_FROM, factory.numberNode(page * size));
-            queryNode.replace(RESULTS_SIZE, factory.numberNode(size));
-        }
-
-    }
+  }
 }
