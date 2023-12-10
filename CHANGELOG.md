@@ -17,6 +17,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Security
+* Bump actions/checkout to 4
+* Bump io.freefair.lombok to 8.3
+* Bump io.freefair.maven-publish-java to 8.3
+* Bump org.owasp.dependencycheck to 8.4.0
+* Bump io.spring.dependency-management to 1.1.3
+* Bump org.apache.commons:commons-lang3 to 3.13.0
+* Bump actions/setup-java to 3.12.0
 
 ## [1.2.0] - 2023-06-19
 
