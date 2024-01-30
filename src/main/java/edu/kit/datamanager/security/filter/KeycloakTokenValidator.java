@@ -198,7 +198,7 @@ public class KeycloakTokenValidator {
     }
 
     protected Jws<Claims> getJwsClaims(String accessToken) {
-        return Jwts.parserBuilder().setSigningKey(jwtLocalSecret).build().parseClaimsJws(accessToken);
+        return Jwts.parser().setSigningKey(jwtLocalSecret).build().parseClaimsJws(accessToken);
     }
 
     public boolean supportsLocalJwt() {

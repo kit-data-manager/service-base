@@ -44,12 +44,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * Filter adding security context for unauthenticated user. 
- * 
+ * Filter adding security context for unauthenticated user.
+ *
  * User has role 'ROLE_ANONYMOUS' and username 'anonymousUser'.
- * 
- * It has to be added after other filters:
- * <code>
+ *
+ * It has to be added after other filters:  <code>
  *    logger.info("Add keycloak filter!");
  *     httpSecurity.addFilterAfter(keycloaktokenFilterBean.get(), BasicAuthenticationFilter.class);
  *     logger.info("Add public authentication filter!");
@@ -58,49 +57,49 @@ import org.springframework.web.filter.OncePerRequestFilter;
  */
 public class PublicAuthenticationFilter extends OncePerRequestFilter {
 
-  public static final String PUBLIC_USER = "anonymousUser";
-  public static final String ROLE_PUBLIC_READ = "ROLE_ANONYMOUS";
+    public static final String PUBLIC_USER = "anonymousUser";
+    public static final String ROLE_PUBLIC_READ = "ROLE_ANONYMOUS";
 
-  private static final Logger LOG = LoggerFactory.getLogger(PublicAuthenticationFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PublicAuthenticationFilter.class);
 
-  private final String secretKey;
+    private final String secretKey;
 
-  private static final String USERS_GROUP = "PUBLIC";
+    private static final String USERS_GROUP = "PUBLIC";
 
-  public PublicAuthenticationFilter(String secretKey) {
-    this.secretKey = secretKey;
-  }
+    public PublicAuthenticationFilter(String secretKey) {
+        this.secretKey = secretKey;
+    }
 
-  @SuppressWarnings("JavaUtilDate")
-  @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException, AuthenticationException {
-    if (SecurityContextHolder.getContext().getAuthentication() == null) {
-      LOG.trace("Set public authorization!");
-      Claims claims = new DefaultClaims();
-      claims.put(JwtAuthenticationToken.GROUPS_CLAIM, Arrays.asList(USERS_GROUP));
-      claims.put(JwtAuthenticationToken.TOKENTYPE_CLAIM, JwtAuthenticationToken.TOKEN_TYPE.USER.toString());
-      claims.put(JwtAuthenticationToken.USERNAME_CLAIM, PUBLIC_USER);
+    @SuppressWarnings("JavaUtilDate")
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException, AuthenticationException {
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            LOG.trace("Set public authorization!");
+            Map<String, Object> claimsMap = new HashMap<>();
+            claimsMap.put(JwtAuthenticationToken.GROUPS_CLAIM, Arrays.asList(USERS_GROUP));
+            claimsMap.put(JwtAuthenticationToken.TOKENTYPE_CLAIM, JwtAuthenticationToken.TOKEN_TYPE.USER.toString());
+            claimsMap.put(JwtAuthenticationToken.USERNAME_CLAIM, PUBLIC_USER);
 
-      Set<String> rolesAsString = new HashSet<>();
-      rolesAsString.add(ROLE_PUBLIC_READ);
-      try {
-        claims.put(JwtAuthenticationToken.ROLES_CLAIM, new ObjectMapper().writeValueAsString(rolesAsString.toArray(String[]::new)));
-      } catch (JsonProcessingException ex) {
-        throw new InvalidAuthenticationException("Failed to create JWToken.", ex);
-      }
-      Set<Map.Entry<String, Object>> claimEntries = claims.entrySet();
+            Set<String> rolesAsString = new HashSet<>();
+            rolesAsString.add(ROLE_PUBLIC_READ);
+            try {
+                claimsMap.put(JwtAuthenticationToken.ROLES_CLAIM, new ObjectMapper().writeValueAsString(rolesAsString.toArray(String[]::new)));
+            } catch (JsonProcessingException ex) {
+                throw new InvalidAuthenticationException("Failed to create JWToken.", ex);
+            }
+            /* Set<Map.Entry<String, Object>> claimEntries = claims.entrySet();
       Map<String, Object> claimMap = new HashMap<>();
       claimEntries.forEach(entry -> claimMap.put(entry.getKey(), entry.getValue()));
-      
-      Key key = new SecretKeySpec(secretKey.getBytes(StandardCharset.UTF_8), "HmacSHA256");
-      String token = Jwts.builder().setClaims(claims).setExpiration(Date.from(Instant.now().plus(1l, ChronoUnit.HOURS))).signWith(key).compact();
-      JwtAuthenticationToken res = JwtAuthenticationToken.factoryToken(token, claimMap);
-      SecurityContextHolder.getContext().setAuthentication(res);
-    } else {
-      LOG.trace("Nothing to do as user is already authenticated!");
-    }
-    //continue filtering
-    chain.doFilter(request, response);
+             */
+            Key key = new SecretKeySpec(secretKey.getBytes(StandardCharset.UTF_8), "HmacSHA256");
+            String token = Jwts.builder().claims(claimsMap).setExpiration(Date.from(Instant.now().plus(1l, ChronoUnit.HOURS))).signWith(key).compact();
+            JwtAuthenticationToken res = JwtAuthenticationToken.factoryToken(token, claimsMap);
+            SecurityContextHolder.getContext().setAuthentication(res);
+        } else {
+            LOG.trace("Nothing to do as user is already authenticated!");
+        }
+        //continue filtering
+        chain.doFilter(request, response);
 
-  }
+    }
 }
