@@ -72,7 +72,7 @@ public class SearchController {
     @PageableAsQueryParam
     public ResponseEntity<?> proxy(
             @RequestBody JsonNode body,
-            ProxyExchange<byte[]> proxy,
+            ProxyExchange<JsonNode> proxy,
             @Parameter(hidden = true) final Pageable pgbl) throws Exception {
         LOG.trace("Provided Elastic query: '{}'", body.toString());
 
