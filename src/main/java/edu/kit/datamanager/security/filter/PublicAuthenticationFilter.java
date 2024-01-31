@@ -92,7 +92,7 @@ public class PublicAuthenticationFilter extends OncePerRequestFilter {
       claimEntries.forEach(entry -> claimMap.put(entry.getKey(), entry.getValue()));
              */
             Key key = new SecretKeySpec(secretKey.getBytes(StandardCharset.UTF_8), "HmacSHA256");
-            String token = Jwts.builder().claims(claimsMap).setExpiration(Date.from(Instant.now().plus(1l, ChronoUnit.HOURS))).signWith(key).compact();
+            String token = Jwts.builder().claims(claimsMap).expiration(Date.from(Instant.now().plus(1l, ChronoUnit.HOURS))).signWith(key).compact();
             JwtAuthenticationToken res = JwtAuthenticationToken.factoryToken(token, claimsMap);
             SecurityContextHolder.getContext().setAuthentication(res);
         } else {
