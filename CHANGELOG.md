@@ -9,21 +9,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+* SimpleServiceClient now follows redirects (HTTP 3XX) properly
 
 ### Removed
 
 ### Deprecated
 
 ### Fixed
+* Fixed JWT handling caused by API changes in dependencies
 
 ### Security
 * Bump actions/checkout to 4
-* Bump io.freefair.lombok to 8.3
-* Bump io.freefair.maven-publish-java to 8.3
-* Bump org.owasp.dependencycheck to 8.4.0
-* Bump io.spring.dependency-management to 1.1.3
-* Bump org.apache.commons:commons-lang3 to 3.13.0
+* Bump codecov/codecov-action to 4
 * Bump actions/setup-java to 3.12.0
+* Bump io.freefair.lombok to 8.6
+* Bump io.freefair.maven-publish-java to 8.6
+* Bump org.owasp.dependencycheck to 9.0.9
+* Bump io.spring.dependency-management to 1.1.3
+* Bump javassist to 3.30.2-GA
+* Bump commons-lang3 to 3.13.0
+* Bump commons-validator to 1.8.0
+* Bump commons-lang3 to 3.14.0
+* Bump commons-io:commons-io 2.15.1
+* Bump jackson-jaxrs-json-provider to 2.16.1
+* Bump jackson-module-afterburner to 2.16.1
+* Bump jackson-datatype-joda to 2.16.1
+* Bump jackson-datatype-jsr310 to 2.16.1
+* Bump jaxb-impl to 4.0.4
+* Bump jaxb-core to 4.0.4
+* Bump tika-core to 2.9.1
+* Bump jjwt-api to 0.12.5
+* Bump jjwt-impl to 0.12.5
 
 ## [1.2.0] - 2023-06-19
 
