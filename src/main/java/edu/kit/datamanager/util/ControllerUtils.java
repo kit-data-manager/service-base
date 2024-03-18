@@ -216,6 +216,15 @@ public class ControllerUtils {
   public static String getContentRangeHeader(int currentPage, int pageSize, long totalElements) {
     int indexStart = currentPage * pageSize;
     int indexEnd = indexStart + pageSize - 1;
+    if (indexStart > totalElements -1) {
+      String message = "Current page '" + currentPage + "' is out of range!\n"
+              + "(Pagesize: '" + pageSize + "', total no of elements: '" + totalElements + "'";
+      LOGGER.trace(message);
+      throw new BadArgumentException(message);
+    }
+    if (indexEnd > totalElements - 1) {
+      indexEnd = (int)totalElements -1;
+    }
     return indexStart + "-" + indexEnd + "/" + totalElements;
   }
 
