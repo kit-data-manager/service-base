@@ -239,7 +239,7 @@ public class ControllerUtilsTest {
     }
 
     @Test
-    public void getGetLocalHostname() throws Exception {       
+    public void getGetLocalHostname() throws Exception {
         Assert.assertEquals(InetAddress.getLocalHost().getHostName(), ControllerUtils.getLocalHostname());
     }
 
@@ -253,6 +253,42 @@ public class ControllerUtilsTest {
     public void testParseIdToLongFailing() {
         Long id = ControllerUtils.parseIdToLong("ab");
         Assert.fail("Parsing should have been failed before but returned " + id);
+    }
+
+    @Test
+    public void testGetContentRangeHeaderExactFit() {
+        String contentRangeHeader = ControllerUtils.getContentRangeHeader(0, 10, 10);
+        Assert.assertEquals("0-9/10", contentRangeHeader);
+    }
+
+    @Test
+    public void testGetContentRangeHeaderWrongTotalElements() {
+        String contentRangeHeader = ControllerUtils.getContentRangeHeader(0, 10, 10);
+        Assert.assertNotEquals("0-9/9", contentRangeHeader);
+    }
+
+    @Test
+    public void testGetContentRangeHeaderNoResult() {
+        String contentRangeHeader = ControllerUtils.getContentRangeHeader(0, 10, 0);
+        Assert.assertEquals("0-0/0", contentRangeHeader);
+    }
+
+    @Test
+    public void testGetContentRangeHeaderOneResult() {
+        String contentRangeHeader = ControllerUtils.getContentRangeHeader(0, 10, 1);
+        Assert.assertEquals("0-0/1", contentRangeHeader);
+    }
+
+    @Test
+    public void testGetContentRangeHeaderTwoResult() {
+        String contentRangeHeader = ControllerUtils.getContentRangeHeader(0, 10, 2);
+        Assert.assertEquals("0-1/2", contentRangeHeader);
+    }
+
+    @Test
+    public void testGetContentRangeHeaderElevenResultsPageTwo() {
+        String contentRangeHeader = ControllerUtils.getContentRangeHeader(1, 10, 11);
+        Assert.assertEquals("10-10/11", contentRangeHeader);
     }
 
     private WebRequest createDummyWebRequest() {
