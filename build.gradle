@@ -30,15 +30,15 @@ plugins {
 }
 
 ext { 
-    springBootVersion = '3.1.0' 
+    springBootVersion = '3.2.3' 
     springDocVersion  = '1.7.0'
 }
 
 description = "Base service module containing entities, interfaces and helpers."
 group = "edu.kit.datamanager"
 
-sourceCompatibility = 1.17
-targetCompatibility = 1.17
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 jar {
     archivesBaseName = 'service-base'
