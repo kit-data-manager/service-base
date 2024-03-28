@@ -158,6 +158,16 @@ public class SimpleRepositoryClientTest{
     res = mapper.readValue(result, DataResource.class);
     Assert.assertNotNull(res);
   }
+ 
+  @Test
+  public void testGetResourceAsStringViaRedirect() throws Exception{
+    String schemaRef = "http://json-schema.org/draft-04/schema#";
+    SimpleServiceClient client = new SimpleServiceClient(schemaRef);
+    client = client.accept(MediaType.TEXT_PLAIN);
+    String content = client.getResource(String.class);
+    Assert.assertTrue(content.length() > 100);
+    Assert.assertTrue("Response should contain schema reference!", content.contains(schemaRef));
+  }
 
   @Test
   public void testListContentInformation() throws Exception{

@@ -43,135 +43,135 @@ import org.slf4j.LoggerFactory;
  */
 public class JwtBuilder {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(JwtBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtBuilder.class);
 
-  private final Map<String, Object> claims;
-  private final List<String> roles;
-  private final List<ScopedPermission> permissions;
-  private String principal;
-  private JwtAuthenticationToken.TOKEN_TYPE type = JwtAuthenticationToken.TOKEN_TYPE.USER;
+    private final Map<String, Object> claims;
+    private final List<String> roles;
+    private final List<ScopedPermission> permissions;
+    private String principal;
+    private JwtAuthenticationToken.TOKEN_TYPE type = JwtAuthenticationToken.TOKEN_TYPE.USER;
 
-  JwtBuilder() {
-    claims = new HashMap<>();
-    roles = new ArrayList<>();
-    permissions = new ArrayList<>();
-  }
-
-  public static JwtBuilder createUserToken(String userName, RepoRole... roles) {
-    JwtBuilder builder = new JwtBuilder();
-    builder.setTokenType(JwtAuthenticationToken.TOKEN_TYPE.USER);
-    builder.principal = userName;
-    return builder.setRoles(roles);
-  }
-
-  public static JwtBuilder createServiceToken(String serviceName, RepoRole... roles) {
-    JwtBuilder builder = new JwtBuilder();
-    builder.setTokenType(JwtAuthenticationToken.TOKEN_TYPE.SERVICE);
-    builder.principal = serviceName;
-    return builder.setRoles(roles);
-  }
-
-  public static JwtBuilder createTemporaryToken(String principalName, ScopedPermission... permissions) {
-    JwtBuilder builder = new JwtBuilder();
-    builder.setTokenType(JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY);
-    builder.principal = principalName;
-    return builder.setScopedPermissions(permissions);
-  }
-
-  private void setTokenType(JwtAuthenticationToken.TOKEN_TYPE type) {
-    claims.put("tokenType", type.toString());
-    this.type = type;
-  }
-
-  private JwtBuilder setRoles(RepoRole... roles) {
-    if (roles == null || type.equals(JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY)) {
-      return this;
+    JwtBuilder() {
+        claims = new HashMap<>();
+        roles = new ArrayList<>();
+        permissions = new ArrayList<>();
     }
-    for (RepoRole role : roles) {
-      this.roles.add(role.getValue());
+
+    public static JwtBuilder createUserToken(String userName, RepoRole... roles) {
+        JwtBuilder builder = new JwtBuilder();
+        builder.setTokenType(JwtAuthenticationToken.TOKEN_TYPE.USER);
+        builder.principal = userName;
+        return builder.setRoles(roles);
     }
-    return this;
-  }
 
-  private JwtBuilder setScopedPermissions(ScopedPermission... permissions) {
-    if (permissions == null || permissions.length == 0) {
-      return this;
+    public static JwtBuilder createServiceToken(String serviceName, RepoRole... roles) {
+        JwtBuilder builder = new JwtBuilder();
+        builder.setTokenType(JwtAuthenticationToken.TOKEN_TYPE.SERVICE);
+        builder.principal = serviceName;
+        return builder.setRoles(roles);
     }
-    this.permissions.addAll(Arrays.asList(permissions));
-    return this;
-  }
 
-  public JwtBuilder addSimpleClaim(String claimName, String value) {
-    claims.put(claimName, value);
-    return this;
-  }
-
-  public JwtBuilder addSimpleClaim(String claimName, Boolean value) {
-    claims.put(claimName, value);
-    return this;
-  }
-
-  public JwtBuilder addSimpleClaim(String claimName, Integer value) {
-    claims.put(claimName, value);
-    return this;
-  }
-
-  public JwtBuilder addObjectClaim(String claimName, Object value) {
-    claims.put(claimName, value);
-    return this;
-  }
-
-  public Map<String, Object> getClaimMap() {
-    //put principal, roles or permissions into map
-    try {
-      switch (type) {
-        case USER:
-          addSimpleClaim("username", principal);
-          claims.put("roles", new ObjectMapper().writeValueAsString(roles.isEmpty() ? new String[]{RepoUserRole.GUEST.getValue()} : roles.toArray(new String[]{})));
-          break;
-        case SERVICE:
-          addSimpleClaim("servicename", principal);
-          claims.put("roles", new ObjectMapper().writeValueAsString(roles.isEmpty() ? new String[]{RepoUserRole.GUEST.getValue()} : roles.toArray(new String[]{})));
-          break;
-        case TEMPORARY:
-          addSimpleClaim("principalname", principal);
-          claims.put("permissions", new ObjectMapper().writeValueAsString(permissions.toArray(new ScopedPermission[]{})));
-          break;
-        default:
-          LOGGER.warn("Invalid type {}. Leaving claims unchanged.", type);
-      }
-    } catch (JsonProcessingException ex) {
-      LOGGER.warn("Failed to create claim map.", ex);
+    public static JwtBuilder createTemporaryToken(String principalName, ScopedPermission... permissions) {
+        JwtBuilder builder = new JwtBuilder();
+        builder.setTokenType(JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY);
+        builder.principal = principalName;
+        return builder.setScopedPermissions(permissions);
     }
-    return claims;
-  }
 
-  public Claims getClaims() {
-    Claims jwtClaims = new DefaultClaims();
-    Map<String, Object> claimMap = getClaimMap();
+    private void setTokenType(JwtAuthenticationToken.TOKEN_TYPE type) {
+        claims.put("tokenType", type.toString());
+        this.type = type;
+    }
 
-    Set<Entry<String, Object>> entries = claimMap.entrySet();
-    entries.forEach((entry) -> {
-      jwtClaims.put(entry.getKey(), entry.getValue());
-    });
-    return jwtClaims;
-  }
+    private JwtBuilder setRoles(RepoRole... roles) {
+        if (roles == null || type.equals(JwtAuthenticationToken.TOKEN_TYPE.TEMPORARY)) {
+            return this;
+        }
+        for (RepoRole role : roles) {
+            this.roles.add(role.getValue());
+        }
+        return this;
+    }
 
-  public String getCompactToken(String secret) {
-    return getCompactToken(secret, null);
-  }
+    private JwtBuilder setScopedPermissions(ScopedPermission... permissions) {
+        if (permissions == null || permissions.length == 0) {
+            return this;
+        }
+        this.permissions.addAll(Arrays.asList(permissions));
+        return this;
+    }
 
-  public String getCompactToken(String secret, Date expiresAt) {
-    if (expiresAt != null) {
+    public JwtBuilder addSimpleClaim(String claimName, String value) {
+        claims.put(claimName, value);
+        return this;
+    }
+
+    public JwtBuilder addSimpleClaim(String claimName, Boolean value) {
+        claims.put(claimName, value);
+        return this;
+    }
+
+    public JwtBuilder addSimpleClaim(String claimName, Integer value) {
+        claims.put(claimName, value);
+        return this;
+    }
+
+    public JwtBuilder addObjectClaim(String claimName, Object value) {
+        claims.put(claimName, value);
+        return this;
+    }
+
+    public Map<String, Object> getClaimMap() {
+        //put principal, roles or permissions into map
+        try {
+            switch (type) {
+                case USER:
+                    addSimpleClaim("username", principal);
+                    claims.put("roles", new ObjectMapper().writeValueAsString(roles.isEmpty() ? new String[]{RepoUserRole.GUEST.getValue()} : roles.toArray(new String[]{})));
+                    break;
+                case SERVICE:
+                    addSimpleClaim("servicename", principal);
+                    claims.put("roles", new ObjectMapper().writeValueAsString(roles.isEmpty() ? new String[]{RepoUserRole.GUEST.getValue()} : roles.toArray(new String[]{})));
+                    break;
+                case TEMPORARY:
+                    addSimpleClaim("principalname", principal);
+                    claims.put("permissions", new ObjectMapper().writeValueAsString(permissions.toArray(new ScopedPermission[]{})));
+                    break;
+                default:
+                    LOGGER.warn("Invalid type {}. Leaving claims unchanged.", type);
+            }
+        } catch (JsonProcessingException ex) {
+            LOGGER.warn("Failed to create claim map.", ex);
+        }
+        return claims;
+    }
+
+    public Claims getClaims() {
+        Map<String, Object> claimsMap = new HashMap<>();
+        Map<String, Object> claimMap = getClaimMap();
+
+        Set<Entry<String, Object>> entries = claimMap.entrySet();
+        entries.forEach((entry) -> {
+            claimsMap.put(entry.getKey(), entry.getValue());
+        });
+        return new DefaultClaims(claimsMap);
+    }
+
+    public String getCompactToken(String secret) {
+        return getCompactToken(secret, null);
+    }
+
+    public String getCompactToken(String secret, Date expiresAt) {
+        if (expiresAt != null) {
             return Jwts.builder().setClaims(getClaims()).setExpiration(expiresAt).signWith(SignatureAlgorithm.HS256, secret).compact();
-    } else {
-      LOGGER.debug("Warn: Creating JWT token without expiration time.");
+        } else {
+            LOGGER.debug("Warn: Creating JWT token without expiration time.");
             return Jwts.builder().setClaims(getClaims()).signWith(SignatureAlgorithm.HS256, secret).compact();
+        }
     }
-  }
 
-  public JwtAuthenticationToken getJwtAuthenticationToken(String secret) {
-    return JwtAuthenticationToken.factoryToken(getCompactToken(secret), getClaimMap());
-  }
+    public JwtAuthenticationToken getJwtAuthenticationToken(String secret) {
+        return JwtAuthenticationToken.factoryToken(getCompactToken(secret), getClaimMap());
+    }
 
 }

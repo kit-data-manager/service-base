@@ -18,7 +18,6 @@ package edu.kit.datamanager.test;
 import com.nimbusds.jose.util.StandardCharset;
 import edu.kit.datamanager.entities.RepoServiceRole;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
-import edu.kit.datamanager.security.filter.JwtServiceToken;
 import edu.kit.datamanager.security.filter.JwtUserToken;
 import edu.kit.datamanager.security.filter.PublicAuthenticationFilter;
 import io.jsonwebtoken.Claims;
@@ -54,7 +53,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @RunWith(MockitoJUnitRunner.class)
 public class PublicAuthenticationFilterTest {
 
-    private String key = "vkfvoswsohwrxgjaxipuiyyjgubggzdaqrcuupbugxtnalhiegkppdgjgwxsmvdb";
+    private final String key = "vkfvoswsohwrxgjaxipuiyyjgubggzdaqrcuupbugxtnalhiegkppdgjgwxsmvdb";
 
     @Test
     public void test() throws Exception {
@@ -75,7 +74,7 @@ public class PublicAuthenticationFilterTest {
                 Assert.assertTrue(((JwtUserToken) answer).getAuthorities().contains(new SimpleGrantedAuthority(PublicAuthenticationFilter.ROLE_PUBLIC_READ)));
 
                 Key secretKey = new SecretKeySpec(key.getBytes(StandardCharset.UTF_8), "HmacSHA256");
-                Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(((JwtUserToken) answer).getToken());
+                Jws<Claims> jws = Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(((JwtUserToken) answer).getToken());
                 DefaultClaims claims = (DefaultClaims) jws.getBody();
 
                 Assert.assertTrue(claims.containsKey("groups"));

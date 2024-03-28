@@ -117,7 +117,7 @@ public class JwtAuthenticationFilterTest {
                 Assert.assertEquals("user", ((JwtUserToken) answer).getPrincipal());
                 Assert.assertTrue(((JwtUserToken) answer).getAuthorities().contains(new SimpleGrantedAuthority(RepoUserRole.ADMINISTRATOR.getValue())));
 
-                Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(((JwtUserToken) answer).getToken());
+                Jws<Claims> jws = Jwts.parser().setSigningKey(key).build().parseClaimsJws(((JwtUserToken) answer).getToken());
                 DefaultClaims claims = (DefaultClaims) jws.getBody();
                 Assert.assertTrue(claims.containsKey("tokenType"));
                 Assert.assertTrue(claims.containsKey("groups"));
