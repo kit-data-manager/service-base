@@ -299,7 +299,7 @@ public class SimpleServiceClient {
   /**
    * Get resource.
    *
-   * @param outputStream Outputstream for the resource.
+   * @param outputStream OutputStream for the resource.
    * @return Status.
    */
   public int getResource(OutputStream outputStream) {
@@ -463,20 +463,7 @@ public class SimpleServiceClient {
   }
 
   /**
-   * Main method for quick tests.
-   *
-   * @param args Not used.
-   */
-  public static void main(String[] args) throws Exception {
-    ResultPage<DataResource> result = SimpleServiceClient.create("http://localhost:8090/api/v1/dataresources1/").getResources(DataResource[].class);
-    LOGGER.info(result.getContentRange().toString());
-    for (DataResource r : result.getResources()) {
-      LOGGER.info(r.toString());
-    }
-  }
-
-  /**
-   * Resul page holding instance of type 'C'.
+   * Result page holding instance of type 'C'.
    *
    * @param <C> Type of response:
    */
@@ -487,7 +474,7 @@ public class SimpleServiceClient {
      * Constructor.
      *
      * @param resources Array holding all resources.
-     * @param range Given range if numer of resources is restricted.
+     * @param range Given range if number of resources is restricted.
      */
     public ResultPage(C[] resources, ControllerUtils.ContentRange range) {
       this.resources = resources;
@@ -499,7 +486,7 @@ public class SimpleServiceClient {
   }
 
   /**
-   * Sort respose.
+   * Sort response.
    */
   @Data
   public static class SortField {

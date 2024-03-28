@@ -21,6 +21,7 @@ import edu.kit.datamanager.exceptions.AccessForbiddenException;
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.EtagMismatchException;
 import edu.kit.datamanager.exceptions.EtagMissingException;
+import edu.kit.datamanager.exceptions.RangeNotSatisfyableException;
 import edu.kit.datamanager.exceptions.UnauthorizedAccessException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -213,22 +214,53 @@ public class ControllerUtils {
         }
     }
 
+    /**Builds a Content-Range header value based on the provided arguments. 
+     * The header format is {startIndex}-{endIndex}/totalElements for a valid
+     * range. If the range exceeds totalElements, e.g., currentPage * pageSize
+     * is larger than totalElements - 1, a RangeNotSatisfyableException is
+     * thrown. If totalElements is 0, i.e., no results will be returned,
+     * the Content-Range value will be &#42;/0.
+     * 
+     * @param currentPage The current page starting with 0.
+     * @param pageSize The number of elements per page.
+     * @param totalElement The total number of results.
+     * 
+     * @return A formatted string that can be used as Content-Range header.
+     */
     public static String getContentRangeHeader(int currentPage, int pageSize, long totalElements) {
-        int indexStart = currentPage * pageSize;
-        int indexEnd = (int) Math.min(indexStart + pageSize - 1, Math.max(0, totalElements - 1));
-        return indexStart + "-" + indexEnd + "/" + totalElements;
+        if (totalElements > 0) {
+            int indexStart = currentPage * pageSize;
+
+            if (indexStart > totalElements - 1) {
+                String message = "Current page '" + currentPage + "' is out of range!\n"
+                        + "(Pagesize: '" + pageSize + "', total no of elements: '" + totalElements + "'";
+                LOGGER.trace(message);
+                throw new RangeNotSatisfyableException(message);
+            }
+            int indexEnd = (int) Math.min(indexStart + pageSize - 1, Math.max(0, totalElements - 1));
+            return indexStart + "-" + indexEnd + "/" + totalElements;
+        }
+
+        //no elements in result
+        return "*/0";
     }
 
     public static ContentRange parseContentRangeHeader(String headerValue) {
-        Matcher m = CONTENT_RANGE_PATTERN.matcher(headerValue);
         ContentRange range = new ContentRange();
+        if (headerValue == null || headerValue.startsWith("*")) {
+            //cover case where no content-range is present or value is */0 for empty result
+            range.indexStart = 0;
+            range.indexEnd = 0;
+            range.totalElements = 0;
+        } else {
+            Matcher m = CONTENT_RANGE_PATTERN.matcher(headerValue);
 
-        if (m.find()) {
-            range.indexStart = Integer.parseInt(m.group(1));
-            range.indexEnd = Integer.parseInt(m.group(2));
-            range.totalElements = Long.parseLong(m.group(3));
+            if (m.find()) {
+                range.indexStart = Integer.parseInt(m.group(1));
+                range.indexEnd = Integer.parseInt(m.group(2));
+                range.totalElements = Long.parseLong(m.group(3));
+            }
         }
-
         return range;
     }
 
@@ -243,26 +275,5 @@ public class ControllerUtils {
         private int indexEnd = 0;
         private long totalElements = 0l;
 
-        public int getPages() {
-            int recordsPerPage = indexEnd - indexStart;
-            return (int) (totalElements + recordsPerPage - 1) / recordsPerPage;
-        }
-
-        public int getPage() {
-            int recordsPerPage = indexEnd - indexStart;
-            return (indexStart / recordsPerPage) + 1;
-        }
-
     }
-
-//  public static void main(String[] args){
-//    Pattern p = Pattern.compile("([\\d]+)[-]([\\d]+)[/]([\\d]+)");
-//    String s = "12-34/123";
-//    Matcher m = p.matcher(s);
-//    System.out.println(m.find());
-//
-//    System.out.println(m.group(1));
-//    System.out.println(m.group(2));
-//    System.out.println(m.group(3));
-//  }
 }

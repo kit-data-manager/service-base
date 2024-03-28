@@ -20,6 +20,7 @@ import edu.kit.datamanager.exceptions.AccessForbiddenException;
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.EtagMismatchException;
 import edu.kit.datamanager.exceptions.EtagMissingException;
+import edu.kit.datamanager.exceptions.RangeNotSatisfyableException;
 import edu.kit.datamanager.exceptions.UnauthorizedAccessException;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import edu.kit.datamanager.util.ControllerUtils;
@@ -39,6 +40,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 
 /**
@@ -270,7 +272,13 @@ public class ControllerUtilsTest {
     @Test
     public void testGetContentRangeHeaderNoResult() {
         String contentRangeHeader = ControllerUtils.getContentRangeHeader(0, 10, 0);
-        Assert.assertEquals("0-0/0", contentRangeHeader);
+        Assert.assertEquals("*/0", contentRangeHeader);
+    }
+
+    @Test
+    public void testGetContentRangeHeaderPageTwoNoResult() {
+        String contentRangeHeader = ControllerUtils.getContentRangeHeader(1, 10, 0);
+        Assert.assertEquals("*/0", contentRangeHeader);
     }
 
     @Test
@@ -291,6 +299,27 @@ public class ControllerUtilsTest {
         Assert.assertEquals("10-10/11", contentRangeHeader);
     }
 
+    @Test(expected = RangeNotSatisfyableException.class)
+    public void testGetContentRangeHeaderBadRequest() {
+        ControllerUtils.getContentRangeHeader(1, 10, 1);
+    }
+
+    @Test
+    public void testParseContentRangeHeaderWithResults() {
+        String contentRangeHeader = ControllerUtils.getContentRangeHeader(0, 10, 11);
+        ControllerUtils.ContentRange range = ControllerUtils.parseContentRangeHeader(contentRangeHeader);
+        Assert.assertEquals(0, range.getIndexStart());
+        Assert.assertEquals(9, range.getIndexEnd());
+    }
+
+      @Test
+    public void testParseContentRangeHeaderWithNoResults() {
+        String contentRangeHeader = ControllerUtils.getContentRangeHeader(0, 10, 0);
+        ControllerUtils.ContentRange range = ControllerUtils.parseContentRangeHeader(contentRangeHeader);
+        Assert.assertEquals(0, range.getIndexStart());
+        Assert.assertEquals(0, range.getIndexEnd());
+    }
+    
     private WebRequest createDummyWebRequest() {
         return createDummyWebRequest(true);
     }
