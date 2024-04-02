@@ -9,14 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+### Removed
+
+### Deprecated
+
+### Fixed
+
+### Security
+
+## [1.2.1] - 2024-04-02
+
+### Changed
 * SimpleServiceClient now follows redirects (HTTP 3XX) properly
 * Enable redirections for getResource and getResources for SimpleServiceClient by @VolkerHartmann in https://github.com/kit-data-manager/service-base/pull/227
 
 ### Removed
 * Removed unused (and broken) methods 'getPages' and 'getPage' from internal class ContentRange 
-
-### Deprecated
-* 
 
 ### Fixed
 * Fixed JWT handling caused by API changes in dependencies
