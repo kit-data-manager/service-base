@@ -52,10 +52,6 @@ javadoc {
     }
 }
 
-tasks.withType<AbstractPublishToMaven>().configureEach {
-  val signingTasks = tasks.withType<Sign>()
-  mustRunAfter(signingTasks)
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 //for plugin io.github.gradle-nexus.publish-plugin
