@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Bump github/codeql-action to 3
 * Bump codecov/codecov-action to 4
 * Bump actions/setup-java to 4.2.1
+* Bump publish-plugin to 2.0.0-rc2
 * Bump jacoco to 0.8.11
 * Bump io.freefair.lombok to 8.6
 * Bump io.freefair.maven-publish-java to 8.6
