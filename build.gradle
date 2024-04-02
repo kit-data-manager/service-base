@@ -114,7 +114,7 @@ if (project.hasProperty('release')) {
 }
 
 jacoco {
-    toolVersion = "0.8.7"
+    toolVersion = "0.8.11"
 }
 
 tasks.withType(Test) {
