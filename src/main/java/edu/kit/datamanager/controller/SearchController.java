@@ -67,12 +67,12 @@ public class SearchController {
             + "'page' and 'size' query parameters are translated into the Elastic attributes 'from' and 'size' automatically, "
             + "if not already provided within the query by the caller.", security = {
                 @SecurityRequirement(name = "bearer-jwt")})
-    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    @RequestMapping(value = "/_search", method = RequestMethod.POST)
     @ResponseBody
     @PageableAsQueryParam
     public ResponseEntity<?> proxy(
             @RequestBody JsonNode body,
-            ProxyExchange<byte[]> proxy,
+            ProxyExchange<JsonNode> proxy,
             @Parameter(hidden = true) final Pageable pgbl) throws Exception {
         LOG.trace("Provided Elastic query: '{}'", body.toString());
 
@@ -82,5 +82,22 @@ public class SearchController {
         ElasticSearchUtil.buildPostFilter(on);
 
         return proxy.uri(searchConfiguration.getUrl() + "/" + searchConfiguration.getIndex() + "/_search").post();
+    }
+    
+     @Operation(operationId = "search",
+            summary = "Search for resources.",
+            description = "This endpoint is identical to _search but kept for "
+                    + "legacy reasons. In future implementations _search should "
+                    + "be used as Elatic also offers _search and some libraries "
+                    + "expect _search as default endpoint.", security = {
+                @SecurityRequirement(name = "bearer-jwt")})
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    @ResponseBody
+    @PageableAsQueryParam
+    public ResponseEntity<?> proxy_legacy(
+            @RequestBody JsonNode body,
+            ProxyExchange<JsonNode> proxy,
+            @Parameter(hidden = true) final Pageable pgbl) throws Exception {
+        return proxy(body, proxy, pgbl);
     }
 }

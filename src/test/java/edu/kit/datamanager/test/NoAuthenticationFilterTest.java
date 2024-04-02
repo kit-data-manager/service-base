@@ -52,7 +52,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @RunWith(MockitoJUnitRunner.class)
 public class NoAuthenticationFilterTest {
 
-    private String key = "vkfvoswsohwrxgjaxipuiyyjgubggzdaqrcuupbugxtnalhiegkppdgjgwxsmvdb";
+    private final String key = "vkfvoswsohwrxgjaxipuiyyjgubggzdaqrcuupbugxtnalhiegkppdgjgwxsmvdb";
 
     @Test
     public void test() throws Exception {
@@ -69,7 +69,7 @@ public class NoAuthenticationFilterTest {
                 Assert.assertTrue(((JwtServiceToken) answer).getAuthorities().contains(new SimpleGrantedAuthority(RepoServiceRole.SERVICE_WRITE.getValue())));
 
                 Key secretKey = new SecretKeySpec(key.getBytes(StandardCharset.UTF_8), "HmacSHA256");
-                Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(((JwtServiceToken) answer).getToken());
+                Jws<Claims> jws = Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(((JwtServiceToken) answer).getToken());
                 DefaultClaims claims = (DefaultClaims) jws.getBody();
 
                 Assert.assertTrue(claims.containsKey("groups"));

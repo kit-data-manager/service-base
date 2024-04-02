@@ -18,6 +18,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## [1.2.1] - 2024-04-02
+
+### Changed
+* SimpleServiceClient now follows redirects (HTTP 3XX) properly
+* Enable redirections for getResource and getResources for SimpleServiceClient by @VolkerHartmann in https://github.com/kit-data-manager/service-base/pull/227
+
+### Removed
+* Removed unused (and broken) methods 'getPages' and 'getPage' from internal class ContentRange 
+
+### Fixed
+* Fixed JWT handling caused by API changes in dependencies
+* Fixed development branch build on push. by @github-actions in https://github.com/kit-data-manager/service-base/pull/225
+* Fixed Content-Range header according to RFT 7233 by @github-actions in https://github.com/kit-data-manager/service-base/pull/241
+
+### Security
+* Bump actions/checkout to 4
+* Bump github/codeql-action to 3
+* Bump codecov/codecov-action to 4
+* Bump actions/setup-java to 4.2.1
+* Bump jacoco to 0.8.11
+* Bump io.freefair.lombok to 8.6
+* Bump io.freefair.maven-publish-java to 8.6
+* Bump org.owasp.dependencycheck to 9.1.0
+* Bump io.spring.dependency-management to 1.1.4
+* Bump springDocVersion to 1.8.0
+* Bump javassist to 3.30.2-GA
+* Bump commons-validator to 1.8.0
+* Bump commons-lang3 to 3.14.0
+* Bump commons-io:commons-io 2.16.0
+* Bump jackson-jaxrs-json-provider to 2.17.0
+* Bump jackson-module-afterburner to 2.17.0
+* Bump jackson-datatype-joda to 2.17.0
+* Bump jackson-datatype-jsr310 to 2.17.0
+* Bump jackson-databind to 2.16.2
+* Bump datatype:jackson-datatype-jsr310 to 2.17.0
+* Bump jaxb-impl to 4.0.5
+* Bump jaxb-core to 4.0.5
+* Bump tika-core to 2.9.1
+* Bump nimbus-jose-jwt to 9.37.3
+* Bump jjwt-api to 0.12.5
+* Bump jjwt-impl to 0.12.5
+* Bump jjwt-jackson to 0.12.5
+* Bump dozer-core to 7.0.0
+
 ## [1.2.0] - 2023-06-19
 
 ### Added
@@ -231,7 +275,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/kit-data-manager/service-base/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/kit-data-manager/service-base/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/kit-data-manager/service-base/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/kit-data-manager/service-base/compare/v1.0.7...v1.1.0
