@@ -108,8 +108,8 @@ dependencies {
     testImplementation "org.mockito:mockito-inline:5.2.0"
 }
 
+signingTasks = tasks.withType(Sign)
 tasks.withType(AbstractPublishToMaven).configureEach{
-    signingTasks = tasks.withType(Sign)
     mustRunAfter(signingTasks)
 }
 
