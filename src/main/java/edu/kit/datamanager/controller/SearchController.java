@@ -31,6 +31,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.cloud.gateway.mvc.ProxyExchange;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -67,10 +68,11 @@ public class SearchController {
             + "'page' and 'size' query parameters are translated into the Elastic attributes 'from' and 'size' automatically, "
             + "if not already provided within the query by the caller.", security = {
                 @SecurityRequirement(name = "bearer-jwt")})
-    @RequestMapping(value = "/_search", method = RequestMethod.POST)
+    @RequestMapping(value = "/{index}/_search", method = RequestMethod.POST)
     @ResponseBody
     @PageableAsQueryParam
     public ResponseEntity<?> proxy(
+            @PathVariable("index") final String index,
             @RequestBody JsonNode body,
             ProxyExchange<JsonNode> proxy,
             @Parameter(hidden = true) final Pageable pgbl) throws Exception {
@@ -81,7 +83,8 @@ public class SearchController {
         ElasticSearchUtil.addPaginationInformation(on, pgbl.getPageNumber(), pgbl.getPageSize());
         ElasticSearchUtil.buildPostFilter(on);
 
-        return proxy.uri(searchConfiguration.getUrl() + "/" + searchConfiguration.getIndex() + "/_search").post();
+        LOG.trace("Forwarding Elastic query to {}.", searchConfiguration.getUrl() + "/" + index + "/_search"); 
+        return proxy.uri(searchConfiguration.getUrl() + "/" + index + "/_search").post();
     }
     
      @Operation(operationId = "search",
@@ -98,6 +101,6 @@ public class SearchController {
             @RequestBody JsonNode body,
             ProxyExchange<JsonNode> proxy,
             @Parameter(hidden = true) final Pageable pgbl) throws Exception {
-        return proxy(body, proxy, pgbl);
+        return proxy(searchConfiguration.getIndex(), body, proxy, pgbl);
     }
 }

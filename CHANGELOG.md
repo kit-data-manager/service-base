@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+* Additional Elastic proxy endpoint added which reflects the correct Elastic API, i.e., is available via /api/v1/{index}/_search
 
 ### Changed
 
