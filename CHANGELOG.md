@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 * Additional Elastic proxy endpoint added which reflects the correct Elastic API, i.e., is available via /api/v1/{index}/_search
+* ADMINISTRATOR role is now properly evaluated in search requests by @github-actions in https://github.com/kit-data-manager/service-base/pull/254
 
 ### Changed
 
