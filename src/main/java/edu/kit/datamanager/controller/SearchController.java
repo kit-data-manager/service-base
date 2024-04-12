@@ -52,55 +52,55 @@ import org.springframework.web.bind.annotation.RestController;
 @ConditionalOnExpression("${repo.search.enabled:false}")
 public class SearchController {
 
-    static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
+  static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
 
-    @Autowired
-    private SearchConfiguration searchConfiguration;
+  @Autowired
+  private SearchConfiguration searchConfiguration;
 
-    public static final String POST_FILTER = "post_filter";
+  public static final String POST_FILTER = "post_filter";
 
-    @Operation(operationId = "search",
-            summary = "Search for resources.",
-            description = "Search for resources using the configured Elastic backend. This endpoint serves as direct proxy to the RESTful endpoint of Elastic. "
-            + "In the body, a query document following the Elastic query format has to be provided. Format errors are returned directly from Elastic. "
-            + "This endpoint also supports authentication and authorization. User information obtained via JWT is applied to the provided query as "
-            + "post filter. If a post filter was already provided with the query it will be replaced. Furthermore, this endpoint supports pagination. "
-            + "'page' and 'size' query parameters are translated into the Elastic attributes 'from' and 'size' automatically, "
-            + "if not already provided within the query by the caller.", security = {
-                @SecurityRequirement(name = "bearer-jwt")})
-    @RequestMapping(value = "/{index}/_search", method = RequestMethod.POST)
-    @ResponseBody
-    @PageableAsQueryParam
-    public ResponseEntity<?> proxy(
-            @PathVariable("index") final String index,
-            @RequestBody JsonNode body,
-            ProxyExchange<JsonNode> proxy,
-            @Parameter(hidden = true) final Pageable pgbl) throws Exception {
-        LOG.trace("Provided Elastic query: '{}'", body.toString());
+  @Operation(operationId = "search",
+          summary = "Search for resources.",
+          description = "Search for resources using the configured Elastic backend. This endpoint serves as direct proxy to the RESTful endpoint of Elastic. "
+          + "In the body, a query document following the Elastic query format has to be provided. Format errors are returned directly from Elastic. "
+          + "This endpoint also supports authentication and authorization. User information obtained via JWT is applied to the provided query as "
+          + "post filter. If a post filter was already provided with the query it will be replaced. Furthermore, this endpoint supports pagination. "
+          + "'page' and 'size' query parameters are translated into the Elastic attributes 'from' and 'size' automatically, "
+          + "if not already provided within the query by the caller.", security = {
+            @SecurityRequirement(name = "bearer-jwt")})
+  @RequestMapping(value = "/{index}/_search", method = RequestMethod.POST)
+  @ResponseBody
+  @PageableAsQueryParam
+  public ResponseEntity<?> proxy(
+          @PathVariable("index") final String index,
+          @RequestBody JsonNode body,
+          ProxyExchange<JsonNode> proxy,
+          @Parameter(hidden = true) final Pageable pgbl) throws Exception {
+    LOG.trace("Provided Elastic query: '{}'", body.toString());
 
-        // Set or replace post-filter
-        ObjectNode on = (ObjectNode) body;
-        ElasticSearchUtil.addPaginationInformation(on, pgbl.getPageNumber(), pgbl.getPageSize());
-        ElasticSearchUtil.buildPostFilter(on);
+    // Set or replace post-filter
+    ObjectNode on = (ObjectNode) body;
+    ElasticSearchUtil.addPaginationInformation(on, pgbl.getPageNumber(), pgbl.getPageSize());
+      ElasticSearchUtil.buildPostFilter(on);
 
-        LOG.trace("Forwarding Elastic query to {}.", searchConfiguration.getUrl() + "/" + index + "/_search"); 
-        return proxy.uri(searchConfiguration.getUrl() + "/" + index + "/_search").post();
-    }
-    
-     @Operation(operationId = "search",
-            summary = "Search for resources.",
-            description = "This endpoint is identical to _search but kept for "
-                    + "legacy reasons. In future implementations _search should "
-                    + "be used as Elatic also offers _search and some libraries "
-                    + "expect _search as default endpoint.", security = {
-                @SecurityRequirement(name = "bearer-jwt")})
-    @RequestMapping(value = "/search", method = RequestMethod.POST)
-    @ResponseBody
-    @PageableAsQueryParam
-    public ResponseEntity<?> proxy_legacy(
-            @RequestBody JsonNode body,
-            ProxyExchange<JsonNode> proxy,
-            @Parameter(hidden = true) final Pageable pgbl) throws Exception {
-        return proxy(searchConfiguration.getIndex(), body, proxy, pgbl);
-    }
+    LOG.trace("Forwarding Elastic query to {}.", searchConfiguration.getUrl() + "/" + index + "/_search");
+    return proxy.uri(searchConfiguration.getUrl() + "/" + index + "/_search").post();
+  }
+
+  @Operation(operationId = "search",
+          summary = "Search for resources.",
+          description = "This endpoint is identical to _search but kept for "
+          + "legacy reasons. In future implementations _search should "
+          + "be used as Elatic also offers _search and some libraries "
+          + "expect _search as default endpoint.", security = {
+            @SecurityRequirement(name = "bearer-jwt")})
+  @RequestMapping(value = "/search", method = RequestMethod.POST)
+  @ResponseBody
+  @PageableAsQueryParam
+  public ResponseEntity<?> proxy_legacy(
+          @RequestBody JsonNode body,
+          ProxyExchange<JsonNode> proxy,
+          @Parameter(hidden = true) final Pageable pgbl) throws Exception {
+    return proxy(searchConfiguration.getIndex(), body, proxy, pgbl);
+  }
 }
