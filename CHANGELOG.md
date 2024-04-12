@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-* Additional Elastic proxy endpoint added which reflects the correct Elastic API, i.e., is available via /api/v1/{index}/_search
-* ADMINISTRATOR role is now properly evaluated in search requests by @github-actions in https://github.com/kit-data-manager/service-base/pull/254
 
 ### Changed
 
@@ -18,7 +16,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [1.3.0] - 2024-04-12
+
+### Added
+* Additional Elastic proxy endpoint added which reflects the correct Elastic API, i.e., is available via /api/v1/{index}/_search
+* ADMINISTRATOR role is now properly evaluated in search requests by @github-actions in https://github.com/kit-data-manager/service-base/pull/254
+
 ### Security
+* Bump commons-io:commons-io from 2.16.0 to 2.16.1 
+* Bump io.github.gradle-nexus.publish-plugin from 2.0.0-rc-2 to 2.0.0 
 
 ## [1.2.1] - 2024-04-02
 
@@ -278,7 +284,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.2.1...HEAD
+[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/kit-data-manager/service-base/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/kit-data-manager/service-base/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/kit-data-manager/service-base/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/kit-data-manager/service-base/compare/v1.1.0...v1.1.1
