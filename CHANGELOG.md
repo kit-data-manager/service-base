@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [1.3.1] - 2024-04-17
+
+### Fixed
+* Problem while validating keycloak tokens.
+
 ## [1.3.0] - 2024-04-12
 
 ### Added
@@ -284,7 +289,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.3.1...HEAD
+[1.3.1]: https://github.com/kit-data-manager/service-base/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/kit-data-manager/service-base/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/kit-data-manager/service-base/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/kit-data-manager/service-base/compare/v1.1.1...v1.2.0
