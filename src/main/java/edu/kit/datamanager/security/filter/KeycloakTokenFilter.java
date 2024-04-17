@@ -29,6 +29,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -181,6 +182,8 @@ public class KeycloakTokenFilter extends OncePerRequestFilter {
             throw new MalformedJwtException("Your token is malformed.");
         } catch (IllegalArgumentException ex) {
             LOG.debug("Illegal argument exception while local authentication attempt.", ex);
+        } catch (UnsupportedJwtException ex) {
+            LOG.debug("Unsupported JwtException while local authentication attempt.", ex);
         }
         return authenticated;
     }
