@@ -19,7 +19,6 @@ plugins {
     id "io.freefair.maven-publish-java" version "8.6"
     id "io.spring.dependency-management" version "1.1.6" 
     id "org.owasp.dependencycheck" version "10.0.2"
-    id "com.jfrog.bintray" version "1.8.5"
     id "java"
     id "jacoco"
     // plugins for release and publishing to maven repo
@@ -81,7 +80,7 @@ dependencies {
 
     implementation "com.github.java-json-tools:json-patch:1.13"
    
-    implementation "org.apache.commons:commons-lang3:3.14.0"
+    implementation "org.apache.commons:commons-lang3:3.15.0"
     implementation "commons-validator:commons-validator:1.9.0"
     implementation "commons-io:commons-io:2.16.1"
     // http client uses commons-codec
