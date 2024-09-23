@@ -1,6 +1,7 @@
 # KIT Data Manager - Service Base Module
 
 [![build with gradle](https://github.com/kit-data-manager/service-base/actions/workflows/gradle.yml/badge.svg)](https://github.com/kit-data-manager/service-base/actions/workflows/gradle.yml)
+[![javadoc](https://javadoc.io/badge2/edu.kit.datamanager/service-base/javadoc.svg)](https://javadoc.io/doc/edu.kit.datamanager/service-base)
 [![codecov](https://codecov.io/gh/kit-data-manager/service-base/branch/master/graph/badge.svg)](https://codecov.io/gh/kit-data-manager/service-base)
 [![CodeQL](https://github.com/kit-data-manager/service-base/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/kit-data-manager/service-base/actions/workflows/codeql-analysis.yml)
 ![License](https://img.shields.io/github/license/kit-data-manager/service-base.svg)
