@@ -8,13 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-### Changed
+### Fixed
 
-### Removed
+### Security
 
-### Deprecated
+## [1.3.2] - 2024-11-08
+
+### Added
+* Added a Javadoc badge to the README for easier access to documentation.
 
 ### Fixed
+* Enhanced error handling and portability in the gradlew and gradlew.bat scripts.
+
+### Security
+* Updated Java setup action versions across various workflow files for improved compatibility.
+* Upgraded multiple plugin and dependency versions in the build configuration for better performance and security.
+* Updated Gradle distribution version and added new properties for improved configuration.
 
 ## [1.3.1] - 2024-04-17
 
@@ -289,7 +298,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.3.1...HEAD
+[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.3.2...HEAD
+[1.3.2]: https://github.com/kit-data-manager/service-base/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/kit-data-manager/service-base/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/kit-data-manager/service-base/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/kit-data-manager/service-base/compare/v1.2.0...v1.2.1
