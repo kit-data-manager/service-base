@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.UUID;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -219,7 +220,7 @@ public class SimpleRepositoryClient{
   public void deleteResource(String resourceId){
     SimpleServiceClient.create(resourceBaseUrl).withResourcePath(resourceId).withContentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).withBearerToken(bearerToken).deleteResource();
   }
-
+  
 //  public static void main(String[] args) throws Exception{
 //       String baseUrl = "http://localhost:8090/api/v1/schemas/";
 //    String resourceId = "35dd5dcc-9b98-4c0d-a964-e353b0395411";
