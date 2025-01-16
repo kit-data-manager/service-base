@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## [1.3.3] - 2025-01-16
+
+### Security
+* Updated the version of the `nimbus-jose-jwt` library from 9.45 to 9.47 for improved functionality and security.
+* Updated the Gradle wrapper to version 8.11.1 for enhanced performance and compatibility.
+* Updated the version of the `commons-io` library from 2.17.0 to 2.18.0 for improved performance.
+* Updated Spring Boot to version 3.4.0 for new features and improvements.
+* Updated several Jackson library versions for better performance and functionality.
+
 ## [1.3.2] - 2024-11-08
 
 ### Added
@@ -298,7 +307,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.3.2...HEAD
+[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.3.3...HEAD
+[1.3.3]: https://github.com/kit-data-manager/service-base/compare/v1.3.2...v1.3.3
 [1.3.2]: https://github.com/kit-data-manager/service-base/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/kit-data-manager/service-base/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/kit-data-manager/service-base/compare/v1.2.1...v1.3.0
