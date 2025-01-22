@@ -15,10 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.3] - 2025-01-16
 
 ### Security
-* Updated the version of the `nimbus-jose-jwt` library from 9.45 to 9.47 for improved functionality and security.
-* Updated the Gradle wrapper to version 8.11.1 for enhanced performance and compatibility.
+* Updated the version of the `nimbus-jose-jwt` library from to 10.0.1 for improved functionality and security.
+* Updated the Gradle wrapper to version 8.12 for enhanced performance and compatibility.
 * Updated the version of the `commons-io` library from 2.17.0 to 2.18.0 for improved performance.
-* Updated Spring Boot to version 3.4.0 for new features and improvements.
+* Updated Spring Boot to version 3.4.1 for new features and improvements.
 * Updated several Jackson library versions for better performance and functionality.
 
 ## [1.3.2] - 2024-11-08
