@@ -16,12 +16,15 @@
 package edu.kit.datamanager.configuration;
 
 import edu.kit.datamanager.annotations.SearchIndex;
+import edu.kit.datamanager.annotations.SearchIndexUrl;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import edu.kit.datamanager.annotations.SearchIndexUrl;
-import java.net.URL;
 import org.springframework.validation.annotation.Validated;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Search configuration used by SearchController.
@@ -56,6 +59,16 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @SuppressWarnings("UnnecessarilyFullyQualified")
 public class SearchConfiguration {
+    /** 'Default property defining pattern for detecting search endpoint.
+     * Default endpoint should be: '/context/api/v1/search' or '/context/api/v1/_search'
+     * Pattern: (/[^/]+)?/api/v\d+/_?search$
+     */
+    public static final String DEFAULT_SEARCH_ENDPOINT_PATTERN = "(/[^/]+)?/api/v\\d+/_?search$";
+
+    /** Default property defining headers to be deduplicated in search response.
+     * Default headers: 'Transfer-Encoding'
+     */
+    public static final String DEDUP_HEADERS = "Transfer-Encoding";
 
     /**
      * Property defining whether the search endpoint of the SearchController is
@@ -85,5 +98,33 @@ public class SearchConfiguration {
     @Value("${repo.search.index:*}")
     @SearchIndex
     private String index;
+
+    /**
+     * Property defining the search endpoint pattern. The pattern is used to
+     * detect the search endpoint in the request URL. By default, the pattern is
+     * set to '(/[^/]+)?/api/v\d+/_?search$'.
+     */
+    @Value(("${repo.search.endpointPattern:" + DEFAULT_SEARCH_ENDPOINT_PATTERN + "}"))
+    private List<String> searchEndpointPatterns;
+
+    /**
+     * Property defining headers to be deduplicated in search response.
+     * By default, the header 'Transfer-Encoding' is deduplicated.
+     */
+    @Value("${repo.search.dedupHeaders:" + DEDUP_HEADERS + "}")
+    private List<String> dedupHeaders;
+
+    /** List of deduplicated headers in lowercase. */
+    private List<String> dedupHeadersLowerCase = null;
+
+    public List<String> getDedupHeaders(){
+        if (dedupHeadersLowerCase == null) {
+            dedupHeadersLowerCase = new ArrayList<>();
+            for (String header : dedupHeaders) {
+                dedupHeadersLowerCase.add(header.toLowerCase());
+            }
+        }
+        return dedupHeadersLowerCase;
+    }
 
 }
