@@ -19,6 +19,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import java.util.List;
 
 /**
  * Base (authentication) properties for SpringBoot applications.
@@ -30,7 +31,6 @@ import org.springframework.stereotype.Component;
 @EqualsAndHashCode
 @SuppressWarnings("UnnecessarilyFullyQualified")
 public class GenericApplicationProperties{
-
   @Value("${repo.auth.jwtSecret}")
   private String jwtSecret;
   @Value("${repo.auth.enabled:FALSE}")
