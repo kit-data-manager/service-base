@@ -28,8 +28,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -63,10 +61,6 @@ public class RemoveDuplicatedHeadersOnceFilter extends OncePerRequestFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
     HttpServletResponseWrapper responseWrapper = new HttpServletResponseWrapper(response) {
-      /**
-       * Set of headers that already added.
-       */
-      private Set<String> dedupHeaders = new HashSet<>();
 
       @Override
       public void setHeader(String name, String value) {
@@ -75,16 +69,11 @@ public class RemoveDuplicatedHeadersOnceFilter extends OncePerRequestFilter {
         LOGGER.trace("Setting header '{}' to value '{}'.", name, value);
         // Check if header should be ignored if mentioned more than once
         if (searchConfiguration.getHeadersLowerCase().contains(headerName)) {
-          LOGGER.trace("Header '{}' is in deduplication list.", name);
-          if (dedupHeaders.contains(headerName)) {
-            LOGGER.trace("Header '{}' is already set --> ignore header.", name);
-            ignoreHeader = true;
-          } else {
-            dedupHeaders.add(headerName);
-          }
-          if (!ignoreHeader) {
-            super.setHeader(name, value);
-          }
+          LOGGER.trace("Header '{}' is in deduplication list --> ignore.", name);
+          ignoreHeader = true;
+        }
+        if (!ignoreHeader) {
+          super.setHeader(name, value);
         }
       }
 

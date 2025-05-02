@@ -33,7 +33,9 @@ import java.util.List;
  *
  * <ul>
  *  <li>repo.search.enabled - TRUE/FALSE, determined whether search capabilities will be enabled or not. Default: FALSE</li>
- *  <li>repo.search.url - URL to a running Elastic instance used as search backend. The URL will be validated at instantiation time using a connection check. See below for further elaborations on that and potential issues. Default: http://localhost:9200</li>
+ *  <li>repo.search.url - URL to a running Elastic instance used as search backend. The URL will be validated at instantiation
+ *  time using a connection check. See below for further elaborations on that and potential issues.
+ *  Default: http://localhost:9200</li>
  *  <li>repo.search.index - One or more indices in the given Elastic index included in the search.
  *  The provided value should be in lowercase and may contain multiple entities separated by ','(i.e., index1,index2)
  *  as well as wildcard character * to select a range of indices
@@ -123,6 +125,7 @@ public class SearchConfiguration {
    * detect the search endpoint(s) in the request URL.
    * By default, the pattern is
    * set to '(/[^/]+)?/api/v\d+(/[^/]+)?/_?search$'.
+   * Matching examples: '/context/api/v1/search' or '/context/api/v1/indexes/_search'
    * If more than one pattern is provided, the patterns are separated by a comma.
    */
   @Value(("${repo.search.endpointPattern:" + DEFAULT_SEARCH_ENDPOINT_PATTERN + "}"))
