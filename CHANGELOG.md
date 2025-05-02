@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## [1.3.4] - 2025-05-02
+
+### Added
+* Filter to remove duplicated headers in the response of the Elastic proxy endpoint.
+* Enhance search configuration to allow setting endpoint for Elastic proxy endpoint and the headers which should be removed from the response.
+
+### Security
+* Updated several core dependencies and plugins
+* Updated gradle to 8.14
+
 ## [1.3.3] - 2025-01-16
 
 ### Security
@@ -307,7 +317,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.3.3...HEAD
+[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.3.4...HEAD
+[1.3.4]: https://github.com/kit-data-manager/service-base/compare/v1.3.3...v1.3.4
 [1.3.3]: https://github.com/kit-data-manager/service-base/compare/v1.3.2...v1.3.3
 [1.3.2]: https://github.com/kit-data-manager/service-base/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/kit-data-manager/service-base/compare/v1.3.0...v1.3.1
