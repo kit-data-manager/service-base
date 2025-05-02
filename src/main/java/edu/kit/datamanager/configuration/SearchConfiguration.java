@@ -16,37 +16,55 @@
 package edu.kit.datamanager.configuration;
 
 import edu.kit.datamanager.annotations.SearchIndex;
+import edu.kit.datamanager.annotations.SearchIndexUrl;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import edu.kit.datamanager.annotations.SearchIndexUrl;
-import java.net.URL;
 import org.springframework.validation.annotation.Validated;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Search configuration used by SearchController.
- *
+ * <p>
  * The search configuration covers three properties:
- * 
- * <ul> 
+ *
+ * <ul>
  *  <li>repo.search.enabled - TRUE/FALSE, determined whether search capabilities will be enabled or not. Default: FALSE</li>
- *  <li>repo.search.url - URL to a running Elastic instance used as search backend. The URL will be validated at instantiation time using a connection check. See below for further elaborations on that and potential issues. Default: http://localhost:9200</li>
- *  <li>repo.search.index - One or more indices in the given Elastic index included in the search. The provided value should be in lowercase and may contain multiple enties separated by , (i.e. index1,index2) as well as wildcard character * to select a range of indices (i.e. index*). Default: *</li>
+ *  <li>repo.search.url - URL to a running Elastic instance used as search backend. The URL will be validated at instantiation
+ *  time using a connection check. See below for further elaborations on that and potential issues.
+ *  Default: http://localhost:9200</li>
+ *  <li>repo.search.index - One or more indices in the given Elastic index included in the search.
+ *  The provided value should be in lowercase and may contain multiple entities separated by ','(i.e., index1,index2)
+ *  as well as wildcard character * to select a range of indices
+ *  (i.e., index*).
+ *  Default: *</li>
+ *  <li>repo.search.endpointPattern - A list of patterns used to detect the search endpoint in the request URL.
+ *  Default: (/[^/]+)?/api/v\d+/_?search$</li>
+ *  <li>repo.search.dedupHeaders - A list of headers to be deduplicated in the search response.
+ *  Default: Transfer-Encoding</li>
  * </ul>
+ * <p>
+ * To ensure a proper configuration,
+ * <i>repo.search.url</i> is validated
+ * using a connection check for the configured elastic instance as soon as ElasticConfiguration is instantiated.
+ * This means that if you use SearchConfiguration
+ * in your project, and you want to allow to disable search via <i>repo.search.enabled: FALSE</i> you should ensure
+ * that in this case, SearchConfiguration is NOT instantiated as this will cause a validation exception
+ * if the connection check to the Elastic instance fails.
+ * This can be achieved by conditional use of SearchConfiguration as shown in the following example:
  *
- * To ensure a proper configuration, <i>repo.search.url</i> is validated using a connection check for the configured elastic instance as soon as ElasticConfiguration is instantiated. This means, that if you use SearchConfiguration
- * in your project and you want to allow to disable search via <i>repo.search.enabled:FALSE</i> you should ensure, that in this case, SearchConfiguration is NOT instantiated as this will cause a validation exception if the connection
- * check to the Elastic instance fails. This can be achieved by conditional use of SearchConfiguration as shown in the following example:
- *
- * <pre>{@code 
+ * <pre>{@code
  * @Bean
  * @ConfigurationProperties("repo")
  * @ConditionalOnProperty(prefix = "repo.search", name = "enabled", havingValue = "true")
  * public SearchConfiguration searchConfiguration() {
  *  return new SearchConfiguration();
- * }  
+ * }
  * }</pre>
- * 
+ * <p>
  * If using ConditionalOnProperty the bean will only be instantiated if property <i>repo.search.enabled</i> is TRUE, otherwise the bean remains 'null'.
  *
  * @author jejkal
@@ -56,34 +74,89 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @SuppressWarnings("UnnecessarilyFullyQualified")
 public class SearchConfiguration {
+  /**
+   * Default property defining pattern(s) for detecting search endpoint.
+   * Default endpoint should be: '/context/api/v1/search' or '/context/api/v1/indexes/_search'
+   * Pattern: (/[^/]+)?/api/v\d+(/[^/]+)?/_?search$
+   */
+  public static final String DEFAULT_SEARCH_ENDPOINT_PATTERN = "(/[^/]+)?/api/v\\d+(/[^/]+)?/_?search$";
 
-    /**
-     * Property defining whether the search endpoint of the SearchController is
-     * available or not. Furthermore, this property is used to decide whether to
-     * perform indexing or not in a particular service. By default, search is
-     * disabled.
-     */
-    @Value("${repo.search.enabled:FALSE}")
-    private boolean searchEnabled;
+  /**
+   * Default property defining headers to be deduplicated in search response.
+   * Default headers: 'Transfer-Encoding'
+   */
+  public static final String DEDUP_HEADERS = "Transfer-Encoding";
 
-    /**
-     * Property for defining the search endpoint's base URL. It may only
-     * contains protocol, hostname, and port and must not end with a slash. All
-     * other parts, i.e., index and search endpoint, are added by the
-     * SearchController. by default, an installation at 'http://localhost:9200'
-     * is adressed.
-     */
-    @Value("${repo.search.url:http://localhost:9200}")
-    @SearchIndexUrl
-    private URL url;
+  /**
+   * Property defining whether the search endpoint of the SearchController is
+   * available or not.
+   * Furthermore, this property is used to decide whether to
+   * perform indexing or not in a particular service.
+   * By default, search is
+   * disabled.
+   */
+  @Value("${repo.search.enabled:FALSE}")
+  private boolean searchEnabled;
 
-    /**
-     * The index search in. This property also supports multi-index search,
-     * e.g., while using values like 'index1,index2' or 'index*'. By default,
-     * all indices ('*') are queried.
-     */
-    @Value("${repo.search.index:*}")
-    @SearchIndex
-    private String index;
+  /**
+   * Property for defining the search endpoint's base URL.
+   * It may only contain protocol, hostname, and port and must not end with a slash.
+   * All other parts, i.e., index and search endpoint, are added by the
+   * SearchController.
+   * By default, an installation at 'http://localhost:9200' is addressed.
+   */
+  @Value("${repo.search.url:http://localhost:9200}")
+  @SearchIndexUrl
+  private URL url;
+
+  /**
+   * The index to search in.
+   * This property also supports multi-index search,
+   * e.g., while using values like 'index1,index2' or 'index*'.
+   * By default, all indices ('*') are queried.
+   */
+  @Value("${repo.search.index:*}")
+  @SearchIndex
+  private String index;
+
+  /**
+   * Property defining the search endpoint pattern.
+   * The pattern is used to
+   * detect the search endpoint(s) in the request URL.
+   * By default, the pattern is
+   * set to '(/[^/]+)?/api/v\d+(/[^/]+)?/_?search$'.
+   * Matching examples: '/context/api/v1/search' or '/context/api/v1/indexes/_search'
+   * If more than one pattern is provided, the patterns are separated by a comma.
+   */
+  @Value(("${repo.search.endpointPattern:" + DEFAULT_SEARCH_ENDPOINT_PATTERN + "}"))
+  private List<String> searchEndpointPatterns;
+
+  /**
+   * Property defining headers to be deduplicated in search response.
+   * By default, the header 'Transfer-Encoding' is deduplicated.
+   * If more than one header is provided, the headers are separated by a comma.
+   */
+  @Value("${repo.search.dedupHeaders:" + DEDUP_HEADERS + "}")
+  private List<String> dedupHeaders;
+
+  /**
+   * List of deduplicated headers in lowercase.
+   */
+  private List<String> dedupHeadersLowerCase = null;
+
+  /**
+   * Get deduplicated headers in lowercase.
+   *
+   * @return List of deduplicated headers in lowercase.
+   */
+  public List<String> getHeadersLowerCase() {
+    if (dedupHeadersLowerCase == null) {
+      dedupHeadersLowerCase = new ArrayList<>();
+      for (String header : dedupHeaders) {
+        dedupHeadersLowerCase.add(header.toLowerCase());
+      }
+    }
+    return dedupHeadersLowerCase;
+  }
 
 }

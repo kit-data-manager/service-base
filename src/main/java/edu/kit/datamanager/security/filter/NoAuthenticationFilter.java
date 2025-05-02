@@ -37,6 +37,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -62,31 +63,35 @@ public class NoAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException, AuthenticationException {
-        /* Claims claims = new DefaultClaims(new HashMap<>());
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            /* Claims claims = new DefaultClaims(new HashMap<>());
     claims.put(JwtAuthenticationToken.GROUPS_CLAIM, Arrays.asList(USERS_GROUP));
     claims.put(JwtAuthenticationToken.TOKENTYPE_CLAIM, JwtAuthenticationToken.TOKEN_TYPE.SERVICE.toString());
     claims.put(JwtAuthenticationToken.SERVICENAME_CLAIM, JwtServiceToken.SELF_SERVICE_NAME);
-         */
-        Map<String, Object> claimsMap = new HashMap<>();
-        claimsMap.put(JwtAuthenticationToken.GROUPS_CLAIM, Arrays.asList(USERS_GROUP));
-        claimsMap.put(JwtAuthenticationToken.TOKENTYPE_CLAIM, JwtAuthenticationToken.TOKEN_TYPE.SERVICE.toString());
-        claimsMap.put(JwtAuthenticationToken.SERVICENAME_CLAIM, JwtServiceToken.SELF_SERVICE_NAME);
+             */
+            Map<String, Object> claimsMap = new HashMap<>();
+            claimsMap.put(JwtAuthenticationToken.GROUPS_CLAIM, Arrays.asList(USERS_GROUP));
+            claimsMap.put(JwtAuthenticationToken.TOKENTYPE_CLAIM, JwtAuthenticationToken.TOKEN_TYPE.SERVICE.toString());
+            claimsMap.put(JwtAuthenticationToken.SERVICENAME_CLAIM, JwtServiceToken.SELF_SERVICE_NAME);
 
-        Set<String> rolesAsString = new HashSet<>();
-        rolesAsString.add(RepoServiceRole.SERVICE_WRITE.getValue());
-        try {
-            claimsMap.put(JwtAuthenticationToken.ROLES_CLAIM, new ObjectMapper().writeValueAsString(rolesAsString.toArray(new String[]{})));
-        } catch (JsonProcessingException ex) {
-            throw new InvalidAuthenticationException("Failed to create JWToken.", ex);
-        }
-        /*Set<Map.Entry<String, String>> claimEntries = claimsMap.entrySet();
+            Set<String> rolesAsString = new HashSet<>();
+            rolesAsString.add(RepoServiceRole.SERVICE_WRITE.getValue());
+            try {
+                claimsMap.put(JwtAuthenticationToken.ROLES_CLAIM, new ObjectMapper().writeValueAsString(rolesAsString.toArray(new String[]{})));
+            } catch (JsonProcessingException ex) {
+                throw new InvalidAuthenticationException("Failed to create JWToken.", ex);
+            }
+            /*Set<Map.Entry<String, String>> claimEntries = claimsMap.entrySet();
     Map<String, Object> claimMap = new HashMap<>();
     claimEntries.forEach(entry -> claimMap.put(entry.getKey(), entry.getValue()));
-         */
-        Key key = new SecretKeySpec(secretKey.getBytes(StandardCharset.UTF_8), "HmacSHA256");
-        String token = Jwts.builder().claims(claimsMap).expiration(Date.from(Instant.now().plus(1l, ChronoUnit.HOURS))).signWith(key).compact();
-        JwtAuthenticationToken res = JwtAuthenticationToken.factoryToken(token, claimsMap);
-        SecurityContextHolder.getContext().setAuthentication(res);
+             */
+            Key key = new SecretKeySpec(secretKey.getBytes(StandardCharset.UTF_8), "HmacSHA256");
+            String token = Jwts.builder().claims(claimsMap).expiration(Date.from(Instant.now().plus(1l, ChronoUnit.HOURS))).signWith(key).compact();
+            JwtAuthenticationToken res = JwtAuthenticationToken.factoryToken(token, claimsMap);
+            SecurityContextHolder.getContext().setAuthentication(res);
+        }//else authentication already done, skip further authentication
+        
         //continue filtering
         chain.doFilter(request, response);
 
