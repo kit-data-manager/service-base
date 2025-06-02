@@ -29,7 +29,7 @@ plugins {
 }
 
 ext { 
-    springBootVersion = '3.4.5' 
+    springBootVersion = '3.5.0' 
     springDocVersion  = '1.8.0'
 }
 
