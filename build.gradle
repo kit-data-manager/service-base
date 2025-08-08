@@ -30,7 +30,7 @@ plugins {
 
 ext { 
     springBootVersion = '3.5.4' 
-    springDocVersion  = '1.8.0'
+    springDocVersion  = '2.8.9'
 }
 
 description = "Base service module containing entities, interfaces and helpers."
@@ -60,9 +60,10 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.springframework.cloud:spring-cloud-gateway-mvc:4.3.0"
 
-    implementation "org.springdoc:springdoc-openapi-ui:${springDocVersion}"
-    implementation "org.springdoc:springdoc-openapi-data-rest:${springDocVersion}"
-    implementation "org.springdoc:springdoc-openapi-webmvc-core:${springDocVersion}"
+    // springdoc
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springDocVersion}"
+    implementation "org.springdoc:springdoc-openapi-starter-common:${springDocVersion}"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:${springDocVersion}"
 
     implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.19.2"
     implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.19.2"
