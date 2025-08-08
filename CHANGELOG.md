@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## [1.3.5] - 2025-08-08
+
+### Security
+* Updated springDoc to version 2.8.9
+* Updated several core dependencies and plugins
+* Updated gradle to 9.0.0
+
 ## [1.3.4] - 2025-05-02
 
 ### Added
