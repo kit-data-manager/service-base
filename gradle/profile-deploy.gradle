@@ -59,55 +59,23 @@ javadoc {
 ////////////////////////////////////////////////////////////////////////////////
 nexusPublishing {
     repositories {
-        //select sonatype repository as publication destination 
-        //uses pre-configured URLs, e.g. https://oss.sonatype.org/
-        sonatype()
-        //for alternate publication desination define nexusUrl and snapshotRepositoryUrl
-        //also relevant for users registered in Sonatype after 24 Feb 2021
-        //sonatype {
-        //    nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
-        //    snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
-        //}
-    }
-}
-////////////////////////////////////////////////////////////////////////////////
-//for plugin maven-publish/io.github.gradle-nexus.publish-plugin
-//see https://docs.gradle.org/current/userguide/publishing_maven.html
-////////////////////////////////////////////////////////////////////////////////
-publishing {
-    publications {
-        //define publication identity, e.g. maven, which will be used
-        //by the signing plugin, e.g. sign publishing.publications.maven
-        maven(MavenPublication) {
-            //select component to publish, e.g. java including JavaDoc
-            //and sources (see above)
-            from components.java
-            //set elements in generated pom.xml according to requirements
-            //by Sonatype (see https://central.sonatype.org/pages/requirements.html)
-            pom {
-                name = project['name']
-                description = project['description']
-                url = 'http://datamanager.kit.edu'
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'Jejkal'
-                        name = 'Thomas Jejkal'
-                        email = 'webmaster@datamanager.kit.edu'
-                    }
-                }
-                scm {
-                    connection = 'scm:git:github.com/kit-data-manager/service-base'
-                    developerConnection = 'scm:git:github.com/kit-data-manager/service-base'
-                    url = 'https://github.com/kit-data-manager/service-base'
-                }
-            }         
+        // Migration to Sontatype Central
+        // see https://github.com/gradle-nexus/publish-plugin?tab=readme-ov-file#publishing-to-maven-central-via-sonatype-central
+        // see https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/#configuration
+        sonatype {
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
         }
+        // You need to set your Central credentials (those are different from the legacy OSSRH ones).
+        // To increase security, it is advised to use the user token's username and password pair
+        // (instead of regular username and password).
+        // Those values should be set as the
+        //   sonatypeUsername and
+        //   sonatypePassword project properties, e.g. in ~/.gradle/gradle.properties or
+        //   via the
+        //   ORG_GRADLE_PROJECT_sonatypeUsername and
+        //   ORG_GRADLE_PROJECT_sonatypePassword environment variables.
+        //  For generating the user token, see https://central.sonatype.org/publish/generate-portal-token/
     }
 }
 ////////////////////////////////////////////////////////////////////////////////
