@@ -18,7 +18,7 @@ plugins {
     id 'io.freefair.lombok' version '9.0.0'
     id 'io.freefair.maven-publish-java' version '9.0.0'
     id 'io.spring.dependency-management' version '1.1.7'
-    id 'org.owasp.dependencycheck' version '12.1.5'
+    id 'org.owasp.dependencycheck' version '12.1.6'
     id 'java'
     id 'jacoco'
     // plugins for release and publishing to maven repo
