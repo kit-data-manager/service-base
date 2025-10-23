@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## [1.3.6] - 2025-10-23
+
+### Security
+* Updated core libraries (Spring Boot, OpenAPI, Spring Cloud Gateway, Jackson, JWT, Commons Lang, JAXB) to newer patch/minor releases.
+* Upgraded build plugins and Gradle tooling; bumped Gradle wrapper to a newer patch release and added wrapper storage setting.
+* Refreshed CI workflows to newer GitHub Actions and Java setup versions.
+* Adjusted release publishing to target Central.
+
 ## [1.3.5] - 2025-08-08
 
 ### Security
@@ -324,7 +332,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.3.4...HEAD
+[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v1.3.6...HEAD
+[1.3.6]: https://github.com/kit-data-manager/service-base/compare/v1.3.5...v1.3.6
+[1.3.5]: https://github.com/kit-data-manager/service-base/compare/v1.3.4...v1.3.5
 [1.3.4]: https://github.com/kit-data-manager/service-base/compare/v1.3.3...v1.3.4
 [1.3.3]: https://github.com/kit-data-manager/service-base/compare/v1.3.2...v1.3.3
 [1.3.2]: https://github.com/kit-data-manager/service-base/compare/v1.3.1...v1.3.2
