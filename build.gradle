@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 plugins { 
-    id 'io.freefair.lombok' version '8.14'
-    id 'io.freefair.maven-publish-java' version '8.14'
+    id 'io.freefair.lombok' version '9.0.0'
+    id 'io.freefair.maven-publish-java' version '9.0.0'
     id 'io.spring.dependency-management' version '1.1.7'
-    id 'org.owasp.dependencycheck' version '12.1.3'
+    id 'org.owasp.dependencycheck' version '12.1.8'
     id 'java'
     id 'jacoco'
     // plugins for release and publishing to maven repo
@@ -29,8 +29,8 @@ plugins {
 }
 
 ext { 
-    springBootVersion = '3.5.4' 
-    springDocVersion  = '2.8.9'
+    springBootVersion = '3.5.6' 
+    springDocVersion  = '2.8.13'
 }
 
 description = "Base service module containing entities, interfaces and helpers."
@@ -57,30 +57,30 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-    implementation "org.springframework.cloud:spring-cloud-gateway-mvc:4.3.0"
+    implementation "org.springframework.cloud:spring-cloud-gateway-mvc:4.3.2"
 
     // springdoc
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springDocVersion}"
     implementation "org.springdoc:springdoc-openapi-starter-common:${springDocVersion}"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:${springDocVersion}"
 
-    implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.19.2"
-    implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.19.2"
+    implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.20.0"
+    implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.20.0"
 
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.19.2"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:2.19.2"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.20.0"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:2.20.0"
    
     implementation "com.github.dozermapper:dozer-core:7.0.0"
 
     //keycloak
-    implementation "com.nimbusds:nimbus-jose-jwt:10.4.1"
-    implementation "io.jsonwebtoken:jjwt-api:0.12.6"
-    implementation "io.jsonwebtoken:jjwt-impl:0.12.6"
-    implementation "io.jsonwebtoken:jjwt-jackson:0.12.6"
+    implementation "com.nimbusds:nimbus-jose-jwt:10.5"
+    implementation "io.jsonwebtoken:jjwt-api:0.13.0"
+    implementation "io.jsonwebtoken:jjwt-impl:0.13.0"
+    implementation "io.jsonwebtoken:jjwt-jackson:0.13.0"
 
     implementation "com.github.java-json-tools:json-patch:1.13"
    
-    implementation "org.apache.commons:commons-lang3:3.18.0"
+    implementation "org.apache.commons:commons-lang3:3.19.0"
     implementation "commons-validator:commons-validator:1.10.0"
     implementation "commons-io:commons-io:2.20.0"
     // http client uses commons-codec
@@ -89,14 +89,14 @@ dependencies {
     implementation "org.apache.commons:commons-collections4:4.5.0"
 
     // due to problems in dependencies check
-    implementation "com.fasterxml.jackson.core:jackson-core:2.19.2"
-    implementation "com.fasterxml.jackson.core:jackson-databind:2.19.2"
+    implementation "com.fasterxml.jackson.core:jackson-core:2.20.0"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.20.0"
    
     //Java 11 Support 
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     
-    implementation 'com.sun.xml.bind:jaxb-core:4.0.5'
-    implementation 'com.sun.xml.bind:jaxb-impl:4.0.5'
+    implementation 'com.sun.xml.bind:jaxb-core:4.0.6'
+    implementation 'com.sun.xml.bind:jaxb-impl:4.0.6'
 
     implementation 'javax.activation:activation:1.1.1'
     implementation 'org.javassist:javassist:3.30.2-GA'
@@ -118,7 +118,7 @@ if (project.hasProperty('release')) {
 }
 
 jacoco {
-    toolVersion = "0.8.13"
+    toolVersion = "0.8.14"
 }
 
 tasks.withType(Test) {
