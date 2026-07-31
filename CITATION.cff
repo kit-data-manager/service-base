@@ -18,7 +18,7 @@ authors:
   orcid: "https://orcid.org/0000-0001-6575-1022"
 title: "service-base"
 type: software
-abstract: Helper module for KIT DM 2.0 services providing commonly used dependencies and general purpose implementations, e.g. helpers and exception.
+abstract: "'service-base' is a Java library that provides common dependencies and general purpose implementations for KIT DM repositories."
 version: 1.3.5
 date-released: 2025-08-08
 url: "https://github.com/kit-data-manager/service-base"
