@@ -26,23 +26,6 @@ java {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//for plugin net.researchgate.release 
-//see https://github.com/researchgate/gradle-release
-////////////////////////////////////////////////////////////////////////////////
-release {
-    //define template for tagging, e.g. v1.0.0
-    tagTemplate = 'v${version}'
-    //set source file of version property
-    versionPropertyFile = 'gradle.properties'
-    //set possible properties which may contain the version
-    versionProperties = ['version', 'mainversion']
-    git {
-        //branch from where to release (default: main)
-        requireBranch.set('main')
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 //for javadoc task
 //see https://docs.gradle.org/current/dsl/org.gradle.api.tasks.javadoc.Javadoc.html
 ////////////////////////////////////////////////////////////////////////////////
